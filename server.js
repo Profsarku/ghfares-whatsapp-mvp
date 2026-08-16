@@ -8,11 +8,13 @@ const fb = require('./lib/messenger');
 const broadcast = require('./lib/broadcast');
 const { ask, hashOf } = require('./lib/ask');
 const qr = require('./tools/qr');
+const QRCode = require('qrcode');
 const fsp = require('fs');
 const path = require('path');
 const os = require('os');
 
 const app = express();
+app.set('trust proxy', 1);
 app.use(express.json({ verify: (req, res, buf) => { req.rawBody = buf; } }));
 
 const {
@@ -136,14 +138,26 @@ function shareOrigin(req) {
   return `${req.protocol}://${host}`;
 }
 
-function landing(req, res) {
+function qrSvg(url) {
+  return QRCode.toString(url, {
+    type: 'svg',
+    margin: 4,
+    width: 168,
+    errorCorrectionLevel: 'M',
+    color: { dark: '#14181c', light: '#ffffff' }
+  });
+}
+
+async function landing(req, res) {
   const station = String(req.query.s || '').replace(/[^a-z0-9-]/gi, '');
   const origin = shareOrigin(req);
   const url = `${origin}/`;
   let page = fsp.readFileSync(path.join(__dirname, 'public', 'go.html'), 'utf8');
+  const svg = await qrSvg(url);
 
-  const inject = `<script>window.__QR_MATRIX__=${JSON.stringify(qr.matrix(url))};window.__LANDING__=${JSON.stringify(url)};</script>`;
+  const inject = `<script>window.__LANDING__=${JSON.stringify(url)};</script>`;
   page = page.replace('</head>', inject + '</head>');
+  page = page.replace('<div class="qr" id="qr"></div>', `<div class="qr" id="qr">${svg}</div>`);
   page = page.replace(
     "whatsapp: '233200000000',",
     `whatsapp: '${process.env.WA_NUMBER || '233200000000'}',`
@@ -187,17 +201,10 @@ app.get('/v1/entry/stats', (req, res) => {
 });
 
 /* Printable QR for the WhatsApp / Messenger chooser. */
-app.get('/v1/qr', (req, res) => {
+app.get('/v1/qr', async (req, res) => {
   const url = `${shareOrigin(req)}/`;
-  const m = qr.matrix(url);
-  const n = m.length, box = 12, pad = 4 * box;
-  const size = n * box + pad * 2;
-  let d = '';
-  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++)
-    if (m[y][x]) d += `M${pad + x * box},${pad + y * box}h${box}v${box}h-${box}z`;
-  res.type('image/svg+xml').send(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">
-       <rect width="${size}" height="${size}" fill="#fff"/><path d="${d}" fill="#14181c"/></svg>`);
+  const svg = await qrSvg(url);
+  res.type('image/svg+xml').send(svg);
 });
 
 /* ════════ MESSENGER WEBHOOK ════════

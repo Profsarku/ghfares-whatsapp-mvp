@@ -255,24 +255,9 @@ try {
   }
 } catch (e) {}
 
-/* QR always encodes this chooser — not a station. */
-function drawQR(matrix) {
-  const n = matrix.length, quiet = 4, dim = n + quiet * 2, s = 168 / dim;
-  let path = '';
-  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
-    if (matrix[y][x]) {
-      const px = ((x + quiet) * s).toFixed(2), py = ((y + quiet) * s).toFixed(2);
-      path += `M${px},${py}h${s.toFixed(2)}v${s.toFixed(2)}h-${s.toFixed(2)}z`;
-    }
-  }
-  $('#qr').innerHTML = `<svg viewBox="0 0 168 168" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="QR code to start GH Fares">
-    <rect width="168" height="168" fill="#fff"/><path d="${path}" fill="#14181c"/></svg>`;
-}
-if (window.__QR_MATRIX__) drawQR(window.__QR_MATRIX__);
-else {
-  fetch('/v1/qr')
-    .then(r => r.text())
-    .then(svg => { $('#qr').innerHTML = svg; });
+/* QR is injected by the server as a real SVG (quiet zone + integer modules). */
+if (!$('#qr').querySelector('svg')) {
+  fetch('/v1/qr').then(r => r.text()).then(svg => { $('#qr').innerHTML = svg; });
 }
 </script>
 </body>
