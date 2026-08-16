@@ -1,0 +1,17 @@
+{
+  "name": "ghfares-whatsapp-mvp",
+  "version": "0.1.0",
+  "description": "GH Fares — API with a WhatsApp front door, plus the add-on capability system",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "demo": "node server.js",
+    "demo:cli": "node test/demo.js",
+    "demo:json": "node test/demo.js --json"
+  },
+  "dependencies": {
+    "express": "^4.22.2",
+    "jsdom": "^30.0.1"
+  },
+  "license": "UNLICENSED"
+}

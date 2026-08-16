@@ -1,0 +1,176 @@
+{
+  "version": "7.0",
+  "data_api_version": "3.0",
+  "routing_model": {
+    "ADDONS": ["ROUTE_SETUP", "CONFIRM"],
+    "ROUTE_SETUP": ["CONFIRM"],
+    "CONFIRM": []
+  },
+  "screens": [
+    {
+      "id": "ADDONS",
+      "title": "Add-ons",
+      "data": {
+        "active": {
+          "type": "array",
+          "items": { "type": "string" },
+          "__example__": ["fuel"]
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "TextHeading",
+            "text": "Add things to your assistant"
+          },
+          {
+            "type": "TextBody",
+            "text": "Each one changes what GH Fares does for you. Nothing to install, and you can remove any of them at any time."
+          },
+          {
+            "type": "Form",
+            "name": "addon_form",
+            "children": [
+              {
+                "type": "CheckboxGroup",
+                "name": "addons",
+                "label": "Choose what to add",
+                "required": false,
+                "init-value": "${data.active}",
+                "data-source": [
+                  {
+                    "id": "fuel",
+                    "title": "Fuel watch",
+                    "description": "Cheapest fuel near you, plus an alert when a nearby station changes price."
+                  },
+                  {
+                    "id": "roads",
+                    "title": "Road alerts",
+                    "description": "Incidents and congestion on the roads you actually use. Only on change."
+                  },
+                  {
+                    "id": "route",
+                    "title": "My route",
+                    "description": "Save your daily route so \"how much\" needs no origin or destination."
+                  },
+                  {
+                    "id": "queue",
+                    "title": "Queue watch",
+                    "description": "Know before you walk whether your loading bay is moving."
+                  },
+                  {
+                    "id": "chart",
+                    "title": "Fare revisions",
+                    "description": "The new fares within hours of any GPRTU or operator chart change."
+                  },
+                  {
+                    "id": "report",
+                    "title": "Quick report",
+                    "description": "Send just an amount. Route and station are already known."
+                  }
+                ]
+              },
+              {
+                "type": "TextCaption",
+                "text": "Alerts arrive as WhatsApp messages only when something actually changes. Reply STOP to any of them to turn it off."
+              },
+              {
+                "type": "Footer",
+                "label": "Save add-ons",
+                "on-click-action": {
+                  "name": "navigate",
+                  "next": { "type": "screen", "name": "ROUTE_SETUP" },
+                  "payload": { "addons": "${form.addons}" }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "ROUTE_SETUP",
+      "title": "Your route",
+      "data": {
+        "addons": { "type": "array", "items": { "type": "string" }, "__example__": ["route"] },
+        "stations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": { "id": { "type": "string" }, "title": { "type": "string" } }
+          },
+          "__example__": [
+            { "id": "kaneshie", "title": "Kaneshie Market Station" },
+            { "id": "circle", "title": "Kwame Nkrumah Circle" }
+          ]
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "TextHeading",
+            "text": "Which route do you travel most?"
+          },
+          {
+            "type": "TextBody",
+            "text": "Save it once and you never have to type it again. Skip if you would rather not."
+          },
+          {
+            "type": "Form",
+            "name": "route_form",
+            "children": [
+              {
+                "type": "Dropdown",
+                "name": "from",
+                "label": "From",
+                "required": false,
+                "data-source": "${data.stations}"
+              },
+              {
+                "type": "Dropdown",
+                "name": "to",
+                "label": "To",
+                "required": false,
+                "data-source": "${data.stations}"
+              },
+              {
+                "type": "Footer",
+                "label": "Finish",
+                "on-click-action": {
+                  "name": "complete",
+                  "payload": {
+                    "addons": "${data.addons}",
+                    "route_from": "${form.from}",
+                    "route_to": "${form.to}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "CONFIRM",
+      "terminal": true,
+      "title": "Done",
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          { "type": "TextHeading", "text": "Add-ons saved" },
+          {
+            "type": "TextBody",
+            "text": "Send MY ADDONS any time to see what is active or remove something."
+          },
+          {
+            "type": "Footer",
+            "label": "Close",
+            "on-click-action": { "name": "complete", "payload": {} }
+          }
+        ]
+      }
+    }
+  ]
+}
