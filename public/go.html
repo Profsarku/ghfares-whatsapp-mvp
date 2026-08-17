@@ -198,13 +198,12 @@ function waLink() {
   return 'whatsapp://send?phone=' + n;
 }
 function fbLink() {
-  const ref = ['src-' + source, station ? 'stn-' + station : ''].filter(Boolean).join('_');
-  const id = CONFIG.pageId || CONFIG.messenger;
-  const q = ref ? '?ref=' + encodeURIComponent(ref) : '';
+  const id = String(CONFIG.pageId || '').replace(/\D/g, '') || CONFIG.messenger;
+  /* Page chats use /user/{PAGE_ID}. user-thread plus ?ref= often opens a blank inbox. */
   if (android()) {
-    return 'intent://user-thread/' + id + q + '#Intent;scheme=fb-messenger;package=com.facebook.orca;end';
+    return 'intent://user/' + id + '/#Intent;scheme=fb-messenger;package=com.facebook.orca;end';
   }
-  return 'fb-messenger://user-thread/' + id + q;
+  return 'fb-messenger://user/' + id;
 }
 
 /* Scan and click attribution — aggregate only, no per-person link. */

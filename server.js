@@ -58,15 +58,14 @@ app.post('/v1/webhook', async (req, res) => {
   // Signature check — Meta signs every payload; reject anything unsigned in prod.
   if (APP_SECRET) {
     const sig = req.get('x-hub-signature-256') || '';
-    const expected = 'sha256=' + crypto.createHmac('sha256', APP_SECRET).update(req.rawBody).digest('hex');
+    const expected = 'sha256=' + crypto.createHmac('sha256', APP_SECRET).update(req.rawBody || Buffer.from('')).digest('hex');
     if (sig !== expected) return res.sendStatus(401);
   }
-  res.sendStatus(200); // ack fast; Meta retries on delay
 
   try {
     const entry = req.body.entry?.[0]?.changes?.[0]?.value;
     const msg = entry?.messages?.[0];
-    if (!msg) return;
+    if (!msg) return res.sendStatus(200);
 
     const from = msg.from;
     let text = null, interactiveId = null, location = null, type = null;
@@ -85,7 +84,7 @@ app.post('/v1/webhook', async (req, res) => {
           data.addons.forEach(id => caps.add(hash, id));
           const names = data.addons.map(id => caps.byId[id]?.title).filter(Boolean).join(', ');
           await send(require('./lib/wa').text(from, `Added: *${names}*.\n\nSend MY ADDONS any time to see or change them.`));
-          return;
+          return res.sendStatus(200);
         }
         text = data.text || 'menu';
       }
@@ -96,6 +95,7 @@ app.post('/v1/webhook', async (req, res) => {
   } catch (e) {
     console.error('webhook error', e);
   }
+  res.sendStatus(200);
 });
 
 /* ════════ ENTRY POINT ════════
@@ -231,11 +231,12 @@ app.get('/v1/webhook/messenger', (req, res) => {
 });
 
 app.post('/v1/webhook/messenger', async (req, res) => {
-  res.sendStatus(200);
   try {
     for (const entry of req.body.entry || []) {
       for (const ev of entry.messaging || []) {
-        const psid = ev.sender.id;
+        if (ev.message && ev.message.is_echo) continue;
+        const psid = ev.sender && ev.sender.id;
+        if (!psid) continue;
         const hash = hashOf('fb:' + psid);
         let text = null, interactiveId = null, location = null, type = null;
 
@@ -255,13 +256,18 @@ app.post('/v1/webhook/messenger', async (req, res) => {
         }
         if (!text && !interactiveId && !location && !type) continue;
 
+        console.log('messenger in', { psid, text, interactiveId, type });
         const out = ask({ from: psid, hash, text, interactiveId, location, type });
         for (const r of out.payloads) {
-          for (const m of fb.fromWhatsApp(r, psid)) await sendFB(m);
+          for (const m of fb.fromWhatsApp(r, psid)) {
+            const sent = await sendFB(m);
+            if (sent && sent.error) console.error('messenger send failed', sent);
+          }
         }
       }
     }
   } catch (e) { console.error('messenger webhook error', e); }
+  res.sendStatus(200);
 });
 
 /* Persistent menu, greeting and Get Started — POST to /me/messenger_profile */
