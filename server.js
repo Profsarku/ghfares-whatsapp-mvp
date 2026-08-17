@@ -462,6 +462,10 @@ app.post('/v1/ask', (req, res) => {
     subscriber: out.subscriber
   }, { via: out.via }));
 });
+app.get(['/favicon.svg', '/favicon.ico', '/favicon.png'], (req, res) => {
+  res.type('image/svg+xml').sendFile(path.join(__dirname, 'public', 'favicon.svg'));
+});
+
 app.get('/demo', (req, res) =>
   res.sendFile(path.join(__dirname, 'public', 'demo.html')));
 app.get('/demo.js', (req, res) =>
