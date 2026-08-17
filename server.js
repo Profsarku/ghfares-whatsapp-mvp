@@ -181,6 +181,7 @@ app.post('/v1/entry', (req, res) => {
   entryLog.push({ type: 'choose', channel, station: station || null, source: source || null,
                   at: new Date().toISOString() });
   res.sendStatus(204);
+  if (channel === 'fb' || channel === 'messenger') publishMessengerProfile().catch(() => {});
 });
 
 /* Scan-to-choice funnel, per station. */
@@ -270,17 +271,32 @@ app.post('/v1/webhook/messenger', async (req, res) => {
   res.sendStatus(200);
 });
 
-/* Persistent menu, greeting and Get Started — POST to /me/messenger_profile */
-app.get('/v1/messenger-profile', (req, res) =>
-  res.json(envelope(fb.messengerProfile(), { note: 'POST to /me/messenger_profile' })));
-
-app.post('/v1/messenger-profile', async (req, res) => {
+/* Ice breakers + greeting + Get Started + persistent menu on the Page.
+   The landing redirect cannot draw these — only Graph /me/messenger_profile. */
+let lastProfilePublish = 0;
+async function publishMessengerProfile(force) {
   const body = fb.messengerProfile();
-  if (DRY_RUN === 'true' || !FB_PAGE_TOKEN) return res.json(envelope({ dry_run: true, body }));
+  if (DRY_RUN === 'true' || !FB_PAGE_TOKEN) return { dry_run: true, body };
+  if (!force && Date.now() - lastProfilePublish < 10 * 60 * 1000) {
+    return { skipped: true, reason: 'rate_limit_window' };
+  }
+  lastProfilePublish = Date.now();
   const r = await fetch(`https://graph.facebook.com/${GRAPH_VERSION}/me/messenger_profile?access_token=${FB_PAGE_TOKEN}`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
   });
-  res.status(r.ok ? 200 : 400).json(await r.json());
+  const json = await r.json();
+  if (!r.ok) console.error('messenger profile publish failed', json);
+  else console.log('messenger profile published', json);
+  return json;
+}
+
+app.get('/v1/messenger-profile', (req, res) =>
+  res.json(envelope(fb.messengerProfile(), { note: 'POST this body to Graph /me/messenger_profile. Widgets appear on a new Page thread, not on the website.' })));
+
+app.post('/v1/messenger-profile', async (req, res) => {
+  const json = await publishMessengerProfile(true);
+  const ok = json && (json.result === 'success' || json.dry_run);
+  res.status(ok ? 200 : 400).json(json.dry_run ? envelope(json) : json);
 });
 
 /* ════════ PUBLIC API ════════ */
