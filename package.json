@@ -7,7 +7,9 @@
     "start": "node server.js",
     "demo": "node server.js",
     "demo:cli": "node test/demo.js",
-    "demo:json": "node test/demo.js --json"
+    "demo:json": "node test/demo.js --json",
+    "test": "node test/json-body.js",
+    "test:live": "node test/desktop.js"
   },
   "dependencies": {
     "express": "^4.22.2",

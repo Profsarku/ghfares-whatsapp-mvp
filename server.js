@@ -15,7 +15,23 @@ const os = require('os');
 
 const app = express();
 app.set('trust proxy', 1);
-app.use(express.json({ verify: (req, res, buf) => { req.rawBody = buf; } }));
+const jsonParser = express.json({ verify: (req, res, buf) => { req.rawBody = buf; } });
+app.use((req, res, next) => {
+  if (req.headers['content-length'] === '0') {
+    req.body = {};
+    req.rawBody = Buffer.alloc(0);
+    return next();
+  }
+  jsonParser(req, res, next);
+});
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && 'body' in err) {
+    console.error('invalid json', req.method, req.path, String(req.rawBody || '').slice(0, 200));
+    return res.status(400).json({ error: 'invalid json' });
+  }
+  next(err);
+});
+app.use(express.text({ type: 'text/plain' }));
 
 const {
   PORT = 3000,
@@ -177,7 +193,11 @@ app.get('/go', landing);
 
 /* Channel chosen — beacon from the landing page. Aggregate only. */
 app.post('/v1/entry', (req, res) => {
-  const { channel, station, source } = req.body || {};
+  let body = req.body;
+  if (typeof body === 'string') {
+    try { body = JSON.parse(body); } catch { body = {}; }
+  }
+  const { channel, station, source } = body || {};
   entryLog.push({ type: 'choose', channel, station: station || null, source: source || null,
                   at: new Date().toISOString() });
   res.sendStatus(204);
