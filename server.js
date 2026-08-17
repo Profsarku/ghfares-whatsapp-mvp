@@ -243,10 +243,27 @@ async function graph(path, { method = 'GET', body } = {}) {
   return r.json();
 }
 
-const MESSENGER_WEBHOOK_FIELDS = 'messages,messaging_postbacks,messaging_optins,messaging_referrals';
+const MESSENGER_WEBHOOK_FIELDS = 'messages,messaging_postbacks,messaging_optins,messaging_referrals,standby,messaging_handovers';
 
 async function subscribePage() {
   return graph(`/me/subscribed_apps?subscribed_fields=${MESSENGER_WEBHOOK_FIELDS}`, { method: 'POST' });
+}
+
+async function takeThread(psid) {
+  if (DRY_RUN === 'true' || !FB_PAGE_TOKEN) return { dry_run: true };
+  const taken = await graph('/me/take_thread_control', {
+    method: 'POST',
+    body: { recipient: { id: psid }, metadata: 'GH Fares' }
+  });
+  if (taken && taken.error) {
+    const asked = await graph('/me/request_thread_control', {
+      method: 'POST',
+      body: { recipient: { id: psid }, metadata: 'GH Fares' }
+    });
+    if (asked && asked.error) console.error('messenger thread control failed', taken, asked);
+    return asked;
+  }
+  return taken;
 }
 
 async function sendFB(payload) {
@@ -269,45 +286,50 @@ app.get('/v1/webhook/messenger', (req, res) => {
   res.sendStatus(403);
 });
 
+async function handleMessengerEvent(ev) {
+  if (ev.message && ev.message.is_echo) return;
+  const psid = ev.sender && ev.sender.id;
+  if (!psid) return;
+  const hash = hashOf('fb:' + psid);
+  let text = null, interactiveId = null, location = null, type = null;
+
+  if (ev.postback) {
+    interactiveId = ev.postback.payload;
+    const ref = ev.postback.referral && ev.postback.referral.ref;
+    const stn = ref && (ref.match(/stn-([a-z0-9-]+)/) || [])[1];
+    if (stn) caps.subscriber(hash).station = stn;
+    if (interactiveId === 'menu' && !caps.subscriber(hash).onboarded) type = 'request_welcome';
+  }
+  if (ev.message) {
+    if (ev.message.quick_reply) interactiveId = ev.message.quick_reply.payload;
+    else if (ev.message.text) text = ev.message.text;
+    const att = (ev.message.attachments || []).find(a => a.type === 'location');
+    if (att) location = { latitude: att.payload.coordinates.lat, longitude: att.payload.coordinates.long };
+  }
+  if (!text && !interactiveId && !location && !type) return;
+
+  console.log('messenger in', { psid, text, interactiveId, type });
+  await takeThread(psid);
+  const out = ask({ from: psid, hash, text, interactiveId, location, type });
+  for (const r of out.payloads) {
+    for (const m of fb.fromWhatsApp(r, psid)) {
+      const sent = await sendFB(m);
+      if (sent && sent.error) console.error('messenger send failed', sent);
+    }
+  }
+}
+
 app.post('/v1/webhook/messenger', async (req, res) => {
   try {
+    const entries = (req.body && req.body.entry) || [];
     console.log('messenger webhook hit', {
       object: req.body && req.body.object,
-      entries: (req.body && req.body.entry || []).length
+      entries: entries.length,
+      keys: entries.map(e => Object.keys(e || {}))
     });
-    for (const entry of req.body.entry || []) {
-      for (const ev of entry.messaging || []) {
-        if (ev.message && ev.message.is_echo) continue;
-        const psid = ev.sender && ev.sender.id;
-        if (!psid) continue;
-        const hash = hashOf('fb:' + psid);
-        let text = null, interactiveId = null, location = null, type = null;
-
-        if (ev.postback) {
-          interactiveId = ev.postback.payload;
-          /* m.me/<page>?ref=stn-kaneshie arrives here on first contact */
-          const ref = ev.postback.referral && ev.postback.referral.ref;
-          const stn = ref && (ref.match(/stn-([a-z0-9-]+)/) || [])[1];
-          if (stn) caps.subscriber(hash).station = stn;
-          if (interactiveId === 'menu' && !caps.subscriber(hash).onboarded) type = 'request_welcome';
-        }
-        if (ev.message) {
-          if (ev.message.quick_reply) interactiveId = ev.message.quick_reply.payload;
-          else if (ev.message.text) text = ev.message.text;
-          const att = (ev.message.attachments || []).find(a => a.type === 'location');
-          if (att) location = { latitude: att.payload.coordinates.lat, longitude: att.payload.coordinates.long };
-        }
-        if (!text && !interactiveId && !location && !type) continue;
-
-        console.log('messenger in', { psid, text, interactiveId, type });
-        const out = ask({ from: psid, hash, text, interactiveId, location, type });
-        for (const r of out.payloads) {
-          for (const m of fb.fromWhatsApp(r, psid)) {
-            const sent = await sendFB(m);
-            if (sent && sent.error) console.error('messenger send failed', sent);
-          }
-        }
-      }
+    for (const entry of entries) {
+      const events = [...(entry.messaging || []), ...(entry.standby || [])];
+      for (const ev of events) await handleMessengerEvent(ev);
     }
   } catch (e) { console.error('messenger webhook error', e); }
   res.sendStatus(200);
@@ -347,16 +369,23 @@ app.get('/v1/messenger-status', async (req, res) => {
   if (DRY_RUN === 'true' || !FB_PAGE_TOKEN) {
     return res.json(envelope({ dry_run: true, page: null, subscribed_apps: [], live_profile: null }));
   }
-  const [page, subscribed_apps, live_profile] = await Promise.all([
+  const [page, subscribed_apps, live_profile, conversations] = await Promise.all([
     graph('/me?fields=id,name,category,username,link,fan_count'),
     graph('/me/subscribed_apps'),
-    graph('/me/messenger_profile?fields=get_started,greeting,ice_breakers,persistent_menu')
+    graph('/me/messenger_profile?fields=get_started,greeting,ice_breakers,persistent_menu'),
+    graph('/me/conversations?fields=updated_time&limit=5')
   ]);
+  const threads = (conversations && conversations.data) || [];
   res.json(envelope({
     page,
     subscribed_apps,
     live_profile,
-    expected_fields: MESSENGER_WEBHOOK_FIELDS.split(',')
+    expected_fields: MESSENGER_WEBHOOK_FIELDS.split(','),
+    inbox: {
+      thread_count: threads.length,
+      latest: threads[0] && threads[0].updated_time,
+      error: conversations && conversations.error
+    }
   }));
 });
 

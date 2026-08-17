@@ -144,6 +144,14 @@ async function decodePng(buf) {
   if (hook.status === 200) pass('POST /v1/webhook/messenger  empty page');
   else bad('POST /v1/webhook/messenger', hook.status);
 
+  const standby = await fetch(BASE + '/v1/webhook/messenger', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ object: 'page', entry: [{ id: 'PAGE', standby: [] }] })
+  });
+  if (standby.status === 200) pass('POST /v1/webhook/messenger  standby channel');
+  else bad('POST /v1/webhook/messenger standby', standby.status);
+
   const want = await json('/v1/messenger-profile');
   const chips = want.body && want.body.data && want.body.data.ice_breakers
     && want.body.data.ice_breakers[0] && want.body.data.ice_breakers[0].call_to_actions;

@@ -82,6 +82,20 @@ async function req(server, path, opts = {}) {
   if (hook.status === 200) pass('POST /v1/webhook/messenger  valid empty page');
   else bad('POST webhook messenger', hook.status + ' ' + JSON.stringify(hook.body));
 
+  const standby = await req(server, '/v1/webhook/messenger', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      object: 'page',
+      entry: [{
+        id: 'PAGE',
+        standby: [{ sender: { id: 'PSID-STANDBY' }, message: { text: 'hi' } }]
+      }]
+    })
+  });
+  if (standby.status === 200) pass('POST /v1/webhook/messenger  standby hi');
+  else bad('POST webhook standby', standby.status);
+
   const verify = await req(server, '/v1/webhook/messenger?hub.mode=subscribe&hub.verify_token=ghfares-verify&hub.challenge=unit-challenge');
   if (verify.status === 200 && verify.text === 'unit-challenge')
     pass('GET /v1/webhook/messenger  verify handshake');
