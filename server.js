@@ -211,6 +211,24 @@ app.get('/v1/qr', async (req, res) => {
 /* ════════ MESSENGER WEBHOOK ════════
    Same router, same add-ons, same data. Only the rendering differs. */
 
+async function graph(path, { method = 'GET', body } = {}) {
+  if (!FB_PAGE_TOKEN) return { error: { message: 'FB_PAGE_TOKEN missing' } };
+  const sep = path.includes('?') ? '&' : '?';
+  const url = `https://graph.facebook.com/${GRAPH_VERSION}${path}${sep}access_token=${encodeURIComponent(FB_PAGE_TOKEN)}`;
+  const r = await fetch(url, {
+    method,
+    headers: body ? { 'Content-Type': 'application/json' } : undefined,
+    body: body ? JSON.stringify(body) : undefined
+  });
+  return r.json();
+}
+
+const MESSENGER_WEBHOOK_FIELDS = 'messages,messaging_postbacks,messaging_optins,messaging_referrals';
+
+async function subscribePage() {
+  return graph(`/me/subscribed_apps?subscribed_fields=${MESSENGER_WEBHOOK_FIELDS}`, { method: 'POST' });
+}
+
 async function sendFB(payload) {
   if (DRY_RUN === 'true' || !FB_PAGE_TOKEN) {
     console.log('\n── MESSENGER OUT (dry run) ──\n' + JSON.stringify(payload, null, 2));
@@ -233,6 +251,10 @@ app.get('/v1/webhook/messenger', (req, res) => {
 
 app.post('/v1/webhook/messenger', async (req, res) => {
   try {
+    console.log('messenger webhook hit', {
+      object: req.body && req.body.object,
+      entries: (req.body && req.body.entry || []).length
+    });
     for (const entry of req.body.entry || []) {
       for (const ev of entry.messaging || []) {
         if (ev.message && ev.message.is_echo) continue;
@@ -281,12 +303,13 @@ async function publishMessengerProfile(force) {
     return { skipped: true, reason: 'rate_limit_window' };
   }
   lastProfilePublish = Date.now();
-  const r = await fetch(`https://graph.facebook.com/${GRAPH_VERSION}/me/messenger_profile?access_token=${FB_PAGE_TOKEN}`, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
-  });
-  const json = await r.json();
-  if (!r.ok) console.error('messenger profile publish failed', json);
+  const json = await graph('/me/messenger_profile', { method: 'POST', body });
+  if (json && json.error) console.error('messenger profile publish failed', json);
   else console.log('messenger profile published', json);
+  const subscribed = await subscribePage();
+  if (subscribed && subscribed.error) console.error('messenger page subscribe failed', subscribed);
+  else console.log('messenger page subscribed', subscribed);
+  json.subscribed = subscribed;
   return json;
 }
 
@@ -297,6 +320,24 @@ app.post('/v1/messenger-profile', async (req, res) => {
   const json = await publishMessengerProfile(true);
   const ok = json && (json.result === 'success' || json.dry_run);
   res.status(ok ? 200 : 400).json(json.dry_run ? envelope(json) : json);
+});
+
+/* What Meta actually has for this Page — no token in the response. */
+app.get('/v1/messenger-status', async (req, res) => {
+  if (DRY_RUN === 'true' || !FB_PAGE_TOKEN) {
+    return res.json(envelope({ dry_run: true, page: null, subscribed_apps: [], live_profile: null }));
+  }
+  const [page, subscribed_apps, live_profile] = await Promise.all([
+    graph('/me?fields=id,name,category,username,link,fan_count'),
+    graph('/me/subscribed_apps'),
+    graph('/me/messenger_profile?fields=get_started,greeting,ice_breakers,persistent_menu')
+  ]);
+  res.json(envelope({
+    page,
+    subscribed_apps,
+    live_profile,
+    expected_fields: MESSENGER_WEBHOOK_FIELDS.split(',')
+  }));
 });
 
 /* ════════ PUBLIC API ════════ */
