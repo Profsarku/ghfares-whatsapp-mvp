@@ -118,6 +118,29 @@ async function req(server, path, opts = {}) {
     pass('GET /  beacon uses text/plain');
   else bad('GET / beacon type', 'landing missing text/plain sendBeacon');
 
+  const privacy = await req(server, '/privacy');
+  if (privacy.status === 200 && /Privacy Policy/i.test(privacy.text)
+      && /DELETE MY DATA/i.test(privacy.text)
+      && /what data we collect/i.test(privacy.text))
+    pass('GET /privacy  Meta-ready policy');
+  else bad('GET /privacy', privacy.status);
+
+  const delPage = await req(server, '/data-deletion');
+  if (delPage.status === 200 && /DELETE MY DATA/i.test(delPage.text))
+    pass('GET /data-deletion');
+  else bad('GET /data-deletion', delPage.status);
+
+  const wiped = await req(server, '/v1/ask', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ session: 'unit-delete', text: 'DELETE MY DATA' })
+  });
+  const wipeBody = wiped.body && wiped.body.data && wiped.body.data.replies
+    && wiped.body.data.replies[0] && wiped.body.data.replies[0].body;
+  if (wiped.status === 200 && /deleted/i.test(String(wipeBody)))
+    pass('POST /v1/ask  DELETE MY DATA');
+  else bad('DELETE MY DATA', String(wipeBody).slice(0, 120));
+
   server.close();
   console.log('\n' + ok.length + ' passed, ' + fail.length + ' failed');
   if (fail.length) process.exit(1);

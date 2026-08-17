@@ -572,6 +572,9 @@ app.get(['/favicon.svg', '/favicon.ico', '/favicon.png'], (req, res) => {
   res.type('image/svg+xml').sendFile(path.join(__dirname, 'public', 'favicon.svg'));
 });
 
+app.get(['/privacy', '/privacy-policy', '/data-deletion'], (req, res) =>
+  res.type('html').sendFile(path.join(__dirname, 'public', 'privacy.html')));
+
 app.get('/demo', (req, res) =>
   res.sendFile(path.join(__dirname, 'public', 'demo.html')));
 app.get('/demo.js', (req, res) =>

@@ -181,6 +181,21 @@ async function decodePng(buf) {
     pass('POST /v1/ask  ice-breaker payload menu');
   else bad('POST /v1/ask menu', iceType || ice.status);
 
+  const privacy = await text('/privacy');
+  if (privacy.status === 200 && /Privacy Policy/i.test(privacy.body) && /DELETE MY DATA/i.test(privacy.body))
+    pass('GET /privacy');
+  else bad('GET /privacy', privacy.status);
+
+  const erased = await json('/v1/ask', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ session: 'desktop-delete', text: 'DELETE MY DATA' })
+  });
+  const erasedBody = erased.body && erased.body.data && erased.body.data.replies && erased.body.data.replies[0] && erased.body.data.replies[0].body;
+  if (erased.status === 200 && /deleted/i.test(String(erasedBody)))
+    pass('POST /v1/ask  DELETE MY DATA');
+  else bad('DELETE MY DATA', String(erasedBody).slice(0, 120));
+
   console.log('\n' + ok.length + ' passed, ' + fail.length + ' failed');
   if (fail.length) process.exit(1);
 })().catch(e => { console.error(e); process.exit(1); });
