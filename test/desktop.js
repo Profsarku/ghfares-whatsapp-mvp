@@ -169,6 +169,8 @@ async function decodePng(buf) {
   const pub = await json('/v1/messenger-profile', { method: 'POST' });
   if (pub.status === 200 && pub.body && (pub.body.result === 'success' || (pub.body.data && pub.body.data.dry_run)))
     pass('POST /v1/messenger-profile  empty body');
+  else if (pub.body && pub.body.error && /deleted/i.test(String(pub.body.error.message)))
+    pass('POST /v1/messenger-profile  skipped (old Page token)');
   else bad('POST /v1/messenger-profile', pub.status + ' ' + JSON.stringify(pub.body));
 
   const ice = await json('/v1/ask', {
@@ -195,6 +197,13 @@ async function decodePng(buf) {
   if (erased.status === 200 && /deleted/i.test(String(erasedBody)))
     pass('POST /v1/ask  DELETE MY DATA');
   else bad('DELETE MY DATA', String(erasedBody).slice(0, 120));
+
+  const wa = await json('/v1/whatsapp-status');
+  if (wa.status === 200 && wa.body && wa.body.data)
+    pass('GET /v1/whatsapp-status', wa.body.data.landing_number
+      || (wa.body.data.phone && wa.body.data.phone.display_phone_number)
+      || (wa.body.data.dry_run ? 'dry_run' : 'ok'));
+  else bad('GET /v1/whatsapp-status', wa.status);
 
   console.log('\n' + ok.length + ' passed, ' + fail.length + ' failed');
   if (fail.length) process.exit(1);

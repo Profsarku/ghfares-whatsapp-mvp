@@ -141,6 +141,16 @@ async function req(server, path, opts = {}) {
     pass('POST /v1/ask  DELETE MY DATA');
   else bad('DELETE MY DATA', String(wipeBody).slice(0, 120));
 
+  const waStatus = await req(server, '/v1/whatsapp-status');
+  if (waStatus.status === 200 && waStatus.body && waStatus.body.data && waStatus.body.data.dry_run)
+    pass('GET /v1/whatsapp-status  dry run');
+  else bad('GET /v1/whatsapp-status', waStatus.status);
+
+  const cc = await req(server, '/v1/conversational-components');
+  if (cc.status === 200 && cc.body && cc.body.data && cc.body.data.prompts && cc.body.data.prompts.length === 4)
+    pass('GET /v1/conversational-components');
+  else bad('GET conversational-components', cc.status);
+
   server.close();
   console.log('\n' + ok.length + ' passed, ' + fail.length + ' failed');
   if (fail.length) process.exit(1);

@@ -38,6 +38,7 @@ const {
   VERIFY_TOKEN = 'ghfares-verify',
   WHATSAPP_TOKEN = '',
   PHONE_NUMBER_ID = '',
+  WHATSAPP_WABA_ID = '',
   APP_SECRET = '',
   GRAPH_VERSION = 'v21.0',
   DRY_RUN = 'true',
@@ -72,16 +73,24 @@ app.get('/v1/webhook', (req, res) => {
 
 app.post('/v1/webhook', async (req, res) => {
   // Signature check — Meta signs every payload; reject anything unsigned in prod.
+  // APP_SECRET must be from the same app that owns the WhatsApp product.
   if (APP_SECRET) {
     const sig = req.get('x-hub-signature-256') || '';
     const expected = 'sha256=' + crypto.createHmac('sha256', APP_SECRET).update(req.rawBody || Buffer.from('')).digest('hex');
-    if (sig !== expected) return res.sendStatus(401);
+    if (sig !== expected) {
+      console.error('whatsapp webhook bad signature');
+      return res.sendStatus(401);
+    }
   }
 
   try {
     const entry = req.body.entry?.[0]?.changes?.[0]?.value;
     const msg = entry?.messages?.[0];
-    if (!msg) return res.sendStatus(200);
+    if (!msg) {
+      console.log('whatsapp webhook hit', { object: req.body && req.body.object, has_message: false });
+      return res.sendStatus(200);
+    }
+    console.log('whatsapp in', { from: msg.from, type: msg.type });
 
     const from = msg.from;
     let text = null, interactiveId = null, location = null, type = null;
@@ -500,6 +509,28 @@ app.delete('/v1/subscribers/:hash/capabilities/:id', (req, res) => {
 app.get('/v1/conversational-components', (req, res) =>
   res.json(envelope(engine.conversationalAutomationConfig(), { note: 'PATCH this to /{phone-number-id}/conversational_automation' })));
 
+async function waGraph(path, { method = 'GET', body } = {}) {
+  if (!WHATSAPP_TOKEN) return { error: { message: 'WHATSAPP_TOKEN missing' } };
+  const sep = path.includes('?') ? '&' : '?';
+  const url = `https://graph.facebook.com/${GRAPH_VERSION}${path}${sep}access_token=${encodeURIComponent(WHATSAPP_TOKEN)}`;
+  const r = await fetch(url, {
+    method,
+    headers: body ? { 'Content-Type': 'application/json' } : undefined,
+    body: body ? JSON.stringify(body) : undefined
+  });
+  return r.json();
+}
+
+async function subscribeWhatsApp() {
+  let waba = WHATSAPP_WABA_ID;
+  if (!waba && PHONE_NUMBER_ID) {
+    const phone = await waGraph(`/${PHONE_NUMBER_ID}?fields=id,display_phone_number,verified_name,whatsapp_business_account`);
+    waba = phone && phone.whatsapp_business_account && phone.whatsapp_business_account.id;
+  }
+  if (!waba) return { error: { message: 'WHATSAPP_WABA_ID missing' } };
+  return waGraph(`/${waba}/subscribed_apps`, { method: 'POST' });
+}
+
 app.post('/v1/conversational-components', async (req, res) => {
   const body = engine.conversationalAutomationConfig();
   if (DRY_RUN === 'true' || !WHATSAPP_TOKEN) return res.json(envelope({ dry_run: true, body }));
@@ -508,7 +539,31 @@ app.post('/v1/conversational-components', async (req, res) => {
     headers: { Authorization: `Bearer ${WHATSAPP_TOKEN}`, 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   });
-  res.status(r.ok ? 200 : 400).json(await r.json());
+  const json = await r.json();
+  const subscribed = await subscribeWhatsApp();
+  if (subscribed && subscribed.error) console.error('whatsapp waba subscribe failed', subscribed);
+  else console.log('whatsapp waba subscribed', subscribed);
+  json.subscribed = subscribed;
+  res.status(r.ok ? 200 : 400).json(json);
+});
+
+/* Phone number + WABA subscription — no token in the response. */
+app.get('/v1/whatsapp-status', async (req, res) => {
+  if (DRY_RUN === 'true' || !WHATSAPP_TOKEN) {
+    return res.json(envelope({ dry_run: true, phone: null, waba: WHATSAPP_WABA_ID || null }));
+  }
+  const phone = PHONE_NUMBER_ID
+    ? await waGraph(`/${PHONE_NUMBER_ID}?fields=id,display_phone_number,verified_name,quality_rating,whatsapp_business_account`)
+    : { error: { message: 'PHONE_NUMBER_ID missing' } };
+  const wabaId = WHATSAPP_WABA_ID
+    || (phone && phone.whatsapp_business_account && phone.whatsapp_business_account.id);
+  const subscribed_apps = wabaId ? await waGraph(`/${wabaId}/subscribed_apps`) : { error: { message: 'WABA id unknown' } };
+  res.json(envelope({
+    phone,
+    waba_id: wabaId || null,
+    subscribed_apps,
+    landing_number: process.env.WA_NUMBER || null
+  }));
 });
 
 app.post('/v1/nlu/classify', (req, res) => res.json(envelope(classify(req.body.text))));
