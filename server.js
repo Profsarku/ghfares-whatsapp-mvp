@@ -524,7 +524,7 @@ async function waGraph(path, { method = 'GET', body } = {}) {
 async function subscribeWhatsApp() {
   let waba = WHATSAPP_WABA_ID;
   if (!waba && PHONE_NUMBER_ID) {
-    const phone = await waGraph(`/${PHONE_NUMBER_ID}?fields=id,display_phone_number,verified_name,whatsapp_business_account`);
+    const phone = await waGraph(`/${PHONE_NUMBER_ID}?fields=id,display_phone_number,verified_name,quality_rating`);
     waba = phone && phone.whatsapp_business_account && phone.whatsapp_business_account.id;
   }
   if (!waba) return { error: { message: 'WHATSAPP_WABA_ID missing' } };
@@ -553,10 +553,9 @@ app.get('/v1/whatsapp-status', async (req, res) => {
     return res.json(envelope({ dry_run: true, phone: null, waba: WHATSAPP_WABA_ID || null }));
   }
   const phone = PHONE_NUMBER_ID
-    ? await waGraph(`/${PHONE_NUMBER_ID}?fields=id,display_phone_number,verified_name,quality_rating,whatsapp_business_account`)
+    ? await waGraph(`/${PHONE_NUMBER_ID}?fields=id,display_phone_number,verified_name,quality_rating`)
     : { error: { message: 'PHONE_NUMBER_ID missing' } };
-  const wabaId = WHATSAPP_WABA_ID
-    || (phone && phone.whatsapp_business_account && phone.whatsapp_business_account.id);
+  const wabaId = WHATSAPP_WABA_ID || null;
   const subscribed_apps = wabaId ? await waGraph(`/${wabaId}/subscribed_apps`) : { error: { message: 'WABA id unknown' } };
   res.json(envelope({
     phone,
