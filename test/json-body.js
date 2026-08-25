@@ -118,6 +118,11 @@ async function req(server, path, opts = {}) {
     pass('GET /  beacon uses text/plain');
   else bad('GET / beacon type', 'landing missing text/plain sendBeacon');
 
+  if (home.text.includes("addEventListener('pageshow'") && home.text.includes('id="chooseAgain"')
+      && !/localStorage\.getItem\('ghfares\.channel'\)/.test(home.text))
+    pass('GET /  chooser resets after handoff');
+  else bad('GET / reset', 'spinner can stick on a second WhatsApp connect');
+
   const privacy = await req(server, '/privacy');
   if (privacy.status === 200 && /Privacy Policy/i.test(privacy.text)
       && /DELETE MY DATA/i.test(privacy.text)

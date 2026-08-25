@@ -110,16 +110,12 @@ h1{font-size:23px;font-weight:600;letter-spacing:-.02em;margin:14px 0 7px;line-h
       <span class="t"><b>Messenger</b><small>If you prefer Facebook</small></span>
       <span class="go">›</span>
     </a>
-
-    <label class="remember">
-      <input type="checkbox" id="remember" checked>
-      Remember my choice next time
-    </label>
   </div>
 
   <div class="redirecting" id="redirecting">
     <div class="spinner"></div>
     <p id="redirMsg">Opening the app on your phone…</p>
+    <a href="/" id="chooseAgain">Choose again</a>
   </div>
   <div class="phoneonly" id="phoneonly">
     <p>Scan the QR with your phone. WhatsApp and Messenger open in the <b>phone app</b> — never in a browser.</p>
@@ -219,12 +215,14 @@ function logEntry(channel) {
   } catch (e) {}
 }
 
+function showChooser() {
+  $('#chooser').style.display = '';
+  $('#redirecting').classList.remove('show');
+  $('#phoneonly').classList.remove('show');
+}
+
 function open(channel, ev) {
   logEntry(channel);
-  try {
-    if ($('#remember').checked) localStorage.setItem('ghfares.channel', channel);
-    else localStorage.removeItem('ghfares.channel');
-  } catch (e) {}
 
   /* Desktop: never follow a link — wa.me / m.me become websites. Stay here. */
   if (!isPhone()) {
@@ -235,8 +233,11 @@ function open(channel, ev) {
     return;
   }
 
-  /* Phone: the <a href> is whatsapp:// or fb-messenger:// (Android intent).
-     Do not preventDefault and do not delay — the OS must open the app. */
+  /* Phone: refresh the app-scheme href on every tap so a second connect
+     is a new handoff, not a stuck spinner from bfcache / a saved channel. */
+  if (channel === 'wa') $('#goWA').href = waLink();
+  else $('#goFB').href = fbLink();
+
   $('#chooser').style.display = 'none';
   $('#phoneonly').classList.remove('show');
   $('#redirecting').classList.add('show');
@@ -247,15 +248,13 @@ $('#goWA').href = waLink();
 $('#goFB').href = fbLink();
 $('#goWA').addEventListener('click', e => open('wa', e));
 $('#goFB').addEventListener('click', e => open('fb', e));
+$('#chooseAgain').addEventListener('click', e => { e.preventDefault(); showChooser(); });
 
-/* Returning visitor on a phone: open the app. On desktop, stay on the QR. */
-try {
-  const saved = localStorage.getItem('ghfares.channel');
-  if (saved && !params.has('choose') && isPhone()) {
-    open(saved);
-    location.href = saved === 'wa' ? waLink() : fbLink();
-  }
-} catch (e) {}
+window.addEventListener('pageshow', showChooser);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') showChooser();
+});
+try { localStorage.removeItem('ghfares.channel'); } catch (e) {}
 
 /* QR is injected by the server as a real SVG (quiet zone + integer modules). */
 if (!$('#qr').querySelector('svg')) {

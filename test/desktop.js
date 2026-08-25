@@ -57,6 +57,11 @@ async function decodePng(buf) {
     pass('GET /  landing beacon is text/plain');
   else bad('GET / beacon', 'expected text/plain sendBeacon');
 
+  if (home.body.includes("addEventListener('pageshow'") && home.body.includes('chooseAgain')
+      && !/localStorage\.getItem\('ghfares\.channel'\)/.test(home.body))
+    pass('GET /  chooser resets after WhatsApp handoff');
+  else bad('GET / reset', 'missing pageshow reset or still auto-opens saved channel');
+
   const cat = await json('/v1');
   if (cat.status === 200 && cat.body.ask === 'POST /v1/ask')
     pass('GET /v1  API catalogue');
