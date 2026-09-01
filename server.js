@@ -39,6 +39,7 @@ const {
   WHATSAPP_TOKEN = '',
   PHONE_NUMBER_ID = '',
   WHATSAPP_WABA_ID = '',
+  WHATSAPP_APP_ID = '1048759324622035',
   APP_SECRET = '',
   GRAPH_VERSION = 'v21.0',
   DRY_RUN = 'true',
@@ -71,9 +72,23 @@ app.get('/v1/webhook', (req, res) => {
   res.sendStatus(403);
 });
 
+/* Meta retries a webhook if we take more than a few seconds to 200.
+   Remember message ids so a retry does not send the same reply twice. */
+const recentWaIds = new Map();
+function waAlreadyHandled(id) {
+  if (!id) return false;
+  const now = Date.now();
+  if (recentWaIds.has(id)) return true;
+  recentWaIds.set(id, now);
+  if (recentWaIds.size > 500) {
+    for (const [k, t] of recentWaIds) if (now - t > 15 * 60 * 1000) recentWaIds.delete(k);
+  }
+  return false;
+}
+
 app.post('/v1/webhook', async (req, res) => {
   // Signature check — Meta signs every payload; reject anything unsigned in prod.
-  // APP_SECRET must be from the same app that owns the WhatsApp product.
+  // APP_SECRET must be from Roader-Index (1048759324622035).
   if (APP_SECRET) {
     const sig = req.get('x-hub-signature-256') || '';
     const expected = 'sha256=' + crypto.createHmac('sha256', APP_SECRET).update(req.rawBody || Buffer.from('')).digest('hex');
@@ -83,13 +98,18 @@ app.post('/v1/webhook', async (req, res) => {
     }
   }
 
+  const entry = req.body.entry?.[0]?.changes?.[0]?.value;
+  const msg = entry?.messages?.[0];
+  if (!msg) {
+    console.log('whatsapp webhook hit', { object: req.body && req.body.object, has_message: false });
+    return res.sendStatus(200);
+  }
+  if (waAlreadyHandled(msg.id)) {
+    console.log('whatsapp duplicate skipped', { id: msg.id, type: msg.type });
+    return res.sendStatus(200);
+  }
+
   try {
-    const entry = req.body.entry?.[0]?.changes?.[0]?.value;
-    const msg = entry?.messages?.[0];
-    if (!msg) {
-      console.log('whatsapp webhook hit', { object: req.body && req.body.object, has_message: false });
-      return res.sendStatus(200);
-    }
     console.log('whatsapp in', { from: msg.from, type: msg.type });
 
     const from = msg.from;
@@ -176,7 +196,7 @@ function qrSvg(url) {
 async function landing(req, res) {
   const station = String(req.query.s || '').replace(/[^a-z0-9-]/gi, '');
   const origin = shareOrigin(req);
-  const url = `${origin}/`;
+  const url = station ? `${origin}/go?s=${station}` : `${origin}/go`;
   let page = fsp.readFileSync(path.join(__dirname, 'public', 'go.html'), 'utf8');
   const svg = await qrSvg(url);
 
@@ -197,8 +217,19 @@ async function landing(req, res) {
   entryLog.push({ type: 'view', station: station || null, at: new Date().toISOString() });
   res.set('Cache-Control', 'no-store').send(page);
 }
-app.get('/', landing);
+function sendPublic(res, file, type) {
+  if (type) res.type(type);
+  res.sendFile(path.join(__dirname, 'public', file));
+}
+
+app.get('/', (req, res) => {
+  if (req.query.s) return landing(req, res);
+  sendPublic(res, 'index.html', 'html');
+});
 app.get('/go', landing);
+app.get('/support', (req, res) => sendPublic(res, 'support.html', 'html'));
+app.get('/site.css', (req, res) => sendPublic(res, 'site.css', 'css'));
+app.get('/site.js', (req, res) => sendPublic(res, 'site.js', 'javascript'));
 
 /* Channel chosen — beacon from the landing page. Aggregate only. */
 app.post('/v1/entry', (req, res) => {
@@ -521,6 +552,12 @@ async function waGraph(path, { method = 'GET', body } = {}) {
   return r.json();
 }
 
+function subscribedAppIds(payload) {
+  return ((payload && payload.data) || []).map(row =>
+    (row.whatsapp_business_api_data && row.whatsapp_business_api_data.id) || row.id
+  ).filter(Boolean);
+}
+
 async function subscribeWhatsApp() {
   let waba = WHATSAPP_WABA_ID;
   if (!waba && PHONE_NUMBER_ID) {
@@ -528,7 +565,15 @@ async function subscribeWhatsApp() {
     waba = phone && phone.whatsapp_business_account && phone.whatsapp_business_account.id;
   }
   if (!waba) return { error: { message: 'WHATSAPP_WABA_ID missing' } };
-  return waGraph(`/${waba}/subscribed_apps`, { method: 'POST' });
+  const posted = await waGraph(`/${waba}/subscribed_apps`, { method: 'POST' });
+  const listed = await waGraph(`/${waba}/subscribed_apps`);
+  const apps = subscribedAppIds(listed);
+  return {
+    ...posted,
+    app_id: WHATSAPP_APP_ID,
+    subscribed_apps: listed,
+    subscribed_to_app: apps.includes(WHATSAPP_APP_ID)
+  };
 }
 
 app.post('/v1/conversational-components', async (req, res) => {
@@ -550,16 +595,24 @@ app.post('/v1/conversational-components', async (req, res) => {
 /* Phone number + WABA subscription — no token in the response. */
 app.get('/v1/whatsapp-status', async (req, res) => {
   if (DRY_RUN === 'true' || !WHATSAPP_TOKEN) {
-    return res.json(envelope({ dry_run: true, phone: null, waba: WHATSAPP_WABA_ID || null }));
+    return res.json(envelope({
+      dry_run: true,
+      phone: null,
+      waba: WHATSAPP_WABA_ID || null,
+      app_id: WHATSAPP_APP_ID
+    }));
   }
   const phone = PHONE_NUMBER_ID
     ? await waGraph(`/${PHONE_NUMBER_ID}?fields=id,display_phone_number,verified_name,quality_rating`)
     : { error: { message: 'PHONE_NUMBER_ID missing' } };
   const wabaId = WHATSAPP_WABA_ID || null;
   const subscribed_apps = wabaId ? await waGraph(`/${wabaId}/subscribed_apps`) : { error: { message: 'WABA id unknown' } };
+  const apps = subscribedAppIds(subscribed_apps);
   res.json(envelope({
     phone,
     waba_id: wabaId || null,
+    app_id: WHATSAPP_APP_ID,
+    subscribed_to_app: apps.includes(WHATSAPP_APP_ID),
     subscribed_apps,
     landing_number: process.env.WA_NUMBER || null
   }));

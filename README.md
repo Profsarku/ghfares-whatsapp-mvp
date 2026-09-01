@@ -18,9 +18,9 @@ node test/demo.js          # CLI conversation walkthrough
 node test/demo.js --json   # with the exact Cloud API payloads
 ```
 
-**http://localhost:3000** is the rider landing page — pick WhatsApp or Messenger,
-or scan the QR. The conversation then happens in the phone app (which calls
-`POST /v1/ask` on our side). The API catalogue is **http://localhost:3000/v1**.
+**http://localhost:3000** is the public site (services). **http://localhost:3000/go**
+opens WhatsApp or Messenger on the phone — never a website chat. **http://localhost:3000/support**
+is help and sharing. The API catalogue is **http://localhost:3000/v1**.
 
 ```bash
 curl -s -X POST http://localhost:3000/v1/ask \
@@ -100,7 +100,8 @@ test/demo.js              CLI walkthrough of the same engine
 export VERIFY_TOKEN=ghfares-verify
 export WHATSAPP_TOKEN=EAAG...
 export PHONE_NUMBER_ID=123456789
-export APP_SECRET=...        # enables signature verification
+export WHATSAPP_APP_ID=1048759324622035   # Roader-Index
+export APP_SECRET=...                     # App secret from that same app
 export DRY_RUN=false
 ```
 

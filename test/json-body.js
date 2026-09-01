@@ -4,10 +4,14 @@
  */
 process.env.DRY_RUN = 'true';
 delete process.env.FB_PAGE_TOKEN;
+delete process.env.APP_SECRET;
+delete process.env.WHATSAPP_TOKEN;
 
 const http = require('http');
 const app = require('../server');
 const fb = require('../lib/messenger');
+const engine = require('../lib/engine');
+const caps = require('../lib/capabilities');
 
 const fail = [];
 const ok = [];
@@ -113,15 +117,25 @@ async function req(server, path, opts = {}) {
     pass('GET /v1/messenger-profile  ice breakers');
   else bad('GET messenger-profile', want.status);
 
-  const home = await req(server, '/');
+  const site = await req(server, '/');
+  if (site.status === 200 && /What Ghanaians/i.test(site.text) && site.text.includes('id="services"'))
+    pass('GET /  services landing');
+  else bad('GET / landing', 'missing services page');
+
+  const support = await req(server, '/support');
+  if (support.status === 200 && /DELETE MY DATA/i.test(support.text) && /id="social"/i.test(support.text))
+    pass('GET /support');
+  else bad('GET /support', support.status);
+
+  const home = await req(server, '/go');
   if (home.status === 200 && home.text.includes("type: 'text/plain'"))
-    pass('GET /  beacon uses text/plain');
-  else bad('GET / beacon type', 'landing missing text/plain sendBeacon');
+    pass('GET /go  beacon uses text/plain');
+  else bad('GET /go beacon type', 'chooser missing text/plain sendBeacon');
 
   if (home.text.includes("addEventListener('pageshow'") && home.text.includes('id="chooseAgain"')
       && !/localStorage\.getItem\('ghfares\.channel'\)/.test(home.text))
-    pass('GET /  chooser resets after handoff');
-  else bad('GET / reset', 'spinner can stick on a second WhatsApp connect');
+    pass('GET /go  chooser resets after handoff');
+  else bad('GET /go reset', 'spinner can stick on a second WhatsApp connect');
 
   const privacy = await req(server, '/privacy');
   if (privacy.status === 200 && /Privacy Policy/i.test(privacy.text)
@@ -147,7 +161,8 @@ async function req(server, path, opts = {}) {
   else bad('DELETE MY DATA', String(wipeBody).slice(0, 120));
 
   const waStatus = await req(server, '/v1/whatsapp-status');
-  if (waStatus.status === 200 && waStatus.body && waStatus.body.data && waStatus.body.data.dry_run)
+  if (waStatus.status === 200 && waStatus.body && waStatus.body.data && waStatus.body.data.dry_run
+      && waStatus.body.data.app_id === '1048759324622035')
     pass('GET /v1/whatsapp-status  dry run');
   else bad('GET /v1/whatsapp-status', waStatus.status);
 
@@ -155,6 +170,56 @@ async function req(server, path, opts = {}) {
   if (cc.status === 200 && cc.body && cc.body.data && cc.body.data.prompts && cc.body.data.prompts.length === 4)
     pass('GET /v1/conversational-components');
   else bad('GET conversational-components', cc.status);
+
+  const waHi = id => ({
+    object: 'whatsapp_business_account',
+    entry: [{ changes: [{ value: { messages: [{ id, from: '233201234567', type: 'text', text: { body: 'hi' } }] } }] }]
+  });
+  const firstWa = await req(server, '/v1/webhook', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(waHi('wamid.unit-dup-1'))
+  });
+  const againWa = await req(server, '/v1/webhook', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(waHi('wamid.unit-dup-1'))
+  });
+  if (firstWa.status === 200 && againWa.status === 200)
+    pass('POST /v1/webhook  duplicate wamid acked');
+  else bad('POST /v1/webhook duplicate', firstWa.status + ' ' + againWa.status);
+
+  const hash = 'unit-welcome-once';
+  caps.forget(hash);
+  const opened = engine.handle({ from: '233201234567', hash, type: 'request_welcome' });
+  const typedHi = engine.handle({ from: '233201234567', hash, text: 'Hi' });
+  const openIds = ((opened[0] && opened[0].interactive && opened[0].interactive.action.sections) || [])
+    .flatMap(s => s.rows.map(r => r.id));
+  if (opened[0] && opened[0].type === 'interactive' && openIds.includes('addon:fuel')
+      && typedHi[0] && typedHi[0].type === 'text' && /Choose|road condition/i.test(typedHi[0].text && typedHi[0].text.body))
+    pass('welcome is add-on list  hi does not repeat it');
+  else bad('welcome list', (opened[0] && opened[0].type) + ' ' + (typedHi[0] && typedHi[0].type));
+
+  const roadAsk = engine.handle({ from: '233201234567', hash: 'unit-roadq', text: 'what is the road condition right now' });
+  if (/motorway|blocked|incident|Nothing reported/i.test(JSON.stringify(roadAsk)))
+    pass('what is the road condition right now');
+  else bad('road question', JSON.stringify(roadAsk).slice(0, 180));
+
+  caps.forget('unit-slash');
+  if (engine.expandCommand('/addroads gg') === 'add roads' && engine.expandCommand('/fare Tema to Accra') === 'Tema to Accra')
+    pass('expandCommand  /fare keeps query, /addroads ignores junk');
+  else bad('expandCommand', engine.expandCommand('/addroads gg') + ' | ' + engine.expandCommand('/fare Tema to Accra'));
+
+  const slashFare = engine.handle({ from: '233201234567', hash: 'unit-slash', text: '/fare Tema to Accra' });
+  const fareTxt = JSON.stringify(slashFare);
+  if (/₵|11|Tema|Accra/i.test(fareTxt) && !/do not have/i.test(fareTxt))
+    pass('/fare Tema to Accra  returns a fare');
+  else bad('/fare Tema to Accra', fareTxt.slice(0, 180));
+
+  const slashAdd = engine.handle({ from: '233201234567', hash: 'unit-slash', text: '/addroads gg' });
+  if (/Road alerts added/i.test(JSON.stringify(slashAdd)))
+    pass('/addroads  adds road alerts');
+  else bad('/addroads', JSON.stringify(slashAdd).slice(0, 180));
 
   server.close();
   console.log('\n' + ok.length + ' passed, ' + fail.length + ' failed');

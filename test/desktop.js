@@ -32,35 +32,48 @@ async function decodePng(buf) {
 (async () => {
   console.log('GH Fares desktop tests  ' + BASE + '\n');
 
-  const home = await text('/');
-  if (home.status === 200 && home.body.includes('Continue with') && home.body.includes('id="goWA"') && home.body.includes('id="goFB"'))
-    pass('GET /  chooser with WhatsApp and Messenger');
-  else bad('GET /', 'missing chooser ' + home.status);
-
-  if (home.body.includes('<svg') && home.body.includes('id="qr"'))
-    pass('GET /  QR SVG present on the page');
-  else bad('GET / QR', 'no svg in #qr');
-
-  if (!/https?:\/\/(wa\.me|api\.whatsapp|web\.whatsapp|m\.me|messenger\.com)/i.test(home.body))
-    pass('GET /  no WhatsApp/Messenger website URLs');
+  const site = await text('/');
+  if (site.status === 200 && /What Ghanaians/i.test(site.body) && site.body.includes('id="services"') && site.body.includes('href="/go"'))
+    pass('GET /  services landing');
+  else bad('GET /', 'missing services landing ' + site.status);
+  if (!/https?:\/\/(wa\.me|api\.whatsapp|web\.whatsapp|m\.me)\b/i.test(site.body))
+    pass('GET /  no WhatsApp website chat URLs');
   else bad('GET / web urls', 'page contains wa.me or m.me');
 
+  const support = await text('/support');
+  if (support.status === 200 && /Support/i.test(support.body) && /DELETE MY DATA/i.test(support.body) && /id="social"/i.test(support.body))
+    pass('GET /support  help and social');
+  else bad('GET /support', support.status);
+
+  const home = await text('/go');
+  if (home.status === 200 && home.body.includes('Continue with') && home.body.includes('id="goWA"') && home.body.includes('id="goFB"'))
+    pass('GET /go  chooser with WhatsApp and Messenger');
+  else bad('GET /go', 'missing chooser ' + home.status);
+
+  if (home.body.includes('<svg') && home.body.includes('id="qr"'))
+    pass('GET /go  QR SVG present on the page');
+  else bad('GET /go QR', 'no svg in #qr');
+
+  if (!/https?:\/\/(wa\.me|api\.whatsapp|web\.whatsapp|m\.me|messenger\.com)/i.test(home.body))
+    pass('GET /go  no WhatsApp/Messenger website URLs');
+  else bad('GET /go web urls', 'page contains wa.me or m.me');
+
   if (home.body.includes('whatsapp://') || home.body.includes('intent://send?phone='))
-    pass('GET /  WhatsApp uses an app scheme');
-  else bad('GET / WA scheme', 'no whatsapp:// or intent');
+    pass('GET /go  WhatsApp uses an app scheme');
+  else bad('GET /go WA scheme', 'no whatsapp:// or intent');
 
   if (home.body.includes('fb-messenger://') || home.body.includes('scheme=fb-messenger'))
-    pass('GET /  Messenger uses an app scheme');
-  else bad('GET / FB scheme', 'no fb-messenger scheme');
+    pass('GET /go  Messenger uses an app scheme');
+  else bad('GET /go FB scheme', 'no fb-messenger scheme');
 
   if (home.body.includes("type: 'text/plain'"))
-    pass('GET /  landing beacon is text/plain');
-  else bad('GET / beacon', 'expected text/plain sendBeacon');
+    pass('GET /go  landing beacon is text/plain');
+  else bad('GET /go beacon', 'expected text/plain sendBeacon');
 
   if (home.body.includes("addEventListener('pageshow'") && home.body.includes('chooseAgain')
       && !/localStorage\.getItem\('ghfares\.channel'\)/.test(home.body))
-    pass('GET /  chooser resets after WhatsApp handoff');
-  else bad('GET / reset', 'missing pageshow reset or still auto-opens saved channel');
+    pass('GET /go  chooser resets after WhatsApp handoff');
+  else bad('GET /go reset', 'missing pageshow reset or still auto-opens saved channel');
 
   const cat = await json('/v1');
   if (cat.status === 200 && cat.body.ask === 'POST /v1/ask')
@@ -74,9 +87,29 @@ async function decodePng(buf) {
   });
   const rows = (hi.body && hi.body.data && hi.body.data.replies && hi.body.data.replies[0] && hi.body.data.replies[0].rows) || [];
   const ids = rows.map(r => r.id);
-  if (hi.status === 200 && ids.includes('addon:fuel') && ids.includes('ask:fare'))
+  if (hi.status === 200 && ids.includes('addon:fuel') && ids.includes('ask:fare') && ids.includes('ask:road'))
     pass('POST /v1/ask hi  add-on menu first', ids.length + ' rows');
   else bad('POST /v1/ask hi', JSON.stringify(hi.body && hi.body.data && hi.body.data.replies));
+
+  const roadQ = await json('/v1/ask', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ session: 'desktop-roadq', text: 'what is the road condition right now' })
+  });
+  const roadBody = JSON.stringify(roadQ.body && roadQ.body.data && roadQ.body.data.replies);
+  if (roadQ.status === 200 && /road|motorway|blocked|incident|nothing reported/i.test(roadBody))
+    pass('POST /v1/ask  what is the road condition right now');
+  else bad('POST /v1/ask road question', roadBody.slice(0, 180));
+
+  const slash = await json('/v1/ask', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ session: 'desktop-slash', text: '/fare Tema to Accra' })
+  });
+  const slashBody = JSON.stringify(slash.body && slash.body.data && slash.body.data.replies);
+  if (slash.status === 200 && /Tema|Accra|₵/i.test(slashBody) && !/do not have/i.test(slashBody))
+    pass('POST /v1/ask  /fare Tema to Accra');
+  else bad('POST /v1/ask /fare', slashBody.slice(0, 180));
 
   const fare = await json('/v1/ask', {
     method: 'POST',
@@ -204,10 +237,12 @@ async function decodePng(buf) {
   else bad('DELETE MY DATA', String(erasedBody).slice(0, 120));
 
   const wa = await json('/v1/whatsapp-status');
-  if (wa.status === 200 && wa.body && wa.body.data)
-    pass('GET /v1/whatsapp-status', wa.body.data.landing_number
-      || (wa.body.data.phone && wa.body.data.phone.display_phone_number)
-      || (wa.body.data.dry_run ? 'dry_run' : 'ok'));
+  const wad = wa.body && wa.body.data;
+  if (wa.status === 200 && wad && (wad.app_id === '1048759324622035' || wad.landing_number || wad.phone || wad.dry_run))
+    pass('GET /v1/whatsapp-status', wad.landing_number
+      || (wad.phone && wad.phone.display_phone_number)
+      || wad.app_id
+      || (wad.dry_run ? 'dry_run' : 'ok'));
   else bad('GET /v1/whatsapp-status', wa.status);
 
   console.log('\n' + ok.length + ' passed, ' + fail.length + ' failed');
