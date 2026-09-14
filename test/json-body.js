@@ -3,6 +3,13 @@
  * Does not call Meta. Run: node test/json-body.js
  */
 process.env.DRY_RUN = 'true';
+process.env.NLU_PROVIDER = process.env.NLU_PROVIDER || 'off';
+process.env.DATABASE_URL = '';
+process.env.DATABASE_URL_UNPOOLED = '';
+process.env.NEON_DATABASE_URL = '';
+process.env.POSTGRES_URL = '';
+process.env.POSTGRES_URL_NON_POOLING = '';
+process.env.POSTGRES_PRISMA_URL = '';
 delete process.env.FB_PAGE_TOKEN;
 delete process.env.APP_SECRET;
 delete process.env.WHATSAPP_TOKEN;
@@ -12,6 +19,7 @@ const app = require('../server');
 const fb = require('../lib/messenger');
 const engine = require('../lib/engine');
 const caps = require('../lib/capabilities');
+const { classify } = require('../lib/api');
 
 const fail = [];
 const ok = [];
@@ -132,6 +140,38 @@ async function req(server, path, opts = {}) {
     pass('GET /go  beacon uses text/plain');
   else bad('GET /go beacon type', 'chooser missing text/plain sendBeacon');
 
+  if (home.text.includes('id="signupFirst"') && home.text.includes('id="signupPassword"')
+      && home.text.includes('id="signupStations"') && home.text.includes('id="signupFrom"')
+      && home.text.includes('id="goAccess"'))
+    pass('GET /go  signup before QR');
+  else bad('GET /go signup gate', 'missing signup fields');
+
+  const signed = await req(server, '/v1/signup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      first_name: 'Ama', last_name: 'Unit', password: 'testpass1',
+      stations_often: 'Kaneshie, Circle', popular_route: 'Kaneshie to Bubuashie'
+    })
+  });
+  if (signed.status === 201 && signed.body && signed.body.data && signed.body.data.first_name === 'Ama'
+      && /ghfares_web=/.test(String(signed.headers && signed.headers.get && '')))
+    pass('POST /v1/signup');
+  else if (signed.status === 201 && signed.body && signed.body.data && signed.body.data.first_name === 'Ama')
+    pass('POST /v1/signup');
+  else bad('POST /v1/signup', signed.status + ' ' + JSON.stringify(signed.body));
+
+  const again = await req(server, '/v1/signup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      first_name: 'Ama', last_name: 'Unit', password: 'testpass1',
+      stations_often: 'Kaneshie', popular_route: 'Kaneshie to Circle'
+    })
+  });
+  if (again.status === 409) pass('POST /v1/signup  duplicate name');
+  else bad('POST /v1/signup duplicate', again.status);
+
   if (home.text.includes("addEventListener('pageshow'") && home.text.includes('id="chooseAgain"')
       && !/localStorage\.getItem\('ghfares\.channel'\)/.test(home.text))
     pass('GET /go  chooser resets after handoff');
@@ -191,8 +231,8 @@ async function req(server, path, opts = {}) {
 
   const hash = 'unit-welcome-once';
   caps.forget(hash);
-  const opened = engine.handle({ from: '233201234567', hash, type: 'request_welcome' });
-  const typedHi = engine.handle({ from: '233201234567', hash, text: 'Hi' });
+  const opened = await engine.handle({ from: '233201234567', hash, type: 'request_welcome' });
+  const typedHi = await engine.handle({ from: '233201234567', hash, text: 'Hi' });
   const openIds = ((opened[0] && opened[0].interactive && opened[0].interactive.action.sections) || [])
     .flatMap(s => s.rows.map(r => r.id));
   if (opened[0] && opened[0].type === 'interactive' && openIds.includes('addon:fuel')
@@ -200,7 +240,7 @@ async function req(server, path, opts = {}) {
     pass('welcome is add-on list  hi does not repeat it');
   else bad('welcome list', (opened[0] && opened[0].type) + ' ' + (typedHi[0] && typedHi[0].type));
 
-  const roadAsk = engine.handle({ from: '233201234567', hash: 'unit-roadq', text: 'what is the road condition right now' });
+  const roadAsk = await engine.handle({ from: '233201234567', hash: 'unit-roadq', text: 'what is the road condition right now' });
   if (/motorway|blocked|incident|Nothing reported/i.test(JSON.stringify(roadAsk)))
     pass('what is the road condition right now');
   else bad('road question', JSON.stringify(roadAsk).slice(0, 180));
@@ -210,16 +250,85 @@ async function req(server, path, opts = {}) {
     pass('expandCommand  /fare keeps query, /addroads ignores junk');
   else bad('expandCommand', engine.expandCommand('/addroads gg') + ' | ' + engine.expandCommand('/fare Tema to Accra'));
 
-  const slashFare = engine.handle({ from: '233201234567', hash: 'unit-slash', text: '/fare Tema to Accra' });
+  const slashFare = await engine.handle({ from: '233201234567', hash: 'unit-slash', text: '/fare Tema to Accra' });
   const fareTxt = JSON.stringify(slashFare);
   if (/₵|11|Tema|Accra/i.test(fareTxt) && !/do not have/i.test(fareTxt))
     pass('/fare Tema to Accra  returns a fare');
   else bad('/fare Tema to Accra', fareTxt.slice(0, 180));
 
-  const slashAdd = engine.handle({ from: '233201234567', hash: 'unit-slash', text: '/addroads gg' });
+  const slashAdd = await engine.handle({ from: '233201234567', hash: 'unit-slash', text: '/addroads gg' });
   if (/Road alerts added/i.test(JSON.stringify(slashAdd)))
     pass('/addroads  adds road alerts');
   else bad('/addroads', JSON.stringify(slashAdd).slice(0, 180));
+
+  caps.forget('unit-photo');
+  const pic = await engine.handle({
+    from: '233201234567',
+    hash: 'unit-photo',
+    type: 'image',
+    image: { mime: 'image/jpeg', bytes: Buffer.from('fakejpg'), caption: 'tema motorway blocked' }
+  });
+  const picTxt = JSON.stringify(pic);
+  if (/Photo saved/i.test(picTxt) && /motorway/i.test(picTxt) && /blocked/i.test(picTxt) && /ADD ROADS/i.test(picTxt))
+    pass('WhatsApp road photo  saved and logged');
+  else bad('WhatsApp road photo', picTxt.slice(0, 220));
+
+  const noPic = await engine.handle({
+    from: '233201234567',
+    hash: 'unit-photo-miss',
+    type: 'image',
+    image: { mime: 'image/jpeg', caption: 'tema motorway blocked' }
+  });
+  if (/could not pull that photo/i.test(JSON.stringify(noPic)))
+    pass('WhatsApp road photo  missing bytes');
+  else bad('WhatsApp road photo missing', JSON.stringify(noPic).slice(0, 180));
+
+  const waImg = {
+    object: 'whatsapp_business_account',
+    entry: [{ changes: [{ value: { messages: [{
+      id: 'wamid.unit-img-1',
+      from: '233201234567',
+      type: 'image',
+      image: { id: 'MEDIA123', mime_type: 'image/jpeg', caption: 'tema motorway blocked' }
+    }] } }] }]
+  };
+  const imgHook = await req(server, '/v1/webhook', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(waImg)
+  });
+  if (imgHook.status === 200) pass('POST /v1/webhook  image acked');
+  else bad('POST /v1/webhook image', imgHook.status);
+
+  const nluAdd = await classify('switch on petrol alerts');
+  if (nluAdd.intent === 'addon_add' && /fuel/i.test(String(nluAdd.arg || '')))
+    pass('NLU  switch on petrol alerts → add fuel');
+  else bad('NLU addon paraphrase', JSON.stringify(nluAdd));
+
+  const nluRoad = await classify('any wahala on the highway');
+  if (nluRoad.intent === 'road')
+    pass('NLU  wahala on the highway → road');
+  else bad('NLU road paraphrase', JSON.stringify(nluRoad));
+
+  const nluFare = await classify('kaneshie to bubuashie');
+  if (nluFare.intent === 'fare' && nluFare.via === 'regex' && nluFare.places.length >= 2)
+    pass('NLU  regex still owns kaneshie to bubuashie');
+  else bad('NLU regex fast path', JSON.stringify(nluFare));
+
+  const nluTurn = await engine.handle({ from: '233201234567', hash: 'unit-nlu', text: 'turn on road updates' });
+  if (/Road alerts added/i.test(JSON.stringify(nluTurn)))
+    pass('NLU  turn on road updates adds the add-on');
+  else bad('NLU addon turn', JSON.stringify(nluTurn).slice(0, 180));
+
+  const catalog = require('../lib/db/catalog');
+  if (catalog.NAMES.length === 21 && catalog.NAMES.includes('auth') && catalog.NAMES.includes('report_road_condition'))
+    pass('neon catalog  auth + report_road_condition');
+  else bad('neon catalog', catalog.NAMES.join(','));
+
+  const dbHealth = await req(server, '/v1/health/db');
+  if (dbHealth.status === 200 && dbHealth.body && dbHealth.body.data && dbHealth.body.data.configured === false)
+    pass('GET /v1/health/db  neon off in tests');
+  else bad('GET /v1/health/db', dbHealth.status + ' ' + JSON.stringify(dbHealth.body));
 
   server.close();
   console.log('\n' + ok.length + ' passed, ' + fail.length + ' failed');

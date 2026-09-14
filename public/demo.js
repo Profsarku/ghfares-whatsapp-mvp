@@ -28,7 +28,8 @@ function fmt(t) {
   return esc(t)
     .replace(/```([\s\S]*?)```/g, (m, c) => '<pre>' + c.replace(/^\n/, '') + '</pre>')
     .replace(/\*([^*\n]+)\*/g, '<strong>$1</strong>')
-    .replace(/_([^_\n]+)_/g, '<em>$1</em>');
+    .replace(/_([^_\n]+)_/g, '<em>$1</em>')
+    .replace(/(^|\s)(\/[a-z]+)(?=\b)/gi, '$1<u class="wacmd">$2</u>');
 }
 
 const chat = $('#chat');
@@ -42,7 +43,7 @@ function tail(side) {
 
 function bubble(html, side) {
   const row = document.createElement('div');
-  row.className = 'row ' + side;
+  row.className = 'msg ' + side;
   const ticks = side === 'out' ? TICK : '';
   row.innerHTML = `<div class="bub ${side}">${tail(side)}${html}
     <span class="time">${now()}${ticks}</span></div>`;
@@ -140,7 +141,7 @@ function fbButtons(m) {
   const p = m.message.attachment.payload;
   bubble(esc(p.text), 'in');
   const d = document.createElement('div');
-  d.className = 'row';
+  d.className = 'msg';
   d.innerHTML = `<div class="fbbtns" style="max-width:82%">${p.buttons.map((b, i) =>
     `<button data-i="${i}">${esc(b.title)}</button>`).join('')}</div>`;
   chat.appendChild(d);
@@ -154,7 +155,7 @@ function fbButtons(m) {
 function fbCarousel(m) {
   const els = m.message.attachment.payload.elements;
   const d = document.createElement('div');
-  d.className = 'row';
+  d.className = 'msg';
   d.innerHTML = `<div class="carousel" style="max-width:100%">${els.map((e, i) =>
     `<div class="card"><div class="cbody"><b>${esc(e.title)}</b>${e.subtitle ? `<small>${esc(e.subtitle)}</small>` : ''}</div>
      <button data-i="${i}">${esc(e.buttons[0].title)}</button></div>`).join('')}</div>`;
@@ -227,7 +228,7 @@ let send = async function ({ text, interactiveId, location, label, type }) {
 
   if (location) {
     const row = document.createElement('div');
-    row.className = 'row out';
+    row.className = 'msg out';
     row.innerHTML = `<div class="bub out" style="padding:3px">${tail('out')}
       <div class="locmsg"><div class="map">
         <svg viewBox="0 0 210 112"><rect width="210" height="112" fill="#1f3b30"/>
@@ -240,7 +241,7 @@ let send = async function ({ text, interactiveId, location, label, type }) {
     chat.appendChild(row);
     scrollDown();
   } else if (label || text) {
-    bubble(esc(label || text), 'out');
+    bubble(fmt(label || text), 'out');
   }
 
   busy = true;
@@ -328,9 +329,8 @@ function paintCommands(filter) {
   cmdMenu.classList.add('show');
   cmdMenu.querySelectorAll('.cmdrow').forEach(r => r.addEventListener('click', () => {
     cmdMenu.classList.remove('show');
-    $('#inp').value = '';
-    hideIceBreakers();
-    send({ text: '/' + r.dataset.c, label: '/' + r.dataset.c });
+    $('#inp').value = '/' + r.dataset.c + ' ';
+    $('#inp').focus();
   }));
 }
 $('#inp').addEventListener('input', e => {
@@ -442,7 +442,7 @@ function startWA() {
     showIceBreakers();
     if (welcomed) return;
     welcomed = true;
-    systemChip('request_welcome · add-ons and menus first');
+    systemChip('request_welcome · add-ons, or ask in your own words');
     $('#presence').textContent = 'typing…';
     try {
       const out = await turn({ type: 'request_welcome' });
@@ -459,7 +459,7 @@ function startFB() {
   systemChip('TODAY');
   bubble('<em>Approved fares, live station queues, fuel prices and road conditions across Ghana. Ask in your own words — no app, no account.</em>', 'in');
   const d = document.createElement('div');
-  d.className = 'row';
+  d.className = 'msg';
   d.innerHTML = `<div class="fbbtns" style="max-width:82%"><button id="getstarted">Get Started</button></div>`;
   chat.appendChild(d);
   scrollDown();

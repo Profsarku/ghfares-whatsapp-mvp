@@ -33,6 +33,32 @@ can develop the whole bot before touching Meta.
 
 ---
 
+## Neon (Postgres)
+
+One Neon project. A separate database for each concern — `auth`, `users`,
+`consent`, `sessions`, `fares_reports`, `report_road_condition`, `fuel`,
+`queues`, and the rest of the catalog in `lib/db/catalog.js`. Same host,
+different database name. No cross-database joins. Shared ids only (`hash`,
+`route_key`, `station_id`).
+
+This repo is wired to the **Vercel Storage → Neon** project (default database
+`verceldb`). Do not add a second Neon project in Vercel for GH Fares. Vercel
+injects `DATABASE_URL` (pooled) and `DATABASE_URL_UNPOOLED` (direct). The app
+rewrites the database name per request (`…/users`, `…/fares_reports`, …).
+`verceldb` itself is unused by the product stores.
+
+```bash
+# Local: copy the Vercel Storage connection string into .env, then:
+npm run db:setup
+```
+
+Without those env vars the API stays in-memory (tests and local dry-runs).
+With them, add-ons, consent, fare reports, and queue pings survive a Vercel
+restart. Published charts still read from `data/core.json` until those
+reference databases are loaded.
+
+---
+
 ## The add-on system
 
 WhatsApp has no extension store — you cannot install anything into someone's
@@ -78,6 +104,8 @@ lib/wa.js                 Cloud API message builders (text, buttons, list,
 lib/api.js                Classifier + the data API every reply reads from
 lib/engine.js             Conversation router; applies add-on capabilities
 lib/capabilities.js       The add-on registry and subscriber store
+lib/db/                   Neon: one Postgres database per concern
+scripts/neon-setup.js     CREATE DATABASE + apply schemas
 flows/addons-flow.json    WhatsApp Flow JSON — the add-on manager as a mini-app
 data/core.json            Stations with fares, fuel, incidents, queues, charts
 test/demo.js              CLI walkthrough of the same engine
@@ -341,15 +369,39 @@ answer a rider and be sold to an institution.
 ## The safety boundary
 
 The classifier extracts **intent and entities only**. Every number in every
-reply is looked up from the API afterwards. A model may be swapped in at the
-`via: 'model'` branch in `lib/api.js` for phrasing the regex misses — but it
-must return a station pair, never a price. The bot cannot invent a fare.
+reply is looked up from the API afterwards. Phrasing the regex misses is
+handled in `lib/nlu.js`: an open-source Llama (Ollama locally, or Groq /
+Together / vLLM with the same OpenAI-compatible API) returns
+`{ intent, places, arg }` — a station pair, never a price. The bot cannot
+invent a fare.
+
+Local default: `NLU_PROVIDER=auto` tries Ollama at `http://127.0.0.1:11434`
+(`llama3.2`). If Ollama is not running, a small example matcher still maps
+paraphrases such as *switch on petrol alerts* → add Fuel watch.
+
+```
+ollama pull llama3.2
+# then restart node server.js
+```
+
+Hosted Llama (optional):
+
+```
+NLU_PROVIDER=openai
+NLU_BASE_URL=https://api.groq.com/openai/v1
+NLU_MODEL=llama-3.1-8b-instant
+NLU_API_KEY=...
+```
+
+`POST /v1/nlu/classify` and `GET /v1/nlu/status` expose the bridge. Tests set
+`NLU_PROVIDER=off` so they stay deterministic.
 
 ---
 
 ## Before production
 
-- Replace the in-memory `subscribers` Map and `data/core.json` with Postgres
+- Keep the Vercel Storage Neon `DATABASE_URL` on Production (the app rewrites the database name per concern)
+- Load published charts into the `fares` / `charts` / `places` databases (still `data/core.json` today)
 - Load real charts: NPA fuel window and GPRTU fare chart scrapers
 - Hash MSISDNs with a secret salt (`server.js` `hashOf`) and never store the raw number
 - Rate-limit `POST /v1/reports/*` per subscriber

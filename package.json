@@ -9,12 +9,16 @@
     "demo:cli": "node test/demo.js",
     "demo:json": "node test/demo.js --json",
     "test": "node test/json-body.js",
-    "test:live": "node test/desktop.js"
+    "test:live": "node test/desktop.js",
+    "db:setup": "node scripts/neon-setup.js",
+    "db:status": "node scripts/neon-setup.js --status"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
     "express": "^4.22.2",
     "jsdom": "^30.0.1",
     "jsqr": "^1.4.0",
+    "pg": "^8.23.0",
     "pngjs": "^7.0.0",
     "qrcode": "^1.5.4"
   },

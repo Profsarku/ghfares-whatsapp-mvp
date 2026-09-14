@@ -45,16 +45,17 @@ a{color:#0b57d0}
     <li><strong>Location.</strong> Approximate coordinates, only if you choose to share your location in the chat so we can find a nearby station. We do not track you in the background.</li>
     <li><strong>Preferences.</strong> Add-ons you switch on (fuel watch, road alerts, saved route, queue watch, fare revisions, quick report), plus a saved station or daily route if you set one.</li>
     <li><strong>Reports you volunteer.</strong> Fare amounts, queue status, or road confirmations you send. We publish <em>counts</em>, never a driver name, vehicle, or number plate.</li>
+    <li><strong>Road photos.</strong> If you send a camera photo in the WhatsApp thread as a road report, we store the image (and any caption) against a one-way hash of your chat id in the road-condition database. We do not scrape your Facebook or WhatsApp camera roll.</li>
     <li><strong>Technical delivery data.</strong> Message IDs and timestamps Meta sends with the webhook so we can answer in the same thread.</li>
     <li><strong>Landing page.</strong> If you open our chooser page, we may record an aggregate count of WhatsApp vs Messenger taps. That log is not linked to your chat identity. The page may store your channel choice in your browser’s local storage if you ask it to remember.</li>
   </ul>
-  <p>We do <strong>not</strong> use Facebook Login. We do not read your friends list, photos, timeline, contacts, or payment card details. We do not sell personal data.</p>
+  <p>We do <strong>not</strong> use Facebook Login. We do not read your friends list, Facebook profile photos, timeline, contacts, or payment card details. We do not sell personal data.</p>
 
   <h2>How we use it</h2>
   <ul>
     <li>To understand your question and send a reply in WhatsApp or Messenger.</li>
     <li>To remember add-ons, a station, or a route so later messages can be shorter.</li>
-    <li>To update shared public transport information (for example a fare report or a road confirmation) as anonymous counts.</li>
+    <li>To update shared public transport information (for example a fare report, a road confirmation, or a road photo you sent) as anonymous crowd reports.</li>
     <li>To operate, secure, and debug the service, including webhook verification with Meta.</li>
   </ul>
   <p>Legal bases we rely on: your request to provide the service (you messaged us), and legitimate interests in running a public transport index. Where a location share or add-on is optional, we process it because you chose to send it.</p>
@@ -62,7 +63,7 @@ a{color:#0b57d0}
   <h2>Who we share it with</h2>
   <ul>
     <li><strong>Meta Platforms, Inc.</strong> (WhatsApp and Messenger). Meta delivers your message to us and delivers our reply to you. Their terms and privacy policies apply to those apps. We do not control Meta’s processing.</li>
-    <li><strong>Hosting.</strong> The service runs on Vercel. Webhook traffic is processed on their infrastructure in order to send a reply.</li>
+    <li><strong>Hosting.</strong> The service runs on Vercel. Webhook traffic is processed on their infrastructure in order to send a reply. Subscriber records and road photos are stored in Postgres (Neon).</li>
   </ul>
   <p>We do not share your identifier with advertisers or data brokers. Public replies and the HTTP API expose transport facts (fares, stations, incidents), not who asked.</p>
 
@@ -70,7 +71,7 @@ a{color:#0b57d0}
   <p>Preference records (add-ons, station, route) are kept so the assistant can continue the conversation. They are held in the running service and are removed when you ask us to delete them, when you send <strong>STOP</strong> and we clear alerts, or when the service is reset. We do not build a long-term marketing profile.</p>
 
   <h2 id="deletion">How to delete your data</h2>
-  <p>You can request deletion at any time, at no cost, from any region. We will delete the subscriber record we hold for your chat (hashed identifier, add-ons, saved station and route, pending report context).</p>
+  <p>You can request deletion at any time, at no cost, from any region. We will delete the subscriber record we hold for your chat (hashed identifier, add-ons, saved station and route, pending report context) and any road photos stored against that hash.</p>
   <ol>
     <li>Open the same GH Fares WhatsApp or Messenger thread.</li>
     <li>Send the exact words: <strong>DELETE MY DATA</strong>.</li>

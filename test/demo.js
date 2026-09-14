@@ -30,9 +30,9 @@ function render(p) {
   return JSON.stringify(p);
 }
 
-function turn(label, input) {
+async function turn(label, input) {
   console.log(`\n${C.c}▸ ${label}${C.r}`);
-  const replies = engine.handle({ from: FROM, hash: HASH, ...input });
+  const replies = await engine.handle({ from: FROM, hash: HASH, ...input });
   replies.forEach(p => {
     console.log(`${C.g}◂${C.r} ` + render(p).split('\n').join('\n  '));
     if (SHOW_JSON) console.log(C.d + JSON.stringify(p, null, 2) + C.r);
@@ -42,47 +42,48 @@ function turn(label, input) {
 
 console.log(`${C.b}═══ GH FARES — WHATSAPP MVP WALKTHROUGH ═══${C.r}`);
 
+(async () => {
 console.log(`\n${C.y}── 1 · Cold start ──${C.r}`);
-turn('hi', { text: 'hi' });
+await turn('hi', { text: 'hi' });
 
 console.log(`\n${C.y}── 2 · Location share → every fare from the station ──${C.r}`);
-turn('📍 shares location (Kaneshie)', { location: { latitude: 5.5666, longitude: -0.2354 } });
+await turn('📍 shares location (Kaneshie)', { location: { latitude: 5.5666, longitude: -0.2354 } });
 
 console.log(`\n${C.y}── 3 · Akosua: Kaneshie → Bubuashie ──${C.r}`);
-turn('kaneshie to bubiashie', { text: 'kaneshie to bubiashie' });
+await turn('kaneshie to bubiashie', { text: 'kaneshie to bubiashie' });
 
 console.log(`\n${C.y}── 4 · Who has the lowest fare ──${C.r}`);
-turn('cheapest from kaneshie', { text: 'cheapest from kaneshie' });
+await turn('cheapest from kaneshie', { text: 'cheapest from kaneshie' });
 
 console.log(`\n${C.y}── 5 · THE ADD-ONS ──${C.r}`);
-turn('ADD', { text: 'add' });
-turn('ADD FUEL', { text: 'add fuel' });
-turn('ADD ROADS', { text: 'add roads' });
-turn('ADD MY ROUTE', { text: 'add my route' });
-turn('nima to circle   (saves it as the default route)', { text: 'nima to circle' });
-turn('MY ADDONS', { text: 'my addons' });
+await turn('ADD', { text: 'add' });
+await turn('ADD FUEL', { text: 'add fuel' });
+await turn('ADD ROADS', { text: 'add roads' });
+await turn('ADD MY ROUTE', { text: 'add my route' });
+await turn('nima to circle   (saves it as the default route)', { text: 'nima to circle' });
+await turn('MY ADDONS', { text: 'my addons' });
 
 console.log(`\n${C.y}── 6 · What the route add-on changes ──${C.r}`);
-turn('how much', { text: 'how much' });
+await turn('how much', { text: 'how much' });
 
 console.log(`\n${C.y}── 7 · Quick report add-on: a bare number is enough ──${C.r}`);
-turn('ADD REPORT', { text: 'add report' });
-turn('10', { text: '10' });
+await turn('ADD REPORT', { text: 'add report' });
+await turn('10', { text: '10' });
 
 console.log(`\n${C.y}── 8 · Fuel: "in my area" and a comparison ──${C.r}`);
-turn('get me all fuel pricing in my area', { text: 'get me all fuel pricing in my area' });
-turn('price of fuel in accra compared to tema', { text: 'what is the price of fuel in accra compared to tema' });
+await turn('get me all fuel pricing in my area', { text: 'get me all fuel pricing in my area' });
+await turn('price of fuel in accra compared to tema', { text: 'what is the price of fuel in accra compared to tema' });
 
 console.log(`\n${C.y}── 9 · Road state ──${C.r}`);
-turn('what the current issue on tema moto way', { text: 'what the current issue on tema moto way' });
+await turn('what the current issue on tema moto way', { text: 'what the current issue on tema moto way' });
 
 console.log(`\n${C.y}── 10 · Report a fare from a tap ──${C.r}`);
-turn('[tap] Report what I paid', { interactiveId: 'report:kaneshie-mkt-cmplx:bubiashie-station' });
-turn('9', { text: '9' });
+await turn('[tap] Report what I paid', { interactiveId: 'report:kaneshie-mkt-cmplx:bubiashie-station' });
+await turn('9', { text: '9' });
 
 console.log(`\n${C.y}── 11 · Queue reporting, one tap ──${C.r}`);
-turn('[tap] Report the queue', { interactiveId: 'queue:kaneshie-mkt-cmplx:bubiashie-station' });
-turn('[tap] 🔴 Stuck', { interactiveId: 'queue:kaneshie-mkt-cmplx:bubiashie-station:stuck' });
+await turn('[tap] Report the queue', { interactiveId: 'queue:kaneshie-mkt-cmplx:bubiashie-station' });
+await turn('[tap] 🔴 Stuck', { interactiveId: 'queue:kaneshie-mkt-cmplx:bubiashie-station:stuck' });
 
 console.log(`\n${C.y}── 12 · Proactive push (needs an approved template) ──${C.r}`);
 const pushes = [
@@ -96,17 +97,17 @@ pushes.forEach(p => {
 });
 
 console.log(`\n${C.y}── 13 · Removing an add-on ──${C.r}`);
-turn('REMOVE FUEL', { text: 'remove fuel' });
-turn('MY ADDONS', { text: 'my addons' });
+await turn('REMOVE FUEL', { text: 'remove fuel' });
+await turn('MY ADDONS', { text: 'my addons' });
 
 /* ── 14 · BROADCASTING ── */
 console.log(`\n${C.y}── 14 · BROADCASTING ──${C.r}`);
 
 // three more riders opt in, so there is an audience to broadcast to
-['rider-kwame', 'rider-akosua', 'rider-yaw'].forEach(h => {
-  engine.handle({ from: h, hash: h, text: 'add roads' });
-});
-engine.handle({ from: 'rider-yaw', hash: 'rider-yaw', text: 'add fuel' });
+for (const h of ['rider-kwame', 'rider-akosua', 'rider-yaw']) {
+  await engine.handle({ from: h, hash: h, text: 'add roads' });
+}
+await engine.handle({ from: 'rider-yaw', hash: 'rider-yaw', text: 'add fuel' });
 
 console.log(`\n${C.c}▸ Consent ledger — written by ADD, not bolted on${C.r}`);
 console.log(bc.optIns.map(o =>
@@ -167,3 +168,4 @@ console.log(JSON.stringify(bc.ledger('rider-yaw'), null, 2).split('\n').map(l =>
 const s = caps.subscriber(HASH);
 console.log(`\n${C.b}═══ SUBSCRIBER STATE ═══${C.r}`);
 console.log(JSON.stringify({ hash: s.hash, capabilities: [...s.caps], route: s.route, station: s.station }, null, 2));
+})().catch(e => { console.error(e); process.exit(1); });

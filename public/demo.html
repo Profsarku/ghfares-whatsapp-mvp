@@ -3,48 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#111b21">
-<title>GH Fares on WhatsApp</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#000000">
+<title>Preview — GH Fares</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/site.css">
 <style>
-/* channel switch */
-.switcher{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:200;
-  display:flex;gap:2px;background:#1b2228;border:1px solid #2c363d;border-radius:22px;padding:3px}
-.switcher button{padding:7px 18px;border-radius:20px;font-size:12px;font-weight:600;
-  color:#7d8b95;letter-spacing:.03em;transition:all .15s}
-.switcher button.on{background:#e9edef;color:#0b141a}
-.switcher .dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:7px;vertical-align:0}
-.switcher .entry .dot{background:#14181c}
-.switcher .wa .dot{background:#25d366}
-.switcher .fb .dot{background:#0084ff}
-.switcher .web .dot{background:#b87514}
-body.fb-mode .switcher{background:#f0f2f5;border-color:#dbdee3}
-body.fb-mode .switcher button{color:#65676b}
-body.fb-mode .switcher button.on{background:#0084ff;color:#fff}
-
 :root{
   --wa-panel:#202c33; --wa-header:#202c33; --wa-chat:#0b141a;
   --wa-in:#202c33; --wa-out:#005c4b; --wa-text:#e9edef; --wa-sub:#8696a0;
   --wa-blue:#53bdeb; --wa-green:#00a884; --wa-tick:#53bdeb;
   --wa-divider:rgba(255,255,255,.09); --wa-input:#2a3942;
   --wa-sheet:#233138; --wa-sheet-2:#111b21;
-  --stage:#0f1418;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%}
-body{background:var(--stage);font-family:'Inter',-apple-system,'Helvetica Neue',system-ui,sans-serif;
-  display:flex;align-items:center;justify-content:center;padding:22px 16px;overflow:hidden}
+html{background:#000}
+html,body{min-height:100%;overflow-y:auto}
+html body{
+  background:#000;color:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
 button{font-family:inherit;cursor:pointer;color:inherit;background:none;border:none}
 
-/* ── device ── */
-.device{width:400px;height:min(844px,calc(100vh - 44px));position:relative;
-  background:var(--wa-chat);border-radius:40px;overflow:hidden;
-  box-shadow:0 0 0 10px #05080a, 0 0 0 11px #262f35, 0 32px 70px rgba(0,0,0,.65);
-  display:flex;flex-direction:column}
-.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:132px;height:26px;
-  background:#05080a;border-radius:0 0 16px 16px;z-index:60}
+.demo-page{
+  min-height:100svh;
+  padding:calc(var(--nav) + var(--safe-t) + 36px) 22px calc(48px + var(--safe-b));
+  text-align:center;
+}
+.demo-page h1{
+  font-size:clamp(32px,6vw,56px);font-weight:600;letter-spacing:-.035em;line-height:1.05;
+}
+.demo-page .lede{margin:14px auto 0;max-width:28em;color:#a1a1a6;font-size:17px}
+.demo-page .foot{border-color:var(--line-dark);color:#86868b;max-width:980px;margin:40px auto 0;text-align:left}
+.demo-page .foot a:hover{color:#fff}
+
+.switcher{
+  display:inline-flex;gap:2px;margin:28px auto 0;padding:3px;
+  background:#1d1d1f;border:1px solid rgba(255,255,255,.14);border-radius:980px;
+}
+.switcher button{
+  padding:7px 16px;border-radius:980px;font-size:13px;font-weight:500;color:#a1a1a6;
+}
+.switcher button.on{background:#fff;color:#000}
+.switcher .dot{display:none}
+
+.device{
+  width:min(400px,100%);height:clamp(480px,calc(100svh - 280px),760px);
+  margin:28px auto 0;position:relative;
+  background:var(--wa-chat);border-radius:28px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.14);
+  display:flex;flex-direction:column;text-align:left;
+}
+.notch{display:none}
 
 /* ── status bar ── */
 .status{background:var(--wa-header);color:#fff;display:flex;justify-content:space-between;
@@ -88,8 +98,8 @@ button{font-family:inherit;cursor:pointer;color:inherit;background:none;border:n
 .enc{align-self:center;background:#182633;color:#ffd279;font-size:11px;line-height:1.5;
   padding:7px 12px;border-radius:7px;margin-bottom:10px;max-width:86%;text-align:center}
 
-.row{display:flex;width:100%;margin-bottom:1px}
-.row.out{justify-content:flex-end}
+.msg{display:flex;width:100%;margin-bottom:1px}
+.msg.out{justify-content:flex-end}
 .bub{max-width:82%;border-radius:8px;padding:6px 9px 7px;font-size:14.2px;line-height:1.42;
   color:var(--wa-text);position:relative;white-space:pre-wrap;word-break:break-word;
   box-shadow:0 1px .5px rgba(11,20,26,.28);animation:pop .18s ease-out}
@@ -102,9 +112,9 @@ button{font-family:inherit;cursor:pointer;color:inherit;background:none;border:n
 .bub .time{float:right;margin:8px -3px -3px 9px;font-size:10.5px;color:rgba(233,237,239,.5);
   display:flex;align-items:center;gap:3px;white-space:nowrap}
 .bub.out .time svg{width:15px;height:11px;fill:var(--wa-tick)}
-.bub strong{font-weight:600}
+.bub.out u.wacmd{color:#d2f5e3;text-decoration:underline;text-underline-offset:2px;font-weight:500}
 .bub em{font-style:italic;color:rgba(233,237,239,.62);font-size:12.6px}
-.bub pre{font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.55;
+.bub pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.55;
   background:rgba(0,0,0,.22);border-radius:4px;padding:7px 8px;margin:5px 0;overflow-x:auto;white-space:pre}
 .bub pre::-webkit-scrollbar{height:3px}
 .bub pre::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2)}
@@ -177,7 +187,7 @@ button{font-family:inherit;cursor:pointer;color:inherit;background:none;border:n
 .cmdrow{display:flex;flex-direction:column;gap:1px;width:100%;padding:9px 14px;text-align:left;
   border-bottom:1px solid var(--wa-divider)}
 .cmdrow:active{background:#182229}
-.cmdrow b{color:var(--wa-blue);font-size:14px;font-weight:500;font-family:'IBM Plex Mono',monospace}
+.cmdrow b{color:var(--wa-blue);font-size:14px;font-weight:500;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 .cmdrow small{color:var(--wa-sub);font-size:12px}
 
 /* ── bottom sheets ── */
@@ -213,11 +223,10 @@ button{font-family:inherit;cursor:pointer;color:inherit;background:none;border:n
 .attachgrid .circ svg{width:24px;height:24px;fill:#fff}
 
 /* caption */
-.caption{position:absolute;left:50%;bottom:-2px;transform:translateX(-50%);
-  color:#5b6b75;font-size:11px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.caption{display:none}
 
 /* ═══ MESSENGER SKIN ═══ */
-body.fb-mode{background:#e4e6eb}
+body.fb-mode{background:#000}
 body.fb-mode .device{background:#fff}
 body.fb-mode .status{background:#fff;color:#050505}
 body.fb-mode .status svg{fill:#050505!important}
@@ -301,164 +310,86 @@ body.fb-mode .qrow.show{display:flex}
   color:#8a8d91;border-bottom:1px solid #f0f2f5}
 
 
-/* ═══ WEBSITE + FACEBOOK CHAT PLUGIN ═══ */
-body.web-mode{background:#eceae3}
-body.web-mode .device{width:min(940px,96vw);height:min(844px,calc(100vh - 44px));
-  border-radius:10px;box-shadow:0 0 0 1px #d8d3c9,0 24px 60px rgba(0,0,0,.22);background:#fff}
-body.web-mode .notch,body.web-mode .status,body.web-mode .chead,body.web-mode .bizbar,
-body.web-mode .composer,body.web-mode .icewrap,body.web-mode .cmdmenu,
-body.web-mode .qrow,body.web-mode .chat{display:none!important}
-body.web-mode .site{display:flex}
-body.web-mode .caption{color:#8a8d91}
-
-.site{display:none;flex-direction:column;height:100%;overflow:hidden;font-family:'Inter',sans-serif}
-.sitenav{display:flex;align-items:center;gap:22px;padding:14px 26px;border-bottom:1px solid #e6e3dd;flex-shrink:0}
-.sitenav .logo{font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:#14181c}
-.sitenav .logo span{color:#b87514}
-.sitenav a{font-size:13px;color:#6d757b;text-decoration:none;font-weight:500}
-.sitenav a.on{color:#14181c;font-weight:600}
-.sitenav .spacer{flex:1}
-.sitenav .cta{background:#14181c;color:#fff;font-size:12px;font-weight:600;padding:8px 15px;border-radius:5px}
-.sitebody{flex:1;overflow-y:auto;padding:28px 30px 90px}
-.sitebody::-webkit-scrollbar{width:7px}
-.sitebody::-webkit-scrollbar-thumb{background:#dcd8d0;border-radius:4px}
-.hero h1{font-size:30px;font-weight:600;letter-spacing:-.02em;color:#14181c;line-height:1.15;max-width:22ch}
-.hero p{font-size:14.5px;color:#5b6a72;margin-top:9px;max-width:60ch;line-height:1.6}
-.stat{display:flex;gap:28px;flex-wrap:wrap;margin:22px 0 8px;padding:16px 0;border-top:1px solid #e6e3dd;border-bottom:1px solid #e6e3dd}
-.stat div b{display:block;font-size:23px;font-weight:300;font-variant-numeric:tabular-nums;color:#14181c}
-.stat div small{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#a3a9ae;font-weight:600}
-.sec{margin-top:26px}
-.sec h2{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#a3a9ae;font-weight:600;margin-bottom:12px}
-table.rec{width:100%;border-collapse:collapse;font-size:13px}
-table.rec th{text-align:left;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#a3a9ae;
-  font-weight:600;padding:8px 10px;border-bottom:1px solid #14181c}
-table.rec td{padding:9px 10px;border-bottom:1px solid #f1efea;color:#3d454b}
-table.rec td:first-child{font-weight:600;color:#14181c}
-table.rec .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.warn{border-left:3px solid #b87514;background:#fdf6e9;padding:11px 14px;font-size:12.5px;
-  color:#5b6a72;line-height:1.55;margin-top:12px}
-.warn b{color:#14181c}
-.chanrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-.chanpill{display:flex;align-items:center;gap:8px;border:1px solid #e6e3dd;border-radius:7px;
-  padding:10px 14px;font-size:12.5px;font-weight:500;color:#3d454b;background:#fff}
-.chanpill i{width:9px;height:9px;border-radius:50%;display:block}
-
-/* the Facebook Chat Plugin bubble */
-.fbplugin{position:absolute;right:22px;bottom:22px;z-index:80}
-.fbbubble{width:56px;height:56px;border-radius:50%;background:#0084ff;
-  box-shadow:0 4px 14px rgba(0,132,255,.42);display:flex;align-items:center;justify-content:center;
-  transition:transform .16s}
-.fbbubble:hover{transform:scale(1.06)}
-.fbbubble svg{width:28px;height:28px;fill:#fff}
-.fbbubble .badge{position:absolute;top:-2px;right:-2px;width:18px;height:18px;border-radius:50%;
-  background:#e5484d;color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;
-  justify-content:center;border:2px solid #fff}
-.fbgreet{position:absolute;right:70px;bottom:8px;background:#fff;border:1px solid #e6e3dd;
-  border-radius:16px;padding:10px 14px;font-size:12.5px;color:#14181c;white-space:nowrap;
-  box-shadow:0 4px 16px rgba(0,0,0,.12);animation:iceIn .3s ease-out}
-.fbpanel{position:absolute;right:0;bottom:70px;width:328px;max-height:460px;background:#fff;
-  border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.24);display:none;flex-direction:column;
-  overflow:hidden;border:1px solid #e0e2e6}
-.fbpanel.show{display:flex;animation:iceIn .2s ease-out}
-.fbpanel .ph{background:#0084ff;color:#fff;padding:13px 15px;display:flex;align-items:center;gap:10px}
-.fbpanel .ph .pa{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.22);
-  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
-.fbpanel .ph b{font-size:14px;font-weight:600;display:block}
-.fbpanel .ph small{font-size:11px;opacity:.85}
-.fbpanel .ph .x{margin-left:auto;font-size:19px;opacity:.9;line-height:1}
-.fbpanel .pbody{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:6px;
-  background:#fff;min-height:170px}
-.fbpanel .pbody::-webkit-scrollbar{width:4px}
-.fbpanel .pbody::-webkit-scrollbar-thumb{background:#dbdee3}
-.pbub{max-width:86%;border-radius:16px;padding:8px 12px;font-size:13px;line-height:1.45;
-  white-space:pre-wrap;animation:iceIn .18s ease-out}
-.pbub.in{background:#f0f0f0;color:#050505;align-self:flex-start;border-bottom-left-radius:5px}
-.pbub.out{background:#0084ff;color:#fff;align-self:flex-end;border-bottom-right-radius:5px}
-.pbub em{font-style:normal;color:#65676b;font-size:11.5px}
-.pbub.out em{color:rgba(255,255,255,.75)}
-.pbub pre{font-family:'IBM Plex Mono',monospace;font-size:11px;background:rgba(0,0,0,.06);
-  border-radius:5px;padding:6px 8px;margin:4px 0;overflow-x:auto;white-space:pre}
-.pqr{display:flex;gap:6px;flex-wrap:wrap;padding:0 12px 10px}
-.pqr button{border:1.5px solid #0084ff;color:#0084ff;background:#fff;border-radius:16px;
-  padding:6px 12px;font-size:12px;font-weight:500}
-.pfoot{border-top:1px solid #e6e3dd;padding:9px 12px;display:flex;gap:8px;align-items:center}
-.pfoot input{flex:1;border:none;outline:none;font-family:inherit;font-size:13px;background:#f0f2f5;
-  border-radius:16px;padding:8px 13px;min-width:0}
-.pfoot button{border:none;background:none;color:#0084ff;font-size:17px;flex-shrink:0}
-.pcredit{font-size:9.5px;color:#a3a9ae;text-align:center;padding:0 0 8px}
-
-/* ═══ ENTRY: QR → channel choice ═══ */
-body.entry-mode{background:#e9e6df}
-body.entry-mode .device{background:#f4f2ec}
-body.entry-mode .status{background:#f4f2ec;color:#14181c}
-body.entry-mode .status svg{fill:#14181c!important}
-body.entry-mode .status svg rect[fill="#fff"]{fill:#14181c}
+/* ═══ ENTRY ═══ */
+body.entry-mode{background:#000}
+body.entry-mode .device{background:#fff}
+body.entry-mode .status{background:#fff;color:#171717}
+body.entry-mode .status svg{fill:#171717!important}
+body.entry-mode .status svg rect[fill="#fff"]{fill:#171717}
+.entrypane{display:none;flex-direction:column;height:100%;overflow-y:auto;padding:28px 22px 32px;
+  color:#171717;background:#fff}
 body.entry-mode .chead,body.entry-mode .bizbar,body.entry-mode .chat,
 body.entry-mode .composer,body.entry-mode .icewrap,body.entry-mode .cmdmenu,
 body.entry-mode .qrow{display:none!important}
 body.entry-mode .entrypane{display:flex}
-.entrypane{display:none;flex-direction:column;height:100%;overflow-y:auto;padding:22px 20px 30px;
-  font-family:'Inter',sans-serif;color:#14181c}
 .entrypane::-webkit-scrollbar{width:0}
-.ebrand{font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase}
-.ebrand span{color:#b87514}
-.entrypane h1{font-size:21px;font-weight:600;letter-spacing:-.02em;margin:12px 0 6px;line-height:1.22}
-.entrypane .lede{font-size:13.5px;color:#5b6a72}
-.eat{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid #e6e3dd;
-  border-radius:20px;padding:6px 12px;font-size:12px;font-weight:500;margin-top:12px}
-.eat i{width:7px;height:7px;border-radius:50%;background:#b87514}
-.elabel{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#a3a9ae;
-  font-weight:600;margin:20px 0 10px}
-.echan{display:flex;align-items:center;gap:12px;width:100%;border:1px solid #e6e3dd;
-  border-radius:12px;padding:14px 15px;margin-bottom:9px;background:#fff;text-align:left;
-  transition:border-color .14s,transform .1s}
-.echan:active{transform:scale(.99)}
-.echan.wa:hover{border-color:#25d366}.echan.fb:hover{border-color:#0084ff}
-.echan .eic{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;
-  align-items:center;justify-content:center}
-.echan.wa .eic{background:#25d366}.echan.fb .eic{background:#0084ff}
-.echan .eic svg{width:22px;height:22px;fill:#fff}
+.ebrand{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.entrypane h1{font-size:28px;font-weight:600;letter-spacing:-.03em;margin:16px 0 8px;line-height:1.12}
+.entrypane .lede{font-size:15px;color:#6e6e73}
+.eat{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(23,23,23,.12);
+  border-radius:980px;padding:6px 12px;font-size:13px;font-weight:500;margin-top:16px}
+.eat i{width:6px;height:6px;border-radius:50%;background:#171717}
+.elabel{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#86868b;
+  font-weight:600;margin:28px 0 12px}
+.echan{display:flex;align-items:center;gap:14px;width:100%;border-bottom:1px solid rgba(23,23,23,.12);
+  padding:16px 0;text-align:left;background:#fff}
+.echan:last-of-type{border-bottom:1px solid rgba(23,23,23,.12)}
+.echan .eic{width:36px;height:36px;border-radius:50%;flex-shrink:0;display:flex;
+  align-items:center;justify-content:center;background:#171717}
+.echan.wa .eic{background:#171717}.echan.fb .eic{background:#171717}
+.echan .eic svg{width:18px;height:18px;fill:#fff}
 .echan .et{flex:1;min-width:0}
-.echan .et b{font-size:15px;font-weight:600;display:block}
-.echan .et small{font-size:11.5px;color:#5b6a72;display:block;margin-top:1px}
-.echan .ego{color:#a3a9ae;font-size:17px}
-.eremember{display:flex;align-items:center;gap:8px;font-size:12px;color:#5b6a72;margin:3px 2px 4px}
-.eremember input{width:14px;height:14px;accent-color:#14181c}
-.eqr{border-top:1px solid #e6e3dd;margin-top:18px;padding-top:18px;text-align:center}
-.eqr .lab{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#a3a9ae;
-  font-weight:600;margin-bottom:11px}
-.eqr .box{display:inline-block;padding:10px;background:#fff;border:1px solid #e6e3dd;border-radius:9px}
+.echan .et b{font-size:17px;font-weight:600;display:block;letter-spacing:-.02em}
+.echan .et small{font-size:13px;color:#6e6e73;display:block;margin-top:2px}
+.echan .ego{color:#86868b;font-size:20px}
+.eremember{display:flex;align-items:center;gap:8px;font-size:13px;color:#6e6e73;margin:16px 0 0}
+.eremember input{width:14px;height:14px;accent-color:#171717}
+.eqr{border-top:1px solid rgba(23,23,23,.12);margin-top:28px;padding-top:24px;text-align:center}
+.eqr .lab{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#86868b;
+  font-weight:600;margin-bottom:14px}
+.eqr .box{display:inline-block;padding:12px;background:#fff;border:1px solid rgba(23,23,23,.12);border-radius:8px}
 .eqr svg{display:block;width:122px;height:122px}
-.eqr .u{font-size:11px;color:#5b6a72;margin-top:9px}
-.eqr .u b{color:#14181c}
-.epick{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:12px}
-.epick button{border:1px solid #e6e3dd;background:#fff;border-radius:14px;padding:5px 11px;
-  font-size:10.5px;font-weight:500;color:#5b6a72}
-.epick button.on{background:#14181c;border-color:#14181c;color:#fff}
-.efoot{font-size:11px;color:#a3a9ae;text-align:center;margin-top:16px;line-height:1.6}
-.efoot b{color:#5b6a72}
+.eqr .u{font-size:13px;color:#6e6e73;margin-top:12px}
+.eqr .u b{color:#171717}
+.epick{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.epick button{border:1px solid rgba(23,23,23,.12);background:#fff;border-radius:980px;padding:6px 12px;
+  font-size:12px;font-weight:500;color:#6e6e73}
+.epick button.on{background:#171717;border-color:#171717;color:#fff}
+.efoot{font-size:12px;color:#86868b;text-align:center;margin-top:20px;line-height:1.6}
+.efoot b{color:#6e6e73}
 .eredir{display:none;text-align:center;padding:26px 0}
 .eredir.show{display:block}
-.espin{width:24px;height:24px;border:2.5px solid #e6e3dd;border-top-color:#14181c;border-radius:50%;
+.espin{width:22px;height:22px;border:2px solid rgba(23,23,23,.12);border-top-color:#171717;border-radius:50%;
   margin:0 auto 12px;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.eredir p{font-size:13px;color:#5b6a72}
-@media(max-width:520px){
-  body{padding:0}
-  .device{width:100%;height:100%;border-radius:0;box-shadow:none}
-  .notch{display:none}
-  .caption{display:none}
+.eredir p{font-size:14px;color:#6e6e73}
+@media(max-width:734px){
+  .demo-page{padding-left:16px;padding-right:16px}
+  .device{height:clamp(420px,calc(100svh - 220px),720px)}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
-:focus-visible{outline:2px solid var(--wa-blue);outline-offset:-2px}
+.device :focus-visible{outline:2px solid #fff;outline-offset:-2px}
 </style>
 </head>
-<body>
-<div class="switcher">
-  <button class="entry on" data-ch="entry"><span class="dot"></span>Scan / Link</button>
-  <button class="wa" data-ch="wa"><span class="dot"></span>WhatsApp</button>
-  <button class="fb" data-ch="fb"><span class="dot"></span>Messenger</button>
-</div>
+<body class="ink">
+<header class="nav">
+  <div class="nav-inner">
+    <a class="logo" href="/">GH Fares</a>
+    <a class="n" href="/#services">Services</a>
+    <a class="n" href="/support">Support</a>
+    <a class="n" href="/demo" aria-current="page">Preview</a>
+    <a class="start" href="/go">Start</a>
+  </div>
+</header>
+<div class="demo-page">
+  <p class="kicker">Live engine</p>
+  <h1>The conversation.</h1>
+  <p class="lede">Same replies as WhatsApp. This preview is for us — riders still start in the phone app.</p>
+  <div class="switcher">
+    <button class="entry on" data-ch="entry">Scan</button>
+    <button class="wa" data-ch="wa">WhatsApp</button>
+    <button class="fb" data-ch="fb">Messenger</button>
+  </div>
 <div class="device">
   <div class="notch"></div>
 
@@ -514,7 +445,7 @@ body.entry-mode .entrypane{display:flex}
 
 
   <div class="entrypane" id="entrypane">
-    <div class="ebrand">GH<span>FARES</span></div>
+    <div class="ebrand">GH Fares</div>
     <h1>Approved fares, live queues, road conditions.</h1>
     <p class="lede">Ask in your own words. No app, no account.</p>
     <div class="eat" id="eAt"><i></i><span id="eAtName">Scanned at Kaneshie Market Station</span></div>
@@ -531,7 +462,6 @@ body.entry-mode .entrypane{display:flex}
         <span class="et"><b>Messenger</b><small>If you prefer Facebook</small></span>
         <span class="ego">›</span>
       </button>
-      <label class="eremember"><input type="checkbox" id="eRemember" checked> Remember my choice next time</label>
     </div>
 
     <div class="eredir" id="eRedir"><div class="espin"></div><p id="eRedirMsg">Opening WhatsApp…</p></div>
@@ -546,7 +476,16 @@ body.entry-mode .entrypane{display:flex}
   </div>
 
   <div class="scrim" id="scrim"></div>
-  <div class="caption">GH Fares · live engine</div>
+</div>
+  <footer class="foot">
+    <span>GH Fares</span>
+    <nav>
+      <a href="/#services">Services</a>
+      <a href="/support">Support</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/go">Start</a>
+    </nav>
+  </footer>
 </div>
 <script src="/demo.js"></script>
 </body>

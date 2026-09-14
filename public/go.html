@@ -3,143 +3,132 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#14181c">
+<meta name="theme-color" content="#000000">
 <title>GH Fares — start a chat</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/favicon.svg">
-<meta name="description" content="Approved fares, live station queues and road conditions across Ghana. No app, no account.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --ink:#14181c; --sub:#5b6a72; --faint:#a3a9ae; --hair:#e6e3dd;
-  --paper:#ffffff; --bg:#f4f2ec; --amber:#b87514;
-  --wa:#25d366; --wa-d:#128c7e; --fb:#0084ff;
-  --safe-b:env(safe-area-inset-bottom,0px);
-}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%}
-body{background:var(--bg);color:var(--ink);font-family:'Inter',-apple-system,system-ui,sans-serif;
-  line-height:1.5;display:flex;align-items:center;justify-content:center;padding:24px 18px calc(24px + var(--safe-b))}
-button,a{font-family:inherit;cursor:pointer;text-decoration:none;color:inherit}
-
-.card{width:100%;max-width:400px;background:var(--paper);border:1px solid var(--hair);
-  border-radius:16px;padding:30px 24px 24px;box-shadow:0 8px 30px rgba(20,24,28,.07)}
-
-.brand{font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--ink)}
-.brand span{color:var(--amber)}
-h1{font-size:23px;font-weight:600;letter-spacing:-.02em;margin:14px 0 7px;line-height:1.22}
-.lede{font-size:14px;color:var(--sub);margin-bottom:6px}
-.at{display:inline-flex;align-items:center;gap:7px;background:#f4f2ec;border:1px solid var(--hair);
-  border-radius:20px;padding:6px 13px;font-size:12.5px;font-weight:500;margin:10px 0 4px}
-.at i{width:7px;height:7px;border-radius:50%;background:var(--amber);flex-shrink:0}
-
-.choose{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);
-  font-weight:600;margin:22px 0 11px}
-.chan{display:flex;align-items:center;gap:13px;width:100%;border:1px solid var(--hair);
-  border-radius:12px;padding:15px 16px;margin-bottom:10px;background:var(--paper);
-  transition:border-color .14s, transform .1s}
-.chan:active{transform:scale(.99)}
-.chan.wa:hover{border-color:var(--wa)}
-.chan.fb:hover{border-color:var(--fb)}
-.chan .ic{width:42px;height:42px;border-radius:50%;flex-shrink:0;display:flex;
-  align-items:center;justify-content:center}
-.chan.wa .ic{background:var(--wa)}
-.chan.fb .ic{background:var(--fb)}
-.chan .ic svg{width:23px;height:23px;fill:#fff}
-.chan .t{flex:1;min-width:0;text-align:left}
-.chan .t b{font-size:15.5px;font-weight:600;display:block}
-.chan .t small{font-size:12px;color:var(--sub);display:block;margin-top:1px}
-.chan .go{color:var(--faint);font-size:17px;flex-shrink:0}
-.chan .tag{font-size:9px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;
-  color:var(--amber);border:1px solid var(--hair);border-radius:3px;padding:2px 6px}
-.remember{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--sub);
-  margin:4px 2px 18px}
-.remember input{width:15px;height:15px;accent-color:var(--ink)}
-
-.qrblock{border-top:1px solid var(--hair);padding-top:20px;text-align:center}
-.qrblock .lab{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);
-  font-weight:600;margin-bottom:13px}
-.qr{display:inline-block;padding:14px;background:#fff;border:1px solid var(--hair);border-radius:10px}
-.qr svg{display:block;width:168px;height:168px}
-.share{margin-top:16px}
-.share #shareLink{display:block;font-size:14.5px;font-weight:600;color:var(--ink);word-break:break-all;
-  line-height:1.4}
-.share .hint{font-size:12px;color:var(--sub);margin-top:6px}
-.share .copy{margin-top:10px;border:1px solid var(--hair);background:#fff;border-radius:10px;
-  padding:8px 14px;font-size:12.5px;font-weight:600;color:var(--ink)}
-.share .copy.ok{border-color:var(--wa);color:var(--wa-d)}
-
-.foot{font-size:11.5px;color:var(--faint);line-height:1.6;margin-top:18px;text-align:center}
-.foot b{color:var(--sub);font-weight:600}
-
-.phoneonly{display:none;text-align:center;padding:10px 4px 6px}
-.phoneonly.show{display:block}
-.phoneonly p{font-size:13.5px;color:var(--sub);line-height:1.5}
-.phoneonly b{color:var(--ink)}
-.redirecting{display:none;text-align:center;padding:8px 0 4px}
-.redirecting.show{display:block}
-.spinner{width:26px;height:26px;border:2.5px solid var(--hair);border-top-color:var(--ink);
-  border-radius:50%;margin:0 auto 12px;animation:spin .7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.redirecting p{font-size:13.5px;color:var(--sub)}
-.redirecting a{font-size:12.5px;color:var(--amber);font-weight:600;display:inline-block;margin-top:9px}
-@media(prefers-reduced-motion:reduce){.spinner{animation:none}}
-:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
-</style>
+<meta name="description" content="Approved fares, live station queues and road conditions across Ghana. Sign up, then chat in WhatsApp.">
+<link rel="stylesheet" href="/site.css">
 </head>
 <body>
-<div class="card">
-  <div class="brand">GH<span>FARES</span></div>
-  <h1>Approved fares, live queues, road conditions.</h1>
-  <p class="lede">Ask in your own words. No app, no account, no sign-up.</p>
-  <div class="at" id="atChip" hidden><i></i><span id="atName"></span></div>
-
-  <div id="chooser">
-    <div class="choose">Continue with</div>
-
-    <a class="chan wa" id="goWA">
-      <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 00-8.6 15L2 22l5.1-1.3A10 10 0 1012 2zm5.8 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5-4.5-.2-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5l.9 2.2c.1.2.1.4 0 .5l-.4.6-.3.3c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.1 1 2.1 1.3 2.4 1.4.3.1.5.1.6-.1l.9-1c.2-.2.4-.2.6-.1l2.1 1c.2.1.4.2.4.3.1.2.1.6 0 1.3z"/></svg></span>
-      <span class="t"><b>WhatsApp</b><small>Most people here use this</small></span>
-      <span class="go">›</span>
-    </a>
-
-    <a class="chan fb" id="goFB">
-      <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.1 2 11.2c0 2.9 1.4 5.5 3.7 7.2V22l3.4-1.9c.9.3 1.9.4 2.9.4 5.5 0 10-4.1 10-9.2S17.5 2 12 2zm1 12.3l-2.5-2.7-4.9 2.7 5.4-5.7 2.6 2.7 4.8-2.7-5.4 5.7z"/></svg></span>
-      <span class="t"><b>Messenger</b><small>If you prefer Facebook</small></span>
-      <span class="go">›</span>
-    </a>
+<header class="nav">
+  <div class="nav-inner">
+    <a class="logo" href="/">GH Fares</a>
+    <a class="n" href="/#services">Services</a>
+    <a class="n" href="/support">Support</a>
+    <a class="start" href="/go" aria-current="page">Start</a>
   </div>
+</header>
 
-  <div class="redirecting" id="redirecting">
-    <div class="spinner"></div>
-    <p id="redirMsg">Opening the app on your phone…</p>
-    <a href="/" id="chooseAgain">Choose again</a>
-  </div>
-  <div class="phoneonly" id="phoneonly">
-    <p>Scan the QR with your phone. WhatsApp and Messenger open in the <b>phone app</b> — never in a browser.</p>
-  </div>
+<section class="page-hero go-hero">
+  <h1 id="goTitle">Create an account.</h1>
+  <p id="goLede">Sign up first. Then this page hands you to WhatsApp or Messenger on your phone — never a website chat.</p>
+</section>
 
-  <div class="qrblock">
-    <div class="lab">Or open this link</div>
-    <div class="share">
-      <div id="shareLink"></div>
-      <p class="hint">Type or tap this URL on your phone — same Wi‑Fi as this computer.</p>
-      <button type="button" class="copy" id="copyLink">Copy link</button>
+<section class="section go-section" id="signupGate">
+  <div class="wrap">
+    <form class="signup" id="signupForm" autocomplete="on">
+      <div class="fields">
+        <label>First name
+          <input id="signupFirst" name="first_name" type="text" required maxlength="80" autocomplete="given-name">
+        </label>
+        <label>Last name
+          <input id="signupLast" name="last_name" type="text" required maxlength="80" autocomplete="family-name">
+        </label>
+      </div>
+      <label>Password
+        <input id="signupPassword" name="password" type="password" required minlength="8" maxlength="200" autocomplete="new-password">
+      </label>
+      <label>What stations do you travel from often
+        <input id="signupStations" name="stations_often" type="text" required maxlength="400"
+          placeholder="Kaneshie, Circle, Tema" list="stationNames" autocomplete="off">
+      </label>
+      <div class="fields">
+        <label>Most popular route you use
+          <input id="signupFrom" name="route_from" type="text" required maxlength="80" placeholder="From" list="stationNames" autocomplete="off">
+        </label>
+        <label aria-label="Route destination">
+          <span class="to-label">to</span>
+          <input id="signupTo" name="route_to" type="text" required maxlength="80" placeholder="To" list="stationNames" autocomplete="off">
+        </label>
+      </div>
+      <p class="form-err" id="signupErr" hidden></p>
+      <button type="submit" class="btn btn-dark" id="signupSubmit">Create account</button>
+      <p class="form-switch">Already have an account? <button type="button" class="text-btn" id="showLogin">Sign in</button></p>
+    </form>
+
+    <form class="signup" id="loginForm" hidden autocomplete="on">
+      <label>First name
+        <input id="loginFirst" name="first_name" type="text" required maxlength="80" autocomplete="given-name">
+      </label>
+      <label>Last name
+        <input id="loginLast" name="last_name" type="text" required maxlength="80" autocomplete="family-name">
+      </label>
+      <label>Password
+        <input id="loginPassword" name="password" type="password" required minlength="8" maxlength="200" autocomplete="current-password">
+      </label>
+      <p class="form-err" id="loginErr" hidden></p>
+      <button type="submit" class="btn btn-dark" id="loginSubmit">Sign in</button>
+      <p class="form-switch">New here? <button type="button" class="text-btn" id="showSignup">Create an account</button></p>
+    </form>
+    <datalist id="stationNames"></datalist>
+  </div>
+</section>
+
+<section class="section go-section" id="goAccess" hidden>
+  <div class="wrap">
+    <div class="go-chip" id="atChip" hidden><i></i><span id="atName"></span></div>
+    <div class="split">
+      <div>
+        <div id="chooser">
+          <div class="go-label">Continue with</div>
+          <div class="channels">
+            <a class="channel" id="goWA">
+              <span><b>WhatsApp</b><small>Most people here use this</small></span>
+              <span class="arr">›</span>
+            </a>
+            <a class="channel" id="goFB">
+              <span><b>Messenger</b><small>If you prefer Facebook</small></span>
+              <span class="arr">›</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="redirecting" id="redirecting">
+          <div class="spinner"></div>
+          <p id="redirMsg">Opening the app on your phone…</p>
+          <a href="/" id="chooseAgain">Choose again</a>
+        </div>
+        <div class="phoneonly" id="phoneonly">
+          <p>Scan the QR with your phone. WhatsApp and Messenger open in the <b>phone app</b> — never in a browser.</p>
+        </div>
+
+        <div class="go-share">
+          <div class="go-label">Or open this link</div>
+          <div id="shareLink"></div>
+          <p class="hint">Type or tap this URL on your phone — same Wi‑Fi as this computer.</p>
+          <button type="button" class="copy" id="copyLink">Copy link</button>
+        </div>
+      </div>
+
+      <div class="go-qr">
+        <div class="go-label">Or scan to start</div>
+        <div class="qr" id="qr"></div>
+      </div>
     </div>
-    <div class="lab" style="margin-top:20px">Or scan to start</div>
-    <div class="qr" id="qr"></div>
+    <p class="go-fine">Free, always. We publish <b>counts, never accusations</b> — no driver, vehicle or plate is ever recorded.</p>
   </div>
+</section>
 
-  <p class="foot">
-    Free, always. We publish <b>counts, never accusations</b> — no driver, vehicle or plate
-    is ever recorded.<br>
-    <a href="/" style="color:#5b6a72;text-decoration:underline">Home</a>
-    · <a href="/support" style="color:#5b6a72;text-decoration:underline">Support</a>
-    · <a href="/privacy" style="color:#5b6a72;text-decoration:underline">Privacy Policy</a>
-  </p>
-</div>
+<footer class="foot">
+  <span>GH Fares</span>
+  <nav>
+    <a href="/#services">Services</a>
+    <a href="/support">Support</a>
+    <a href="/privacy">Privacy</a>
+    <a href="/go">Start</a>
+  </nav>
+</footer>
 
 <script>
 /* ═══════════════════════════════════════════════════════
@@ -165,10 +154,88 @@ const STATIONS = {
 };
 
 const $ = s => document.querySelector(s);
+const signedIn = !!window.__SIGNED_IN__;
+const stationNames = window.__STATIONS__ || [];
 const params = new URLSearchParams(location.search);
 let station = params.get('s') || '';
 const source  = params.get('src') || (params.get('s') ? 'qr' : 'link');
 const landing = window.__LANDING__ || (location.origin + '/');
+
+const list = $('#stationNames');
+if (list) stationNames.forEach(n => {
+  const o = document.createElement('option');
+  o.value = n;
+  list.appendChild(o);
+});
+
+function showAccess() {
+  const gate = $('#signupGate');
+  const access = $('#goAccess');
+  if (gate) gate.hidden = true;
+  if (access) access.hidden = false;
+  if ($('#goTitle')) $('#goTitle').textContent = 'Start.';
+  if ($('#goLede')) $('#goLede').textContent = 'Open WhatsApp or Messenger on your phone. This page only hands you over — the chat is the product.';
+}
+
+function showErr(el, msg) {
+  if (!el) return;
+  el.hidden = !msg;
+  el.textContent = msg || '';
+}
+
+async function postAuth(path, body, errEl) {
+  showErr(errEl, '');
+  const r = await fetch(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'same-origin',
+    body: JSON.stringify(body)
+  });
+  const json = await r.json().catch(() => ({}));
+  if (!r.ok) {
+    showErr(errEl, (json && json.error) || 'Could not save that. Try again.');
+    return null;
+  }
+  return json;
+}
+
+const signupForm = $('#signupForm');
+const loginForm = $('#loginForm');
+if (signupForm) signupForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = $('#signupSubmit');
+  if (btn && btn.disabled) return;
+  if (btn) btn.disabled = true;
+  const out = await postAuth('/v1/signup', {
+    first_name: $('#signupFirst').value,
+    last_name: $('#signupLast').value,
+    password: $('#signupPassword').value,
+    stations_often: $('#signupStations').value,
+    popular_route: [$('#signupFrom').value, $('#signupTo').value].filter(Boolean).join(' to ')
+  }, $('#signupErr'));
+  if (btn) btn.disabled = false;
+  if (out) showAccess();
+});
+if (loginForm) loginForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  const out = await postAuth('/v1/login', {
+    first_name: $('#loginFirst').value,
+    last_name: $('#loginLast').value,
+    password: $('#loginPassword').value
+  }, $('#loginErr'));
+  if (out) showAccess();
+});
+if ($('#showLogin')) $('#showLogin').addEventListener('click', () => {
+  signupForm.hidden = true;
+  loginForm.hidden = false;
+  if ($('#goTitle')) $('#goTitle').textContent = 'Sign in.';
+});
+if ($('#showSignup')) $('#showSignup').addEventListener('click', () => {
+  loginForm.hidden = true;
+  signupForm.hidden = false;
+  if ($('#goTitle')) $('#goTitle').textContent = 'Create an account.';
+});
+if (signedIn) showAccess();
 
 if (station && STATIONS[station]) {
   $('#atChip').hidden = false;

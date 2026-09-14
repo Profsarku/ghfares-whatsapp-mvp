@@ -7,6 +7,8 @@ const engine = require('./lib/engine');
 const fb = require('./lib/messenger');
 const broadcast = require('./lib/broadcast');
 const { ask, hashOf } = require('./lib/ask');
+const { downloadWhatsAppMedia, inboundWhatsAppImage } = require('./lib/media');
+const webAuth = require('./lib/web-auth');
 const qr = require('./tools/qr');
 const QRCode = require('qrcode');
 const fsp = require('fs');
@@ -113,11 +115,21 @@ app.post('/v1/webhook', async (req, res) => {
     console.log('whatsapp in', { from: msg.from, type: msg.type });
 
     const from = msg.from;
-    let text = null, interactiveId = null, location = null, type = null;
+    let text = null, interactiveId = null, location = null, type = null, image = null;
 
     if (msg.type === 'request_welcome') type = 'request_welcome';
     if (msg.type === 'text') text = msg.text.body;
     if (msg.type === 'location') location = { latitude: msg.location.latitude, longitude: msg.location.longitude };
+    const inbound = inboundWhatsAppImage(msg);
+    if (inbound) {
+      type = 'image';
+      image = { id: inbound.id, mime: inbound.mime, caption: inbound.caption, wa_media_id: inbound.id };
+      const dl = await downloadWhatsAppMedia(inbound.id);
+      if (dl) {
+        image.bytes = dl.bytes;
+        image.mime = dl.mime || image.mime;
+      }
+    }
     if (msg.type === 'interactive') {
       const i = msg.interactive;
       if (i.type === 'button_reply') interactiveId = i.button_reply.id;
@@ -126,7 +138,9 @@ app.post('/v1/webhook', async (req, res) => {
         const data = JSON.parse(i.nfm_reply.response_json || '{}');
         if (Array.isArray(data.addons)) {
           const hash = hashOf(from);
+          await caps.ensure(hash, 'whatsapp');
           data.addons.forEach(id => caps.add(hash, id));
+          await caps.flush(hash, 'whatsapp');
           const names = data.addons.map(id => caps.byId[id]?.title).filter(Boolean).join(', ');
           await send(require('./lib/wa').text(from, `Added: *${names}*.\n\nSend MY ADDONS any time to see or change them.`));
           return res.sendStatus(200);
@@ -135,7 +149,7 @@ app.post('/v1/webhook', async (req, res) => {
       }
     }
 
-    const out = ask({ from, text, interactiveId, location, type });
+    const out = await ask({ from, text, interactiveId, location, type, image });
     for (const r of out.payloads) await send(r);
   } catch (e) {
     console.error('webhook error', e);
@@ -199,8 +213,10 @@ async function landing(req, res) {
   const url = station ? `${origin}/go?s=${station}` : `${origin}/go`;
   let page = fsp.readFileSync(path.join(__dirname, 'public', 'go.html'), 'utf8');
   const svg = await qrSvg(url);
+  const signed = await webAuth.accountFromRequest(req);
+  const stationNames = api.core.stations.map(s => s.name);
 
-  const inject = `<script>window.__LANDING__=${JSON.stringify(url)};</script>`;
+  const inject = `<script>window.__LANDING__=${JSON.stringify(url)};window.__SIGNED_IN__=${signed ? 'true' : 'false'};window.__STATIONS__=${JSON.stringify(stationNames)};</script>`;
   page = page.replace('</head>', inject + '</head>');
   page = page.replace('<div class="qr" id="qr"></div>', `<div class="qr" id="qr">${svg}</div>`);
   page = page.replace(
@@ -227,8 +243,28 @@ app.get('/', (req, res) => {
   sendPublic(res, 'index.html', 'html');
 });
 app.get('/go', landing);
+
+app.post('/v1/signup', async (req, res) => {
+  const out = await webAuth.register(req.body || {});
+  if (out.error) return res.status(out.status).json({ error: out.error });
+  res.setHeader('Set-Cookie', webAuth.cookieHeader(out.account.id));
+  res.status(201).json(envelope(out.account));
+});
+app.post('/v1/login', async (req, res) => {
+  const out = await webAuth.login(req.body || {});
+  if (out.error) return res.status(out.status).json({ error: out.error });
+  res.setHeader('Set-Cookie', webAuth.cookieHeader(out.account.id));
+  res.json(envelope(out.account));
+});
+app.post('/v1/logout', (req, res) => {
+  res.setHeader('Set-Cookie', webAuth.clearCookieHeader());
+  res.sendStatus(204);
+});
 app.get('/support', (req, res) => sendPublic(res, 'support.html', 'html'));
-app.get('/site.css', (req, res) => sendPublic(res, 'site.css', 'css'));
+app.get('/site.css', (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  sendPublic(res, 'site.css', 'css');
+});
 app.get('/site.js', (req, res) => sendPublic(res, 'site.js', 'javascript'));
 
 /* Channel chosen — beacon from the landing page. Aggregate only. */
@@ -350,7 +386,7 @@ async function handleMessengerEvent(ev) {
 
   console.log('messenger in', { psid, text, interactiveId, type });
   await takeThread(psid);
-  const out = ask({ from: psid, hash, text, interactiveId, location, type });
+  const out = await ask({ from: psid, hash, text, interactiveId, location, type, channel: 'messenger' });
   for (const r of out.payloads) {
     for (const m of fb.fromWhatsApp(r, psid)) {
       const sent = await sendFB(m);
@@ -471,17 +507,24 @@ app.get('/v1/incidents', (req, res) => {
   res.json(envelope(r, { source: r.source, authority: r.authority }));
 });
 
-app.post('/v1/reports/fare', (req, res) => {
-  const { station, dest, amount } = req.body;
-  const r = api.reportFare(station, dest, Number(amount));
+app.post('/v1/reports/fare', async (req, res) => {
+  const { station, dest, amount, hash } = req.body;
+  const r = await api.reportFare(station, dest, Number(amount), hash);
   if (!r) return res.status(400).json({ error: 'unknown station or destination' });
   res.status(201).json(envelope(r, { source: 'crowd' }));
 });
 
-app.post('/v1/reports/queue', (req, res) => {
-  const { station, dest, state } = req.body;
+app.post('/v1/reports/queue', async (req, res) => {
+  const { station, dest, state, hash } = req.body;
   if (!['moving', 'slow', 'stuck'].includes(state)) return res.status(400).json({ error: 'bad state' });
-  res.status(201).json(envelope(api.reportQueue(station, dest, state), { source: 'crowd' }));
+  res.status(201).json(envelope(await api.reportQueue(station, dest, state, hash), { source: 'crowd' }));
+});
+
+app.post('/v1/reports/road', async (req, res) => {
+  const { road, condition, kind, where, delay, hash } = req.body || {};
+  const r = await api.reportRoad(road, condition, { kind, where, delay, hash });
+  if (!r) return res.status(400).json({ error: 'road and condition required' });
+  res.status(201).json(envelope(r, { source: 'crowd' }));
 });
 
 /* ════════ BROADCAST ════════
@@ -524,14 +567,21 @@ app.get('/v1/broadcasts/ledger/:hash?', (req, res) =>
 
 /* add-ons over HTTP, same registry the bot uses */
 app.get('/v1/capabilities', (req, res) => res.json(envelope(caps.CAPABILITIES)));
-app.get('/v1/subscribers/:hash/capabilities', (req, res) => res.json(envelope(caps.list(req.params.hash))));
-app.post('/v1/subscribers/:hash/capabilities', (req, res) => {
+app.get('/v1/subscribers/:hash/capabilities', async (req, res) => {
+  await caps.ready();
+  res.json(envelope(caps.list(req.params.hash)));
+});
+app.post('/v1/subscribers/:hash/capabilities', async (req, res) => {
+  await caps.ensure(req.params.hash, 'api');
   const c = caps.add(req.params.hash, req.body.capability);
   if (!c) return res.status(404).json({ error: 'no such capability' });
+  await caps.flush(req.params.hash, 'api');
   res.status(201).json(envelope(c));
 });
-app.delete('/v1/subscribers/:hash/capabilities/:id', (req, res) => {
+app.delete('/v1/subscribers/:hash/capabilities/:id', async (req, res) => {
+  await caps.ensure(req.params.hash, 'api');
   caps.remove(req.params.hash, req.params.id);
+  await caps.flush(req.params.hash, 'api');
   res.sendStatus(204);
 });
 
@@ -618,14 +668,27 @@ app.get('/v1/whatsapp-status', async (req, res) => {
   }));
 });
 
-app.post('/v1/nlu/classify', (req, res) => res.json(envelope(classify(req.body.text))));
+app.get('/v1/nlu/status', (req, res) => res.json(envelope(require('./lib/nlu').status())));
+app.post('/v1/nlu/classify', async (req, res) => res.json(envelope(await classify(req.body.text))));
 
-app.get('/v1/health/freshness', (req, res) => res.json(envelope({
-  charts: api.charts(),
-  fuel_window: api.core.fuel.window,
-  live_incidents: api.core.incidents.filter(i => i.status === 'live').length,
-  subscribers: caps.subscribers.size
-})));
+app.get('/v1/health/freshness', async (req, res) => {
+  await caps.ready();
+  res.json(envelope({
+    charts: api.charts(),
+    fuel_window: api.core.fuel.window,
+    live_incidents: api.core.incidents.filter(i => i.status === 'live').length,
+    subscribers: caps.subscribers.size,
+    neon: require('./lib/db/persist').status()
+  }));
+});
+
+app.get('/v1/health/db', async (req, res) => {
+  const persist = require('./lib/db/persist');
+  const status = persist.status();
+  if (!status.configured) return res.json(envelope({ ...status, live: [] }));
+  const live = await persist.ping('users');
+  res.json(envelope({ ...status, live: [live] }));
+});
 
 /* ════════ DEMO PHONE ════════
    The sample WhatsApp / Messenger / website UI talks to the live engine
@@ -657,23 +720,26 @@ app.get('/v1', (req, res) => res.json({
     incidents: 'GET /v1/incidents?road=',
     report_fare: 'POST /v1/reports/fare',
     report_queue: 'POST /v1/reports/queue',
+    report_road: 'POST /v1/reports/road',
     classify: 'POST /v1/nlu/classify',
+    nlu_status: 'GET /v1/nlu/status',
     capabilities: 'GET /v1/capabilities',
-    freshness: 'GET /v1/health/freshness'
+    freshness: 'GET /v1/health/freshness',
+    db: 'GET /v1/health/db'
   }
 }));
 
 /* Everyone — riders included — talks to the engine here. */
-app.post('/v1/ask', (req, res) => {
+app.post('/v1/ask', async (req, res) => {
   const { session, text, interactive_id, interactiveId, location, type } = req.body || {};
-  const out = ask({ session, text, interactiveId: interactive_id || interactiveId, location, type });
+  const out = await ask({ session, text, interactiveId: interactive_id || interactiveId, location, type });
   res.json(envelope({
     session: out.session,
     intent: out.intent,
     places: out.places,
     replies: out.replies,
     subscriber: out.subscriber
-  }, { via: out.via }));
+  }, { via: out.via, nlu: out.nlu }));
 });
 app.get(['/favicon.svg', '/favicon.ico', '/favicon.png'], (req, res) => {
   res.type('image/svg+xml').sendFile(path.join(__dirname, 'public', 'favicon.svg'));
@@ -682,10 +748,14 @@ app.get(['/favicon.svg', '/favicon.ico', '/favicon.png'], (req, res) => {
 app.get(['/privacy', '/privacy-policy', '/data-deletion'], (req, res) =>
   res.type('html').sendFile(path.join(__dirname, 'public', 'privacy.html')));
 
-app.get('/demo', (req, res) =>
-  res.sendFile(path.join(__dirname, 'public', 'demo.html')));
-app.get('/demo.js', (req, res) =>
-  res.sendFile(path.join(__dirname, 'public', 'demo.js')));
+app.get('/demo', (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  res.sendFile(path.join(__dirname, 'public', 'demo.html'));
+});
+app.get('/demo.js', (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  res.sendFile(path.join(__dirname, 'public', 'demo.js'));
+});
 
 app.get('/v1/demo/bootstrap', (req, res) => {
   const qrs = {};
@@ -701,30 +771,43 @@ app.get('/v1/demo/bootstrap', (req, res) => {
   });
 });
 
-app.post('/v1/demo/turn', (req, res) => {
+app.post('/v1/demo/turn', async (req, res) => {
   const { session = 'wa-preview-01', text, interactiveId, location, type, channel } = req.body || {};
   const from = channel === 'fb' ? 'PSID' : '233201234567';
-  const out = ask({ session, from, hash: String(session), text, interactiveId, location, type });
+  const out = await ask({ session, from, hash: String(session), text, interactiveId, location, type });
   const messenger = out.payloads.flatMap(r => fb.fromWhatsApp(r, from));
   res.json({ replies: out.payloads, messenger });
 });
 
 app.post('/v1/demo/reset', (req, res) => {
   const session = String((req.body || {}).session || '');
-  if (session) caps.subscribers.delete(session);
+  if (session) caps.forget(session);
   res.sendStatus(204);
 });
 
-app.post('/v1/demo/station', (req, res) => {
+app.post('/v1/demo/station', async (req, res) => {
   const { session = 'wa-preview-01', station } = req.body || {};
+  await caps.ensure(String(session), 'demo');
   caps.subscriber(String(session)).station = station || null;
+  await caps.flush(String(session), 'demo');
   res.json({ station: caps.subscriber(String(session)).station });
 });
 
 if (require.main === module) {
   const ip = lanIp();
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`GH Fares  landing http://localhost:${PORT}` + (ip ? `  phone http://${ip}:${PORT}` : '') + `  (DRY_RUN=${DRY_RUN})`);
+  Promise.all([
+    caps.ready(),
+    require('./lib/api').ready(),
+    broadcast.ready()
+  ]).then(() => {
+    const neon = require('./lib/db/persist').status();
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`GH Fares  landing http://localhost:${PORT}` + (ip ? `  phone http://${ip}:${PORT}` : '') + `  (DRY_RUN=${DRY_RUN})`);
+      console.log(neon.configured ? `         neon ${neon.host}  ${neon.databases.length} databases` : '         neon off  (in-memory)');
+    });
+  }).catch(e => {
+    console.error('startup failed', e);
+    process.exit(1);
   });
 }
 module.exports = app;
