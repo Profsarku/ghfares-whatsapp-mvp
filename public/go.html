@@ -117,6 +117,7 @@
       </div>
     </div>
     <p class="go-fine">Free, always. We publish <b>counts, never accusations</b> — no driver, vehicle or plate is ever recorded.</p>
+    <p class="go-account"><button type="button" class="text-btn" id="goLogout">Log out</button></p>
   </div>
 </section>
 
@@ -177,6 +178,21 @@ function showAccess() {
   if ($('#goLede')) $('#goLede').textContent = 'Open WhatsApp or Messenger on your phone. This page only hands you over — the chat is the product.';
 }
 
+function showGate() {
+  const gate = $('#signupGate');
+  const access = $('#goAccess');
+  if (gate) gate.hidden = false;
+  if (access) access.hidden = true;
+  const su = $('#signupForm');
+  const li = $('#loginForm');
+  if (su) su.hidden = false;
+  if (li) li.hidden = true;
+  ['signupPassword', 'loginPassword'].forEach(id => { const el = $('#' + id); if (el) el.value = ''; });
+  if ($('#goTitle')) $('#goTitle').textContent = 'Create an account.';
+  if ($('#goLede')) $('#goLede').textContent = 'Sign up first. Then this page hands you to WhatsApp or Messenger on your phone — never a website chat.';
+  showChooser();
+}
+
 function showErr(el, msg) {
   if (!el) return;
   el.hidden = !msg;
@@ -234,6 +250,15 @@ if ($('#showSignup')) $('#showSignup').addEventListener('click', () => {
   loginForm.hidden = true;
   signupForm.hidden = false;
   if ($('#goTitle')) $('#goTitle').textContent = 'Create an account.';
+});
+if ($('#goLogout')) $('#goLogout').addEventListener('click', async () => {
+  const btn = $('#goLogout');
+  if (btn) btn.disabled = true;
+  try {
+    await fetch('/v1/logout', { method: 'POST', credentials: 'same-origin' });
+  } catch (e) {}
+  if (btn) btn.disabled = false;
+  showGate();
 });
 if (signedIn) showAccess();
 

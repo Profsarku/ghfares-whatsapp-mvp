@@ -142,9 +142,13 @@ async function req(server, path, opts = {}) {
 
   if (home.text.includes('id="signupFirst"') && home.text.includes('id="signupPassword"')
       && home.text.includes('id="signupStations"') && home.text.includes('id="signupFrom"')
-      && home.text.includes('id="goAccess"'))
+      && home.text.includes('id="goAccess"') && home.text.includes('id="goLogout"'))
     pass('GET /go  signup before QR');
   else bad('GET /go signup gate', 'missing signup fields');
+
+  const loggedOut = await req(server, '/v1/logout', { method: 'POST' });
+  if (loggedOut.status === 204) pass('POST /v1/logout');
+  else bad('POST /v1/logout', loggedOut.status);
 
   const signed = await req(server, '/v1/signup', {
     method: 'POST',
