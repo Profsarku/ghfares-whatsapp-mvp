@@ -709,7 +709,7 @@ app.get('/v1/health/db', async (req, res) => {
   const status = persist.status();
   if (!status.configured) return res.json(envelope({ ...status, live: [] }));
   await apiReady();
-  const live = await Promise.all(['users', 'survey', 'ai'].map(name => persist.ping(name)));
+  const live = await Promise.all(['users', 'survey', 'ai', 'countries'].map(name => persist.ping(name)));
   res.json(envelope({ ...status, live, survey: api.survey() }));
 });
 

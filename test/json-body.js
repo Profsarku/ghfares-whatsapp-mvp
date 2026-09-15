@@ -26,6 +26,13 @@ const ok = [];
 function pass(name, extra) { ok.push(name); console.log('  ok  ' + name + (extra ? '  ' + extra : '')); }
 function bad(name, err) { fail.push(name); console.log('  FAIL  ' + name + '  ' + err); }
 
+function inGhana(hash) {
+  const s = caps.subscriber(hash);
+  s.country = 'gh';
+  s.onboarded = true;
+  return s;
+}
+
 function listen(app) {
   return new Promise(resolve => {
     const server = http.createServer(app);
@@ -236,20 +243,52 @@ async function req(server, path, opts = {}) {
   const hash = 'unit-welcome-once';
   caps.forget(hash);
   const opened = await engine.handle({ from: '233201234567', hash, type: 'request_welcome' });
-  const typedHi = await engine.handle({ from: '233201234567', hash, text: 'Hi' });
-  const openIds = ((opened[0] && opened[0].interactive && opened[0].interactive.action.sections) || [])
-    .flatMap(s => s.rows.map(r => r.id));
-  if (opened[0] && opened[0].type === 'interactive' && openIds.includes('addon:fuel')
-      && typedHi[0] && typedHi[0].type === 'text' && /Choose|road condition/i.test(typedHi[0].text && typedHi[0].text.body))
-    pass('welcome is add-on list  hi does not repeat it');
-  else bad('welcome list', (opened[0] && opened[0].type) + ' ' + (typedHi[0] && typedHi[0].type));
+  const openedType = opened[0] && opened[0].type;
+  const openedAsk = JSON.stringify(opened);
+  if (openedType === 'interactive' && /location_request/i.test(openedAsk) && /country/i.test(openedAsk) && /WhatsApp location|Share your location/i.test(openedAsk))
+    pass('welcome  asks country via WhatsApp location');
+  else bad('welcome country ask', openedType + ' ' + openedAsk.slice(0, 180));
 
+  const typedHi = await engine.handle({ from: '233201234567', hash, text: 'Hi' });
+  if (typedHi[0] && typedHi[0].type === 'interactive' && /country/i.test(JSON.stringify(typedHi)))
+    pass('hi before country  still asks country');
+  else bad('hi before country', JSON.stringify(typedHi).slice(0, 180));
+
+  const ghanaIn = await engine.handle({ from: '233201234567', hash, text: 'Ghana' });
+  const ghanaIds = ((ghanaIn[0] && ghanaIn[0].interactive && ghanaIn[0].interactive.action.sections) || [])
+    .flatMap(s => (s.rows || []).map(r => r.id));
+  if (ghanaIn[0] && ghanaIn[0].type === 'interactive' && ghanaIds.includes('addon:fuel'))
+    pass('Ghana  opens the live menu');
+  else bad('Ghana menu', JSON.stringify(ghanaIn).slice(0, 180));
+
+  const afterHi = await engine.handle({ from: '233201234567', hash, text: 'Hi' });
+  if (afterHi[0] && afterHi[0].type === 'text' && /Choose|road condition/i.test(afterHi[0].text && afterHi[0].text.body))
+    pass('hi after Ghana  does not repeat the menu');
+  else bad('hi after Ghana', JSON.stringify(afterHi).slice(0, 180));
+
+  caps.forget('unit-usa');
+  const usa = await engine.handle({ from: '233201234567', hash: 'unit-usa', text: 'USA' });
+  if (/don't have data|do not have data|United States/i.test(JSON.stringify(usa)))
+    pass('USA  has no country data');
+  else bad('USA no data', JSON.stringify(usa).slice(0, 220));
+
+  caps.forget('unit-usaloc');
+  const usaPin = await engine.handle({
+    from: '233201234567', hash: 'unit-usaloc',
+    location: { latitude: 40.7128, longitude: -74.006 }
+  });
+  if (/don't have data|do not have data|United States/i.test(JSON.stringify(usaPin)))
+    pass('USA WhatsApp location  has no country data');
+  else bad('USA location', JSON.stringify(usaPin).slice(0, 220));
+
+  inGhana('unit-roadq');
   const roadAsk = await engine.handle({ from: '233201234567', hash: 'unit-roadq', text: 'what is the road condition right now' });
   if (/motorway|blocked|incident|Nothing reported/i.test(JSON.stringify(roadAsk)))
     pass('what is the road condition right now');
   else bad('road question', JSON.stringify(roadAsk).slice(0, 180));
 
   caps.forget('unit-slash');
+  inGhana('unit-slash');
   if (engine.expandCommand('/addroads gg') === 'add roads' && engine.expandCommand('/fare Tema to Accra') === 'Tema to Accra')
     pass('expandCommand  /fare keeps query, /addroads ignores junk');
   else bad('expandCommand', engine.expandCommand('/addroads gg') + ' | ' + engine.expandCommand('/fare Tema to Accra'));
@@ -266,6 +305,7 @@ async function req(server, path, opts = {}) {
   else bad('/addroads', JSON.stringify(slashAdd).slice(0, 180));
 
   caps.forget('unit-photo');
+  inGhana('unit-photo');
   const pic = await engine.handle({
     from: '233201234567',
     hash: 'unit-photo',
@@ -277,6 +317,7 @@ async function req(server, path, opts = {}) {
     pass('WhatsApp road photo  saved and logged');
   else bad('WhatsApp road photo', picTxt.slice(0, 220));
 
+  inGhana('unit-photo-miss');
   const noPic = await engine.handle({
     from: '233201234567',
     hash: 'unit-photo-miss',
@@ -325,6 +366,7 @@ async function req(server, path, opts = {}) {
   else bad('pothole route', JSON.stringify(pothole));
 
   caps.forget('unit-pothole');
+  inGhana('unit-pothole');
   const potholeTurn = await engine.handle({ from: '233201234567', hash: 'unit-pothole', text: 'Pothole on Kaneshie to Kasoa' });
   if (/Logged/i.test(JSON.stringify(potholeTurn)) && /pothole/i.test(JSON.stringify(potholeTurn)) && !/queued for mapping/i.test(JSON.stringify(potholeTurn)))
     pass('engine  pothole logs a road report');
@@ -340,6 +382,7 @@ async function req(server, path, opts = {}) {
     pass('stationsNear  rejects a pin far from Ghana');
   else bad('stationsNear far', JSON.stringify({ metres: far.metres, too_far: far.too_far }));
 
+  inGhana('unit-farloc');
   const farLoc = await engine.handle({
     from: '233201234567', hash: 'unit-farloc',
     location: { latitude: 47.573, longitude: -121.997 }
@@ -349,6 +392,7 @@ async function req(server, path, opts = {}) {
   else bad('engine far loc', JSON.stringify(farLoc).slice(0, 220));
 
   caps.forget('unit-place');
+  inGhana('unit-place');
   const locAsk = await engine.handle({ from: '233201234567', hash: 'unit-place', text: 'where' });
   if (/Share your location|say \*no\*|type any station/i.test(JSON.stringify(locAsk)))
     pass('where  asks for location or typed station');
@@ -369,14 +413,15 @@ async function req(server, path, opts = {}) {
     pass('NLU  fare questions still resolve a from-to pair');
   else bad('NLU fare pair', JSON.stringify(nluFare));
 
+  inGhana('unit-nlu');
   const nluTurn = await engine.handle({ from: '233201234567', hash: 'unit-nlu', text: 'turn on road updates' });
   if (/Road alerts added/i.test(JSON.stringify(nluTurn)))
     pass('NLU  turn on road updates adds the add-on');
   else bad('NLU addon turn', JSON.stringify(nluTurn).slice(0, 180));
 
   const catalog = require('../lib/db/catalog');
-  if (catalog.NAMES.length === 23 && catalog.NAMES.includes('survey') && catalog.NAMES.includes('ai') && catalog.NAMES.includes('report_road_condition'))
-    pass('neon catalog  survey + ai + report_road_condition');
+  if (catalog.NAMES.length === 24 && catalog.NAMES.includes('survey') && catalog.NAMES.includes('ai') && catalog.NAMES.includes('countries') && catalog.NAMES.includes('report_road_condition'))
+    pass('neon catalog  survey + ai + countries');
   else bad('neon catalog', catalog.NAMES.join(','));
 
   const dbHealth = await req(server, '/v1/health/db');
