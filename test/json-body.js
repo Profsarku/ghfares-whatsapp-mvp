@@ -19,7 +19,7 @@ const app = require('../server');
 const fb = require('../lib/messenger');
 const engine = require('../lib/engine');
 const caps = require('../lib/capabilities');
-const { classify } = require('../lib/api');
+const { classify, api } = require('../lib/api');
 
 const fail = [];
 const ok = [];
@@ -314,6 +314,40 @@ async function req(server, path, opts = {}) {
     pass('NLU  wahala on the highway → road');
   else bad('NLU road paraphrase', JSON.stringify(nluRoad));
 
+  const reportMe = await classify('I want to report it myself');
+  if (reportMe.intent === 'road' && reportMe.reporting)
+    pass('classifier  I want to report it myself → road report');
+  else bad('report myself', JSON.stringify(reportMe));
+
+  const pothole = await classify('Pothole on Kaneshie to Kasoa');
+  if (pothole.intent === 'road' && pothole.reporting && pothole.places.length >= 2)
+    pass('classifier  pothole on kaneshie to kasoa → road report');
+  else bad('pothole route', JSON.stringify(pothole));
+
+  caps.forget('unit-pothole');
+  const potholeTurn = await engine.handle({ from: '233201234567', hash: 'unit-pothole', text: 'Pothole on Kaneshie to Kasoa' });
+  if (/Logged/i.test(JSON.stringify(potholeTurn)) && /pothole/i.test(JSON.stringify(potholeTurn)) && !/queued for mapping/i.test(JSON.stringify(potholeTurn)))
+    pass('engine  pothole logs a road report');
+  else bad('engine pothole', JSON.stringify(potholeTurn).slice(0, 220));
+
+  const wantReport = await engine.handle({ from: '233201234567', hash: 'unit-pothole', text: 'I want to report it myself' });
+  if (/Send a photo|pothole on kaneshie/i.test(JSON.stringify(wantReport)))
+    pass('engine  I want to report it myself asks for a photo');
+  else bad('engine report myself', JSON.stringify(wantReport).slice(0, 220));
+
+  const far = api.stationsNear(47.573, -121.997);
+  if (far.too_far && far.metres > 25000)
+    pass('stationsNear  rejects a pin far from Ghana');
+  else bad('stationsNear far', JSON.stringify({ metres: far.metres, too_far: far.too_far }));
+
+  const farLoc = await engine.handle({
+    from: '233201234567', hash: 'unit-farloc',
+    location: { latitude: 47.573, longitude: -121.997 }
+  });
+  if (/not near|Ghana station|kaneshie/i.test(JSON.stringify(farLoc)) && !/14319859/i.test(JSON.stringify(farLoc)))
+    pass('engine  far location is not claimed as Kasoa');
+  else bad('engine far loc', JSON.stringify(farLoc).slice(0, 220));
+
   const nluFare = await classify('kaneshie to bubuashie');
   if (nluFare.intent === 'fare' && nluFare.via === 'regex' && nluFare.places.length >= 2)
     pass('NLU  regex still owns kaneshie to bubuashie');
@@ -325,8 +359,8 @@ async function req(server, path, opts = {}) {
   else bad('NLU addon turn', JSON.stringify(nluTurn).slice(0, 180));
 
   const catalog = require('../lib/db/catalog');
-  if (catalog.NAMES.length === 21 && catalog.NAMES.includes('auth') && catalog.NAMES.includes('report_road_condition'))
-    pass('neon catalog  auth + report_road_condition');
+  if (catalog.NAMES.length === 22 && catalog.NAMES.includes('ai') && catalog.NAMES.includes('auth') && catalog.NAMES.includes('report_road_condition'))
+    pass('neon catalog  ai + auth + report_road_condition');
   else bad('neon catalog', catalog.NAMES.join(','));
 
   const dbHealth = await req(server, '/v1/health/db');

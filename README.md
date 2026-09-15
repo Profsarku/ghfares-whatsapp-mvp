@@ -37,7 +37,7 @@ can develop the whole bot before touching Meta.
 
 One Neon project. A separate database for each concern — `auth`, `users`,
 `consent`, `sessions`, `fares_reports`, `report_road_condition`, `fuel`,
-`queues`, and the rest of the catalog in `lib/db/catalog.js`. Same host,
+`queues`, `ai`, and the rest of the catalog in `lib/db/catalog.js`. Same host,
 different database name. No cross-database joins. Shared ids only (`hash`,
 `route_key`, `station_id`).
 
@@ -370,27 +370,27 @@ answer a rider and be sold to an institution.
 
 The classifier extracts **intent and entities only**. Every number in every
 reply is looked up from the API afterwards. Phrasing the regex misses is
-handled in `lib/nlu.js`: an open-source Llama (Ollama locally, or Groq /
-Together / vLLM with the same OpenAI-compatible API) returns
-`{ intent, places, arg }` — a station pair, never a price. The bot cannot
-invent a fare.
+handled in `lib/nlu.js`: open-source Codex (`openai/gpt-oss-20b`, Apache-2.0)
+returns `{ intent, places, arg }` — a station pair, never a price. The bot
+cannot invent a fare.
 
-Local default: `NLU_PROVIDER=auto` tries Ollama at `http://127.0.0.1:11434`
-(`llama3.2`). If Ollama is not running, a small example matcher still maps
+Few-shots, the model name, and the OpenAI-compatible endpoint live in the
+`ai` database on the same Neon project. `POST /v1/ask` reads that store, then
+calls the model. API keys stay in env (`NLU_API_KEY` or `HF_TOKEN`), never in
+Postgres.
+
+Default: `NLU_PROVIDER=codex`. With a key it calls Hugging Face Inference
+(`https://router.huggingface.co/v1`). Without a key it tries local Ollama
+`gpt-oss:20b`. If neither is up, a small example matcher still maps
 paraphrases such as *switch on petrol alerts* → add Fuel watch.
 
 ```
-ollama pull llama3.2
-# then restart node server.js
-```
+# Hosted gpt-oss (Vercel Production)
+NLU_PROVIDER=codex
+NLU_API_KEY=hf_...
 
-Hosted Llama (optional):
-
-```
-NLU_PROVIDER=openai
-NLU_BASE_URL=https://api.groq.com/openai/v1
-NLU_MODEL=llama-3.1-8b-instant
-NLU_API_KEY=...
+# Local Codex / Ollama
+ollama pull gpt-oss:20b
 ```
 
 `POST /v1/nlu/classify` and `GET /v1/nlu/status` expose the bridge. Tests set

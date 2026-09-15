@@ -668,7 +668,11 @@ app.get('/v1/whatsapp-status', async (req, res) => {
   }));
 });
 
-app.get('/v1/nlu/status', (req, res) => res.json(envelope(require('./lib/nlu').status())));
+app.get('/v1/nlu/status', async (req, res) => {
+  const nlu = require('./lib/nlu');
+  await nlu.ready();
+  res.json(envelope(nlu.status()));
+});
 app.post('/v1/nlu/classify', async (req, res) => res.json(envelope(await classify(req.body.text))));
 
 app.get('/v1/health/freshness', async (req, res) => {
