@@ -133,7 +133,7 @@ async function req(server, path, opts = {}) {
   else bad('GET messenger-profile', want.status);
 
   const site = await req(server, '/');
-  if (site.status === 200 && /What Ghanaians/i.test(site.text) && site.text.includes('id="services"'))
+  if (site.status === 200 && /Never stranded/i.test(site.text) && site.text.includes('id="services"'))
     pass('GET /  services landing');
   else bad('GET / landing', 'missing services page');
 
@@ -313,9 +313,57 @@ async function req(server, path, opts = {}) {
     image: { mime: 'image/jpeg', bytes: Buffer.from('fakejpg'), caption: 'tema motorway blocked' }
   });
   const picTxt = JSON.stringify(pic);
-  if (/Photo saved/i.test(picTxt) && /motorway/i.test(picTxt) && /blocked/i.test(picTxt) && /ADD ROADS/i.test(picTxt))
-    pass('WhatsApp road photo  saved and logged');
+  if (/location_request/i.test(picTxt) && /Where are you/i.test(picTxt) && /no GPS|no location/i.test(picTxt) && /motorway|blocked|Photo saved/i.test(picTxt))
+    pass('WhatsApp road photo  asks where (no GPS)');
   else bad('WhatsApp road photo', picTxt.slice(0, 220));
+
+  const picWhere = await engine.handle({
+    from: '233201234567', hash: 'unit-photo',
+    location: { latitude: 5.6037, longitude: -0.1870 }
+  });
+  if (/contractor/i.test(JSON.stringify(picWhere)))
+    pass('road photo location  then asks contractor');
+  else bad('road photo location', JSON.stringify(picWhere).slice(0, 220));
+
+  const picSkip = await engine.handle({ from: '233201234567', hash: 'unit-photo', text: 'skip' });
+  if (/Logged|not stranded|ghfares.com\/roads/i.test(JSON.stringify(picSkip)))
+    pass('road photo  logged after skip contractor');
+  else bad('road photo skip contractor', JSON.stringify(picSkip).slice(0, 220));
+
+  caps.forget('unit-car');
+  inGhana('unit-car');
+  const carPic = await engine.handle({
+    from: '233201234567',
+    hash: 'unit-car',
+    type: 'image',
+    image: { mime: 'image/jpeg', bytes: Buffer.from('fakejpg'), caption: 'this car' }
+  });
+  const carTxt = JSON.stringify(carPic);
+  if (/photo:kind:road_condition/.test(carTxt) && /photo:kind:accident/.test(carTxt))
+    pass('car photo  asks road condition or accident');
+  else bad('car photo kind', carTxt.slice(0, 220));
+
+  const carPick = await engine.handle({
+    from: '233201234567', hash: 'unit-car', interactiveId: 'photo:kind:road_condition'
+  });
+  if (/location_request/i.test(JSON.stringify(carPick)) && /Where are you/i.test(JSON.stringify(carPick)))
+    pass('picked road condition  asks where');
+  else bad('picked road condition', JSON.stringify(carPick).slice(0, 220));
+
+  const carPlace = await engine.handle({ from: '233201234567', hash: 'unit-car', text: 'Tema Motorway km 8' });
+  if (/contractor/i.test(JSON.stringify(carPlace)))
+    pass('typed landmark  then asks contractor');
+  else bad('typed landmark', JSON.stringify(carPlace).slice(0, 220));
+
+  const named = await engine.handle({ from: '233201234567', hash: 'unit-car', text: 'China Railway' });
+  if (/China Railway/i.test(JSON.stringify(named)) && /Logged/i.test(JSON.stringify(named)))
+    pass('contractor name  stored');
+  else bad('contractor name', JSON.stringify(named).slice(0, 220));
+
+  const hist = await engine.handle({ from: '233201234567', hash: 'unit-photo', text: 'my road photos' });
+  if (/no road photos|Your road photos|keyed/i.test(JSON.stringify(hist)))
+    pass('my road photos  history');
+  else bad('road photo history', JSON.stringify(hist).slice(0, 180));
 
   inGhana('unit-photo-miss');
   const noPic = await engine.handle({
@@ -420,9 +468,21 @@ async function req(server, path, opts = {}) {
   else bad('NLU addon turn', JSON.stringify(nluTurn).slice(0, 180));
 
   const catalog = require('../lib/db/catalog');
-  if (catalog.NAMES.length === 24 && catalog.NAMES.includes('survey') && catalog.NAMES.includes('ai') && catalog.NAMES.includes('countries') && catalog.NAMES.includes('report_road_condition'))
-    pass('neon catalog  survey + ai + countries');
+  if (catalog.NAMES.length === 25 && catalog.NAMES.includes('survey') && catalog.NAMES.includes('ai') && catalog.NAMES.includes('countries') && catalog.NAMES.includes('road_photos') && catalog.NAMES.includes('report_road_condition'))
+    pass('neon catalog  survey + ai + countries + road_photos');
   else bad('neon catalog', catalog.NAMES.join(','));
+
+  const roadsApi = await req(server, '/v1/roads');
+  const roadsData = roadsApi.body && roadsApi.body.data;
+  if (roadsApi.status === 200 && roadsData && Array.isArray(roadsData.roads) && Array.isArray(roadsData.accidents)
+      && roadsData.roads.some(r => /China Railway/i.test(r.contractor || '')))
+    pass('GET /v1/roads  lists bad roads and contractor');
+  else bad('GET /v1/roads', roadsApi.status + ' ' + JSON.stringify(roadsData).slice(0, 240));
+
+  const roadsPage = await req(server, '/roads');
+  if (roadsPage.status === 200 && /Never stranded|contractor|Help others/i.test(String(roadsPage.body || roadsPage.text || '')))
+    pass('GET /roads  public help-others page');
+  else bad('GET /roads', roadsPage.status + ' ' + String(roadsPage.body || '').slice(0, 120));
 
   const dbHealth = await req(server, '/v1/health/db');
   if (dbHealth.status === 200 && dbHealth.body && dbHealth.body.data && dbHealth.body.data.configured === false)

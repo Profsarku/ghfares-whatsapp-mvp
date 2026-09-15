@@ -264,6 +264,7 @@ app.post('/v1/logout', (req, res) => {
   res.sendStatus(204);
 });
 app.get('/support', (req, res) => sendPublic(res, 'support.html', 'html'));
+app.get('/roads', (req, res) => sendPublic(res, 'roads.html', 'html'));
 app.get('/site.css', (req, res) => {
   res.set('Cache-Control', 'no-store');
   sendPublic(res, 'site.css', 'css');
@@ -523,6 +524,15 @@ app.get('/v1/incidents', (req, res) => {
   res.json(envelope(r, { source: r.source, authority: r.authority }));
 });
 
+app.get('/v1/roads', async (req, res) => {
+  const rows = await api.badRoads();
+  const list = Array.isArray(rows) ? rows : [];
+  res.json(envelope({
+    roads: list.filter(r => r.kind !== 'accident'),
+    accidents: list.filter(r => r.kind === 'accident')
+  }, { source: 'crowd', authority: 'rider reports' }));
+});
+
 app.post('/v1/reports/fare', async (req, res) => {
   const { station, dest, amount, hash } = req.body;
   const r = await api.reportFare(station, dest, Number(amount), hash);
@@ -709,7 +719,7 @@ app.get('/v1/health/db', async (req, res) => {
   const status = persist.status();
   if (!status.configured) return res.json(envelope({ ...status, live: [] }));
   await apiReady();
-  const live = await Promise.all(['users', 'survey', 'ai', 'countries'].map(name => persist.ping(name)));
+  const live = await Promise.all(['users', 'survey', 'ai', 'countries', 'road_photos'].map(name => persist.ping(name)));
   res.json(envelope({ ...status, live, survey: api.survey() }));
 });
 
@@ -735,6 +745,7 @@ app.get('/v1', (req, res) => res.json({
     fuel: 'GET /v1/fuel?area=',
     fuel_compare: 'GET /v1/fuel/compare?areas=Accra,Tema',
     incidents: 'GET /v1/incidents?road=',
+    roads: 'GET /v1/roads',
     report_fare: 'POST /v1/reports/fare',
     report_queue: 'POST /v1/reports/queue',
     report_road: 'POST /v1/reports/road',

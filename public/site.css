@@ -275,6 +275,15 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .form-switch { margin-top: 18px; font-size: 14px; color: var(--mute); }
 .text-btn { font: inherit; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 
+.roads-hero { min-height: auto; padding-bottom: 64px; }
+.roads-acc-h { margin-top: 48px; }
+.table-wrap { overflow-x: auto; margin-top: 20px; border: 1px solid var(--line); border-radius: 12px; }
+.roads-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.roads-table th, .roads-table td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.roads-table th { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); font-weight: 600; }
+.roads-table tr:last-child td { border-bottom: 0; }
+.roads-table .mute, td.mute { color: var(--mute); }
+
 @media (max-width: 734px) {
   .rows > .row, .steps, .split { grid-template-columns: 1fr; gap: 10px; }
   .section { padding: 64px 0; }

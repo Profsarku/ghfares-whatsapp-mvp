@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Road conditions — GH Fares</title>
+<meta name="description" content="Help others never get stranded, lost, or run out of transport money. Live bad roads and contractor names from rider reports in WhatsApp.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/site.css">
+</head>
+<body>
+<header class="nav">
+  <div class="nav-inner">
+    <a class="logo" href="/">GH Fares</a>
+    <a class="n" href="/#services">Services</a>
+    <a class="n on" href="/roads">Roads</a>
+    <a class="n" href="/support">Support</a>
+    <a class="start" href="/go">Start</a>
+  </div>
+</header>
+
+<section class="hero roads-hero">
+  <p class="kicker">Help others get home</p>
+  <h1>Never stranded.<br>Never lost.</h1>
+  <p class="lede">Riders send a photo when the road is bad. WhatsApp does not attach GPS, so they tell us where they are. We keep the list public — including the contractor on the stretch, when someone knows it — so you do not run out of transport money sitting in a blockage.</p>
+  <div class="actions">
+    <a class="btn btn-light" href="/go">Send a road photo</a>
+    <a class="btn btn-ghost" href="#list">Live list</a>
+  </div>
+</section>
+
+<section class="section" id="list">
+  <div class="wrap">
+    <h2>Bad road conditions</h2>
+    <p class="sub">Named stretches, what riders see, and who is working it when we know. Send a WhatsApp photo to add one — then share your location.</p>
+    <div class="table-wrap">
+      <table class="roads-table" id="roadsTable">
+        <thead>
+          <tr>
+            <th>Road</th>
+            <th>Condition</th>
+            <th>Where</th>
+            <th>Contractor</th>
+          </tr>
+        </thead>
+        <tbody id="roadsBody">
+          <tr><td colspan="4" class="mute">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="roads-acc-h">Accidents on the way</h2>
+    <p class="sub">So you can change route before you are stuck with no fare left.</p>
+    <div class="table-wrap">
+      <table class="roads-table" id="accidentsTable">
+        <thead>
+          <tr>
+            <th>Road</th>
+            <th>What</th>
+            <th>Where</th>
+          </tr>
+        </thead>
+        <tbody id="accidentsBody">
+          <tr><td colspan="3" class="mute">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <span>GH Fares</span>
+  <nav>
+    <a href="/#services">Services</a>
+    <a href="/roads">Roads</a>
+    <a href="/support">Support</a>
+    <a href="/privacy">Privacy</a>
+    <a href="/go">Start</a>
+  </nav>
+</footer>
+<script>
+function cell(v, fallback) {
+  const t = String(v || '').trim() || (fallback || '—');
+  return t.replace(/[&<>"]/g, function (ch) {
+    return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[ch];
+  });
+}
+function rows(list, cols) {
+  if (!list || !list.length) {
+    return '<tr><td colspan="' + cols + '" class="mute">Nothing live yet. Send a photo from WhatsApp, then tell us where you are.</td></tr>';
+  }
+  return list.map(function (r) {
+    var line = '<tr><td>' + cell(r.road) + '</td><td>' + cell(r.condition) + '</td><td>' + cell(r.where) + '</td>';
+    if (cols === 4) line += '<td>' + cell(r.contractor, 'Not named') + '</td>';
+    return line + '</tr>';
+  }).join('');
+}
+fetch('/v1/roads').then(function (r) { return r.json(); }).then(function (body) {
+  var data = (body && body.data) || {};
+  document.getElementById('roadsBody').innerHTML = rows(data.roads, 4);
+  document.getElementById('accidentsBody').innerHTML = rows(data.accidents, 3);
+}).catch(function () {
+  document.getElementById('roadsBody').innerHTML = '<tr><td colspan="4" class="mute">Could not load the list.</td></tr>';
+  document.getElementById('accidentsBody').innerHTML = '<tr><td colspan="3" class="mute">Could not load the list.</td></tr>';
+});
+</script>
+</body>
+</html>
