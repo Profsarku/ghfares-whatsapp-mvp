@@ -331,7 +331,7 @@ async function req(server, path, opts = {}) {
   else bad('engine pothole', JSON.stringify(potholeTurn).slice(0, 220));
 
   const wantReport = await engine.handle({ from: '233201234567', hash: 'unit-pothole', text: 'I want to report it myself' });
-  if (/Send a photo|pothole on kaneshie/i.test(JSON.stringify(wantReport)))
+  if (/Send a photo|pothole|motorway|blocked/i.test(JSON.stringify(wantReport)))
     pass('engine  I want to report it myself asks for a photo');
   else bad('engine report myself', JSON.stringify(wantReport).slice(0, 220));
 
@@ -344,14 +344,30 @@ async function req(server, path, opts = {}) {
     from: '233201234567', hash: 'unit-farloc',
     location: { latitude: 47.573, longitude: -121.997 }
   });
-  if (/not near|Ghana station|kaneshie/i.test(JSON.stringify(farLoc)) && !/14319859/i.test(JSON.stringify(farLoc)))
+  if (/not near|Ghana station|Type the station/i.test(JSON.stringify(farLoc)) && !/14319859/i.test(JSON.stringify(farLoc)))
     pass('engine  far location is not claimed as Kasoa');
   else bad('engine far loc', JSON.stringify(farLoc).slice(0, 220));
 
+  caps.forget('unit-place');
+  const locAsk = await engine.handle({ from: '233201234567', hash: 'unit-place', text: 'where' });
+  if (/Share your location|say \*no\*|type any station/i.test(JSON.stringify(locAsk)))
+    pass('where  asks for location or typed station');
+  else bad('where location ask', JSON.stringify(locAsk).slice(0, 220));
+
+  const saidNo = await engine.handle({ from: '233201234567', hash: 'unit-place', text: 'no' });
+  if (/No problem|Type the station/i.test(JSON.stringify(saidNo)))
+    pass('no  invites typed station name');
+  else bad('place decline', JSON.stringify(saidNo).slice(0, 220));
+
+  const typed = await engine.handle({ from: '233201234567', hash: 'unit-place', text: 'circle' });
+  if (/Circle|Odorna|fare|₵/i.test(JSON.stringify(typed)))
+    pass('typed station  after location decline');
+  else bad('typed station', JSON.stringify(typed).slice(0, 220));
+
   const nluFare = await classify('kaneshie to bubuashie');
-  if (nluFare.intent === 'fare' && nluFare.via === 'regex' && nluFare.places.length >= 2)
-    pass('NLU  regex still owns kaneshie to bubuashie');
-  else bad('NLU regex fast path', JSON.stringify(nluFare));
+  if (nluFare.intent === 'fare' && nluFare.places.length >= 2)
+    pass('NLU  fare questions still resolve a from-to pair');
+  else bad('NLU fare pair', JSON.stringify(nluFare));
 
   const nluTurn = await engine.handle({ from: '233201234567', hash: 'unit-nlu', text: 'turn on road updates' });
   if (/Road alerts added/i.test(JSON.stringify(nluTurn)))

@@ -359,7 +359,7 @@ $('#fbmenu').addEventListener('click', () => {
   if (items) paintPersistentMenu(items);
 });
 
-let entryStation = 'kaneshie-mkt-cmplx';
+let entryStation = '_';
 
 function drawEntryQR(key) {
   const qrs = (boot && boot.qrs) || {};

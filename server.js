@@ -1,6 +1,6 @@
 const express = require('express');
 const crypto = require('crypto');
-const { api, classify } = require('./lib/api');
+const { api, classify, ready: apiReady } = require('./lib/api');
 const wa = require('./lib/wa');
 const caps = require('./lib/capabilities');
 const engine = require('./lib/engine');
@@ -208,15 +208,18 @@ function qrSvg(url) {
 }
 
 async function landing(req, res) {
+  await apiReady();
   const station = String(req.query.s || '').replace(/[^a-z0-9-]/gi, '');
   const origin = shareOrigin(req);
   const url = station ? `${origin}/go?s=${station}` : `${origin}/go`;
   let page = fsp.readFileSync(path.join(__dirname, 'public', 'go.html'), 'utf8');
   const svg = await qrSvg(url);
   const signed = await webAuth.accountFromRequest(req);
-  const stationNames = api.core.stations.map(s => s.name);
+  const hit = station ? api.stationBySlug(station) : null;
+  const stationLabel = hit ? hit.name : '';
+  const stationNames = (api.core.stations || []).map(s => s.name);
 
-  const inject = `<script>window.__LANDING__=${JSON.stringify(url)};window.__SIGNED_IN__=${signed ? 'true' : 'false'};window.__STATIONS__=${JSON.stringify(stationNames)};</script>`;
+  const inject = `<script>window.__LANDING__=${JSON.stringify(url)};window.__SIGNED_IN__=${signed ? 'true' : 'false'};window.__STATIONS__=${JSON.stringify(stationNames)};window.__STATION_LABEL__=${JSON.stringify(stationLabel)};</script>`;
   page = page.replace('</head>', inject + '</head>');
   page = page.replace('<div class="qr" id="qr"></div>', `<div class="qr" id="qr">${svg}</div>`);
   page = page.replace(
@@ -470,7 +473,7 @@ app.get('/v1/messenger-status', async (req, res) => {
 const envelope = (data, meta = {}) => ({ data, meta: { as_of: api.core.updated, ...meta } });
 
 app.get('/v1/stations', async (req, res) => {
-  await api.ready();
+  await apiReady();
   res.json(envelope(api.core.stations.map(s => ({ id: s.id, name: s.name, region: s.region, branch: s.branch })), {
     source: api.survey().loaded ? 'survey' : 'published',
     stations: api.core.stations.length
@@ -478,28 +481,28 @@ app.get('/v1/stations', async (req, res) => {
 });
 
 app.get('/v1/stations/near', async (req, res) => {
-  await api.ready();
+  await apiReady();
   const { lat, lng } = req.query;
   if (!lat || !lng) return res.status(400).json({ error: 'lat and lng required' });
   res.json(envelope(api.stationsNear(parseFloat(lat), parseFloat(lng))));
 });
 
 app.get('/v1/stations/:id/fares', async (req, res) => {
-  await api.ready();
+  await apiReady();
   const r = api.stationFares(req.params.id);
   if (!r) return res.status(404).json({ error: 'station not found' });
   res.json(envelope(r, { source: r.source, authority: r.authority }));
 });
 
 app.get('/v1/fares', async (req, res) => {
-  await api.ready();
+  await apiReady();
   const r = api.fare(req.query.from, req.query.to);
   if (!r) return res.status(404).json({ error: 'pair not mapped', queued: true });
   res.json(envelope(r, { source: r.source, authority: r.authority }));
 });
 
 app.get('/v1/charts', async (req, res) => {
-  await api.ready();
+  await apiReady();
   res.json(envelope({ charts: api.charts(), survey: api.survey() }));
 });
 
@@ -682,7 +685,7 @@ app.get('/v1/whatsapp-status', async (req, res) => {
 });
 
 app.get('/v1/nlu/status', async (req, res) => {
-  await api.ready();
+  await apiReady();
   const nlu = require('./lib/nlu');
   res.json(envelope(nlu.status()));
 });
@@ -690,7 +693,7 @@ app.post('/v1/nlu/classify', async (req, res) => res.json(envelope(await classif
 
 app.get('/v1/health/freshness', async (req, res) => {
   await caps.ready();
-  await api.ready();
+  await apiReady();
   res.json(envelope({
     charts: api.charts(),
     survey: api.survey(),
@@ -705,7 +708,7 @@ app.get('/v1/health/db', async (req, res) => {
   const persist = require('./lib/db/persist');
   const status = persist.status();
   if (!status.configured) return res.json(envelope({ ...status, live: [] }));
-  await api.ready();
+  await apiReady();
   const live = await Promise.all(['users', 'survey', 'ai'].map(name => persist.ping(name)));
   res.json(envelope({ ...status, live, survey: api.survey() }));
 });
@@ -714,15 +717,8 @@ app.get('/v1/health/db', async (req, res) => {
    The sample WhatsApp / Messenger / website UI talks to the live engine
    through these endpoints. No Meta account required. */
 
-const DEMO_STATIONS = [
-  { id: 'kaneshie-mkt-cmplx', slug: 'kaneshie', label: 'Kaneshie Market Station' },
-  { id: 'abeka-lapaz', slug: 'abeka-lapaz', label: 'Abeka Lapaz' },
-  { id: 'nima-overhead-station', slug: 'nima', label: 'Nima Overhead Station' },
-  { id: 'achimota-station', slug: 'achimota', label: 'Achimota Station' },
-  { id: 'circle-odorna-station', slug: 'circle', label: 'Circle Odorna Station' },
-  { id: 'accra-new-tema-station', slug: 'tema', label: 'Accra New Tema Station' },
-  { id: '_', slug: '', label: 'Direct link' }
-];
+/* Sample UI talks to the live engine. QR is the generic handoff — riders
+   name any station in chat, they are not steered to a canned park. */
 
 app.get('/v1', (req, res) => res.json({
   name: 'GH Fares',
@@ -779,16 +775,12 @@ app.get('/demo.js', (req, res) => {
 });
 
 app.get('/v1/demo/bootstrap', (req, res) => {
-  const qrs = {};
-  for (const s of DEMO_STATIONS) {
-    const url = `${SITE}/go` + (s.slug ? `?s=${s.slug}` : '');
-    qrs[s.id] = { label: s.label, slug: s.slug, m: qr.matrix(url) };
-  }
+  const url = `${SITE}/go`;
   res.json({
     ice_breakers: engine.ICE_BREAKERS,
     commands: engine.COMMANDS,
     messenger_profile: fb.messengerProfile(),
-    qrs
+    qrs: { _: { label: 'Open chat', slug: '', m: qr.matrix(url) } }
   });
 });
 

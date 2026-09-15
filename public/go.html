@@ -145,18 +145,10 @@ const CONFIG = {
   base: 'https://ghfares.com/go'
 };
 
-const STATIONS = {
-  'kaneshie':    'Kaneshie Market Station',
-  'abeka-lapaz': 'Abeka Lapaz',
-  'nima':        'Nima Overhead Station',
-  'achimota':    'Achimota Station',
-  'circle':      'Circle Odorna Station',
-  'tema':        'Accra New Tema Station'
-};
-
 const $ = s => document.querySelector(s);
 const signedIn = !!window.__SIGNED_IN__;
 const stationNames = window.__STATIONS__ || [];
+const stationLabel = window.__STATION_LABEL__ || '';
 const params = new URLSearchParams(location.search);
 let station = params.get('s') || '';
 const source  = params.get('src') || (params.get('s') ? 'qr' : 'link');
@@ -262,9 +254,9 @@ if ($('#goLogout')) $('#goLogout').addEventListener('click', async () => {
 });
 if (signedIn) showAccess();
 
-if (station && STATIONS[station]) {
+if (station && stationLabel) {
   $('#atChip').hidden = false;
-  $('#atName').textContent = 'Starting from ' + STATIONS[station];
+  $('#atName').textContent = 'Starting from ' + stationLabel;
 }
 $('#shareLink').textContent = landing.replace(/^https?:\/\//, '').replace(/\/$/, '');
 $('#copyLink').addEventListener('click', async () => {
