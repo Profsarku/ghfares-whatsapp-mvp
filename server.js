@@ -469,25 +469,38 @@ app.get('/v1/messenger-status', async (req, res) => {
 
 const envelope = (data, meta = {}) => ({ data, meta: { as_of: api.core.updated, ...meta } });
 
-app.get('/v1/stations', (req, res) =>
-  res.json(envelope(api.core.stations.map(s => ({ id: s.id, name: s.name, region: s.region, branch: s.branch })), { source: 'published' })));
+app.get('/v1/stations', async (req, res) => {
+  await api.ready();
+  res.json(envelope(api.core.stations.map(s => ({ id: s.id, name: s.name, region: s.region, branch: s.branch })), {
+    source: api.survey().loaded ? 'survey' : 'published',
+    stations: api.core.stations.length
+  }));
+});
 
-app.get('/v1/stations/near', (req, res) => {
+app.get('/v1/stations/near', async (req, res) => {
+  await api.ready();
   const { lat, lng } = req.query;
   if (!lat || !lng) return res.status(400).json({ error: 'lat and lng required' });
   res.json(envelope(api.stationsNear(parseFloat(lat), parseFloat(lng))));
 });
 
-app.get('/v1/stations/:id/fares', (req, res) => {
+app.get('/v1/stations/:id/fares', async (req, res) => {
+  await api.ready();
   const r = api.stationFares(req.params.id);
   if (!r) return res.status(404).json({ error: 'station not found' });
   res.json(envelope(r, { source: r.source, authority: r.authority }));
 });
 
-app.get('/v1/fares', (req, res) => {
+app.get('/v1/fares', async (req, res) => {
+  await api.ready();
   const r = api.fare(req.query.from, req.query.to);
   if (!r) return res.status(404).json({ error: 'pair not mapped', queued: true });
   res.json(envelope(r, { source: r.source, authority: r.authority }));
+});
+
+app.get('/v1/charts', async (req, res) => {
+  await api.ready();
+  res.json(envelope({ charts: api.charts(), survey: api.survey() }));
 });
 
 app.get('/v1/fuel', (req, res) => {
@@ -669,16 +682,18 @@ app.get('/v1/whatsapp-status', async (req, res) => {
 });
 
 app.get('/v1/nlu/status', async (req, res) => {
+  await api.ready();
   const nlu = require('./lib/nlu');
-  await nlu.ready();
   res.json(envelope(nlu.status()));
 });
 app.post('/v1/nlu/classify', async (req, res) => res.json(envelope(await classify(req.body.text))));
 
 app.get('/v1/health/freshness', async (req, res) => {
   await caps.ready();
+  await api.ready();
   res.json(envelope({
     charts: api.charts(),
+    survey: api.survey(),
     fuel_window: api.core.fuel.window,
     live_incidents: api.core.incidents.filter(i => i.status === 'live').length,
     subscribers: caps.subscribers.size,
@@ -690,8 +705,9 @@ app.get('/v1/health/db', async (req, res) => {
   const persist = require('./lib/db/persist');
   const status = persist.status();
   if (!status.configured) return res.json(envelope({ ...status, live: [] }));
-  const live = await persist.ping('users');
-  res.json(envelope({ ...status, live: [live] }));
+  await api.ready();
+  const live = await Promise.all(['users', 'survey', 'ai'].map(name => persist.ping(name)));
+  res.json(envelope({ ...status, live, survey: api.survey() }));
 });
 
 /* ════════ DEMO PHONE ════════
@@ -719,6 +735,7 @@ app.get('/v1', (req, res) => res.json({
     stations_near: 'GET /v1/stations/near?lat=&lng=',
     station_fares: 'GET /v1/stations/:id/fares',
     fares: 'GET /v1/fares?from=&to=',
+    charts: 'GET /v1/charts',
     fuel: 'GET /v1/fuel?area=',
     fuel_compare: 'GET /v1/fuel/compare?areas=Accra,Tema',
     incidents: 'GET /v1/incidents?road=',

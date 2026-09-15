@@ -11,7 +11,8 @@
     "test": "node test/json-body.js",
     "test:live": "node test/desktop.js",
     "db:setup": "node scripts/neon-setup.js",
-    "db:status": "node scripts/neon-setup.js --status"
+    "db:status": "node scripts/neon-setup.js --status",
+    "db:load-survey": "node scripts/load-survey.js"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

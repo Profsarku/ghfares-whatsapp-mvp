@@ -359,8 +359,8 @@ async function req(server, path, opts = {}) {
   else bad('NLU addon turn', JSON.stringify(nluTurn).slice(0, 180));
 
   const catalog = require('../lib/db/catalog');
-  if (catalog.NAMES.length === 22 && catalog.NAMES.includes('ai') && catalog.NAMES.includes('auth') && catalog.NAMES.includes('report_road_condition'))
-    pass('neon catalog  ai + auth + report_road_condition');
+  if (catalog.NAMES.length === 23 && catalog.NAMES.includes('survey') && catalog.NAMES.includes('ai') && catalog.NAMES.includes('report_road_condition'))
+    pass('neon catalog  survey + ai + report_road_condition');
   else bad('neon catalog', catalog.NAMES.join(','));
 
   const dbHealth = await req(server, '/v1/health/db');

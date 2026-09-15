@@ -37,7 +37,7 @@ can develop the whole bot before touching Meta.
 
 One Neon project. A separate database for each concern — `auth`, `users`,
 `consent`, `sessions`, `fares_reports`, `report_road_condition`, `fuel`,
-`queues`, `ai`, and the rest of the catalog in `lib/db/catalog.js`. Same host,
+`queues`, `ai`, `survey`, and the rest of the catalog in `lib/db/catalog.js`. Same host,
 different database name. No cross-database joins. Shared ids only (`hash`,
 `route_key`, `station_id`).
 
@@ -54,8 +54,8 @@ npm run db:setup
 
 Without those env vars the API stays in-memory (tests and local dry-runs).
 With them, add-ons, consent, fare reports, and queue pings survive a Vercel
-restart. Published charts still read from `data/core.json` until those
-reference databases are loaded.
+restart. Published charts load from the `survey` database (`npm run db:load-survey`);
+`data/core.json` is the fallback when Neon is off.
 
 ---
 
