@@ -1,0 +1,6666 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-09-25T19:51:04Z",
+    "timestamp_areas_base": "2026-09-24T08:34:49Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "node",
+  "id": 24153141,
+  "lat": 5.9954301,
+  "lon": 0.5810494,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 31032416,
+  "lat": 9.4063192,
+  "lon": -0.8426672,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "STC Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 344192674,
+  "lat": 9.5364720,
+  "lon": -1.3792938,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 344193701,
+  "lat": 9.5351945,
+  "lon": -1.3800540,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 434458398,
+  "lat": 8.3122158,
+  "lon": -0.6298953,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 434488939,
+  "lat": 7.7916648,
+  "lon": -0.0632103,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 910448907,
+  "lat": 5.7837881,
+  "lon": 0.7212733,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "name": "Anyanui Ferry",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 1285191175,
+  "lat": 5.6455393,
+  "lon": 0.0167020,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 1286469767,
+  "lat": 5.9986997,
+  "lon": 0.5859215,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 1375249822,
+  "lat": 5.5489157,
+  "lon": -0.2110196,
+  "tags": {
+    "name": "Accra",
+    "public_transport": "station",
+    "railway": "station",
+    "wikidata": "Q65053142"
+  }
+},
+{
+  "type": "node",
+  "id": 1378720258,
+  "lat": 5.3053068,
+  "lon": -1.9951506,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Tarkwa Taxi Station"
+  }
+},
+{
+  "type": "node",
+  "id": 1447054056,
+  "lat": 6.7152552,
+  "lon": -0.5130392,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "cargo": "vehicle",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 1546419253,
+  "lat": 5.6867648,
+  "lon": -0.0326619,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Ashaiman Main Tro Tro Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 1603831964,
+  "lat": 5.7074972,
+  "lon": -0.0157345,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Afariwa Tro Tro station"
+  }
+},
+{
+  "type": "node",
+  "id": 1611096143,
+  "lat": 5.8970359,
+  "lon": 0.5215682,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Ada Junction"
+  }
+},
+{
+  "type": "node",
+  "id": 1791481012,
+  "lat": 9.4066575,
+  "lon": -0.8432546,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Trotro Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 1791501046,
+  "lat": 9.4037771,
+  "lon": -0.8418451,
+  "tags": {
+    "amenity": "taxi",
+    "bus": "yes",
+    "name": "Main Taxi Rank",
+    "public_transport": "station",
+    "share_taxi": "yes",
+    "taxi_vehicle": "motorcar;auto_rickshaw"
+  }
+},
+{
+  "type": "node",
+  "id": 1791545648,
+  "lat": 9.3970399,
+  "lon": -0.8458792,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Sankpala Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 1836476554,
+  "lat": 9.4068293,
+  "lon": -0.8481641,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Metro Mass Bus Station",
+    "public_transport": "station",
+    "source": "Bing"
+  }
+},
+{
+  "type": "node",
+  "id": 1901501243,
+  "lat": 8.0522974,
+  "lon": -1.7275357,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 1901503199,
+  "lat": 8.0559329,
+  "lon": -1.7262104,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 2018321246,
+  "lat": 5.6459634,
+  "lon": 0.0028199,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 2018583444,
+  "lat": 5.3408194,
+  "lon": -0.6234523,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Bus Station, Accra, Cape Coast"
+  }
+},
+{
+  "type": "node",
+  "id": 2018584190,
+  "lat": 5.3819663,
+  "lon": -0.6447433,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Winneba Junction Station"
+  }
+},
+{
+  "type": "node",
+  "id": 2021262294,
+  "lat": 5.1128258,
+  "lon": -1.2414146,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Tantri Lorry Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 2021310537,
+  "lat": 5.0865070,
+  "lon": -1.3498413,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "fixme": "check location",
+    "name": "East",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 2021310538,
+  "lat": 5.0807328,
+  "lon": -1.3608606,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "West",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 2024377422,
+  "lat": 4.8065770,
+  "lon": -1.9390508,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Agona"
+  }
+},
+{
+  "type": "node",
+  "id": 2024377640,
+  "lat": 4.9014030,
+  "lon": -1.7566007,
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "node",
+  "id": 2026041273,
+  "lat": 7.5919157,
+  "lon": -1.9369913,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Tamale, Kintampo"
+  }
+},
+{
+  "type": "node",
+  "id": 2028079813,
+  "lat": 10.7862304,
+  "lon": -0.8481471,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Navrongo",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 2028080150,
+  "lat": 10.7861074,
+  "lon": -0.8442194,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Zuarungu Bongo",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 2147840734,
+  "lat": 5.5341073,
+  "lon": -0.4240861,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Kasoa Bus Terminal"
+  }
+},
+{
+  "type": "node",
+  "id": 2151944574,
+  "lat": 5.5594713,
+  "lon": -0.1584786,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "La Main Lorry Station"
+  }
+},
+{
+  "type": "node",
+  "id": 2152962399,
+  "lat": 5.9190593,
+  "lon": -0.9874141,
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "node",
+  "id": 2154259204,
+  "lat": 5.7059930,
+  "lon": -0.1656165,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Adenta Trotro Station",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 2157353794,
+  "lat": 6.2024834,
+  "lon": -1.6664133,
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "node",
+  "id": 2161443476,
+  "lat": 6.3799409,
+  "lon": -0.5488663,
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "node",
+  "id": 2162646544,
+  "lat": 6.6185072,
+  "lon": 0.4710960,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "OSA",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 2162648609,
+  "lat": 6.6197634,
+  "lon": 0.4719533,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 2167621796,
+  "lat": 6.6528125,
+  "lon": -1.5864055,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Agogo Lorry Station",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 2199502892,
+  "lat": 7.3346939,
+  "lon": -2.3173570,
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "node",
+  "id": 2280155305,
+  "lat": 10.8544825,
+  "lon": -0.1781174,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 2295811874,
+  "lat": 10.7881507,
+  "lon": -0.8408272,
+  "tags": {
+    "amenity": "bus_station",
+    "brand:wikidata": "Q6824784",
+    "bus": "yes",
+    "name": "Metro Mass Transit Bus Terminal",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 2295812195,
+  "lat": 10.7754134,
+  "lon": -0.8559552,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "STC Bus Terminal",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 2306716349,
+  "lat": 10.8941805,
+  "lon": -1.0886928,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Hill Top",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 2319462933,
+  "lat": 6.6147017,
+  "lon": 0.4693485,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Ho STC Terminal",
+    "public_transport": "station",
+    "wheelchair": "limited"
+  }
+},
+{
+  "type": "node",
+  "id": 2319544521,
+  "lat": 7.1547551,
+  "lon": 0.4786247,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "STC Terminal",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 2330378605,
+  "lat": 11.0527326,
+  "lon": -0.2447381,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "New Station"
+  }
+},
+{
+  "type": "node",
+  "id": 2330379535,
+  "lat": 11.0599099,
+  "lon": -0.2399316,
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "node",
+  "id": 2360467122,
+  "lat": 5.7049254,
+  "lon": -0.3026856,
+  "tags": {
+    "name": "Amasaman",
+    "note": "Approximate location",
+    "public_transport": "station",
+    "railway": "station",
+    "train": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 2482000562,
+  "lat": 7.7398539,
+  "lon": -2.1068142,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Wenchi Taxi Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 2815303473,
+  "lat": 5.5643203,
+  "lon": -0.2362276,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Banana Inn",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 2815311888,
+  "lat": 5.5652982,
+  "lon": -0.2367868,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Takoradi Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 2815317517,
+  "lat": 5.5640112,
+  "lon": -0.2380686,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Dansoman Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 2815320007,
+  "lat": 5.5640056,
+  "lon": -0.2359508,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Korlebu Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 2967732204,
+  "lat": 6.1201533,
+  "lon": 0.8062195,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Akatsi Market Bus Station"
+  }
+},
+{
+  "type": "node",
+  "id": 3095484237,
+  "lat": 5.5445757,
+  "lon": -0.2048335,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Tudu Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 3137754354,
+  "lat": 5.5650574,
+  "lon": -0.2351681,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Tarkwa Ford Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 3154416434,
+  "lat": 5.6059303,
+  "lon": -0.2493991,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Darkuman / Odorkor / Off Town Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 3154423237,
+  "lat": 5.6079731,
+  "lon": -0.2464947,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 3154429400,
+  "lat": 5.6068069,
+  "lon": -0.2496745,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 3188482429,
+  "lat": 6.1130384,
+  "lon": 1.1952511,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Aflao Lorry Station"
+  }
+},
+{
+  "type": "node",
+  "id": 3202124717,
+  "lat": 6.2048038,
+  "lon": 0.1000766,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 3267361882,
+  "lat": 5.7935590,
+  "lon": 0.8998329,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Anloga Tro-Tro Station"
+  }
+},
+{
+  "type": "node",
+  "id": 3417534780,
+  "lat": 5.3061563,
+  "lon": -1.9877408,
+  "tags": {
+    "alt_name": "MMT",
+    "amenity": "bus_station",
+    "name": "Metro Mass Transit Limited",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 3521995891,
+  "lat": 10.5642573,
+  "lon": -2.9112886,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 3525736848,
+  "lat": 10.7321805,
+  "lon": -2.9241820,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 3602639338,
+  "lat": 5.7114979,
+  "lon": 0.1089864,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Prampram Station"
+  }
+},
+{
+  "type": "node",
+  "id": 3621763485,
+  "lat": 5.5755793,
+  "lon": -0.2382096,
+  "tags": {
+    "amenity": "bus_station",
+    "check_date": "2023-09-29",
+    "internet_access": "no",
+    "name": "Olla Balm Station",
+    "source": "local knowledge"
+  }
+},
+{
+  "type": "node",
+  "id": 3621763710,
+  "lat": 5.5803983,
+  "lon": -0.2398299,
+  "tags": {
+    "amenity": "bus_station",
+    "check_date": "2023-09-29",
+    "internet_access": "no",
+    "opening_hours": "24/7",
+    "source": "local knowledge"
+  }
+},
+{
+  "type": "node",
+  "id": 3642962058,
+  "lat": 6.1159835,
+  "lon": 1.1332061,
+  "tags": {
+    "amenity": "bus_station",
+    "source": "survey; Bing"
+  }
+},
+{
+  "type": "node",
+  "id": 3692007497,
+  "lat": 6.1021456,
+  "lon": 1.1467291,
+  "tags": {
+    "amenity": "bus_station",
+    "source": "survey"
+  }
+},
+{
+  "type": "node",
+  "id": 3780917483,
+  "lat": 4.8982023,
+  "lon": -1.7620479,
+  "tags": {
+    "amenity": "bus_station",
+    "check_date": "2023-03-14",
+    "description": "Taxi rank",
+    "internet_access": "no",
+    "name": "Kwasimintsim Trotro Station",
+    "operator": "STMA",
+    "source": "local knowledge;survey"
+  }
+},
+{
+  "type": "node",
+  "id": 3782638071,
+  "lat": 4.9009551,
+  "lon": -1.7579369,
+  "tags": {
+    "amenity": "bus_station",
+    "check_date": "2026-05-24",
+    "name": "Sekondi Trotro Station",
+    "operator": "STMA"
+  }
+},
+{
+  "type": "node",
+  "id": 3783842675,
+  "lat": 4.8966687,
+  "lon": -1.7647155,
+  "tags": {
+    "alt_name": "Accra Station",
+    "amenity": "bus_station",
+    "check_date": "2026-05-24",
+    "name": "Takoradi-Old Accra Bus Station",
+    "operator": "STMA"
+  }
+},
+{
+  "type": "node",
+  "id": 3787590914,
+  "lat": 4.8926430,
+  "lon": -1.9678461,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Agona Bus Terminal",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 3788680067,
+  "lat": 4.8986657,
+  "lon": -1.7658257,
+  "tags": {
+    "amenity": "bus_station",
+    "check_date": "2026-05-23",
+    "internet_access": "no",
+    "internet_access:fee": "no",
+    "name": "Takoradi Main Station"
+  }
+},
+{
+  "type": "node",
+  "id": 3790815051,
+  "lat": 6.0620223,
+  "lon": -1.3931275,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 3791978084,
+  "lat": 5.2967183,
+  "lon": -1.9908135,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Diplomats Bus Station"
+  }
+},
+{
+  "type": "node",
+  "id": 3847465608,
+  "lat": 9.9819804,
+  "lon": -2.7494263,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 3847657478,
+  "lat": 6.7398448,
+  "lon": -0.5053161,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "cargo": "vehicle",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 3914593751,
+  "lat": 5.5476561,
+  "lon": -0.2104909,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Metro Mass Transport Terminal"
+  }
+},
+{
+  "type": "node",
+  "id": 3947389098,
+  "lat": 6.0737515,
+  "lon": 1.0367487,
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "node",
+  "id": 4010964673,
+  "lat": 5.1073155,
+  "lon": -1.2529401,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Metro Mass Transit",
+    "operator": "Metro Mass Transit Ltd",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4158904871,
+  "lat": 5.2677351,
+  "lon": -1.0166059,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Mankessim"
+  }
+},
+{
+  "type": "node",
+  "id": 4224179941,
+  "lat": 7.3124068,
+  "lon": -1.5769022,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Lorry Station"
+  }
+},
+{
+  "type": "node",
+  "id": 4268165235,
+  "lat": 5.4397438,
+  "lon": -2.1406527,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Tarkwa, Kumasi"
+  }
+},
+{
+  "type": "node",
+  "id": 4268183146,
+  "lat": 5.4339703,
+  "lon": -2.1418668,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Bogoso"
+  }
+},
+{
+  "type": "node",
+  "id": 4268183147,
+  "lat": 5.4338988,
+  "lon": -2.1420706,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Bondaye"
+  }
+},
+{
+  "type": "node",
+  "id": 4268183148,
+  "lat": 5.4341946,
+  "lon": -2.1405082,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Himan"
+  }
+},
+{
+  "type": "node",
+  "id": 4286157299,
+  "lat": 5.6853690,
+  "lon": -0.0335190,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Kufour Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4286157300,
+  "lat": 5.6879223,
+  "lon": -0.0300319,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Taxi Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4286173001,
+  "lat": 5.7028863,
+  "lon": -0.0301139,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Ash Newtown Station"
+  }
+},
+{
+  "type": "node",
+  "id": 4291858012,
+  "lat": 4.8959665,
+  "lon": -1.7645291,
+  "tags": {
+    "alt_name": "MMT",
+    "amenity": "bus_station",
+    "check_date": "2026-05-24",
+    "name": "Metro Mass Transit Takoradi"
+  }
+},
+{
+  "type": "node",
+  "id": 4293787533,
+  "lat": 6.1998954,
+  "lon": -1.6644488,
+  "tags": {
+    "alt_name": "MMT",
+    "amenity": "bus_station",
+    "name": "Metro Mass Transit"
+  }
+},
+{
+  "type": "node",
+  "id": 4313557006,
+  "lat": 5.7189454,
+  "lon": -0.0533144,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Zenu Trotro"
+  }
+},
+{
+  "type": "node",
+  "id": 4313597216,
+  "lat": 5.6512576,
+  "lon": 0.0243627,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "New Town Station"
+  }
+},
+{
+  "type": "node",
+  "id": 4313654189,
+  "lat": 5.6934518,
+  "lon": -0.0309887,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4324423391,
+  "lat": 5.5672980,
+  "lon": -0.1637316,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Apaapa lorry station"
+  }
+},
+{
+  "type": "node",
+  "id": 4324512074,
+  "lat": 5.6494437,
+  "lon": 0.0015949,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "operator": "VVIP",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4324512075,
+  "lat": 5.5703101,
+  "lon": -0.2151299,
+  "tags": {
+    "air_conditioning": "no",
+    "amenity": "bus_station",
+    "baby_feeding": "no",
+    "bus": "yes",
+    "check_date": "2024-02-01",
+    "description": "Bus terminal",
+    "internet_access": "no",
+    "name": "Accra, Circle",
+    "operator": "VVIP",
+    "public_transport": "station",
+    "source": "local knowledge",
+    "wheelchair": "limited"
+  }
+},
+{
+  "type": "node",
+  "id": 4324512080,
+  "lat": 6.2412427,
+  "lon": 0.0935569,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "name": "Atimpoku",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4324512086,
+  "lat": 6.2414510,
+  "lon": 0.0964171,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "name": "New Chanakope",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4324514489,
+  "lat": 7.7978887,
+  "lon": -0.0540714,
+  "tags": {
+    "amenity": "bus_station",
+    "operator": "MMT"
+  }
+},
+{
+  "type": "node",
+  "id": 4327136891,
+  "lat": 5.6905664,
+  "lon": -0.0320298,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Atadeka Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4327137092,
+  "lat": 6.6862373,
+  "lon": -1.6148132,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "VIP Bus Station"
+  }
+},
+{
+  "type": "node",
+  "id": 4350177531,
+  "lat": 6.6888780,
+  "lon": -1.6171735,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "VVIP Bus Station"
+  }
+},
+{
+  "type": "node",
+  "id": 4350218309,
+  "lat": 5.6569424,
+  "lon": 0.0209530,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Manhean Bus Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4379755803,
+  "lat": 10.8795618,
+  "lon": -1.9859646,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Tumu Bus Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4389034160,
+  "lat": 10.7853953,
+  "lon": -0.8479920,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Tamale",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4389034161,
+  "lat": 10.7859165,
+  "lon": -0.8477988,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Tongo",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4389034162,
+  "lat": 10.7852736,
+  "lon": -0.8473535,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Bawku",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4389034163,
+  "lat": 10.7854521,
+  "lon": -0.8478336,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Walewale",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4389034164,
+  "lat": 10.7868516,
+  "lon": -0.8487165,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "description": "Wa, Tamale, etc.",
+    "name": "Metro Mass Transit",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4389034165,
+  "lat": 10.7824082,
+  "lon": -0.8539464,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "description": "Busses to Kumasi, Accra and Sunyani",
+    "name": "OA Bus Station",
+    "operator": "OA Bus",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4400085083,
+  "lat": 5.1233890,
+  "lon": -1.2697380,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Pedu Lorry Station",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 4400503924,
+  "lat": 5.6644575,
+  "lon": -0.0276407,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Community 11 Station"
+  }
+},
+{
+  "type": "node",
+  "id": 4462281489,
+  "lat": 5.5766356,
+  "lon": -0.3095549,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Gbawe Station"
+  }
+},
+{
+  "type": "node",
+  "id": 4502590465,
+  "lat": 10.0628845,
+  "lon": -2.4985344,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Metro Mass Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4502591554,
+  "lat": 10.0629223,
+  "lon": -2.4989186,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Intercity STC",
+    "public_transport": "station",
+    "short_name": "STC",
+    "website": "https://stc.gov.gh"
+  }
+},
+{
+  "type": "node",
+  "id": 4523135806,
+  "lat": 5.7834845,
+  "lon": -2.0875948,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Wassa akropong",
+    "name:en": "Wassa akropong"
+  }
+},
+{
+  "type": "node",
+  "id": 4528270789,
+  "lat": 5.7786052,
+  "lon": 0.8304770,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Savietula Bus Staion"
+  }
+},
+{
+  "type": "node",
+  "id": 4545132189,
+  "lat": 5.6603759,
+  "lon": -0.0051999,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Taxi Rank",
+    "name:en": "Taxi Rank",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4552168184,
+  "lat": 4.8948051,
+  "lon": -1.7648234,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Intercity STC, Takoradi",
+    "operator": "Intercity STC Coaches Limited"
+  }
+},
+{
+  "type": "node",
+  "id": 4585620890,
+  "lat": 6.7238136,
+  "lon": -1.4711785,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Mini BUS & Trotro",
+    "name:en": "Mini BUS & Trotro"
+  }
+},
+{
+  "type": "node",
+  "id": 4595319470,
+  "lat": 5.3054798,
+  "lon": -1.9951547,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Accra Ford Station"
+  }
+},
+{
+  "type": "node",
+  "id": 4600169832,
+  "lat": 5.5499831,
+  "lon": -0.2067016,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Aflao Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4614553891,
+  "lat": 5.4277945,
+  "lon": -0.9582498,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Ajumako"
+  }
+},
+{
+  "type": "node",
+  "id": 4623471464,
+  "lat": 6.1124851,
+  "lon": 1.1951635,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Metro Mass Transit Limited"
+  }
+},
+{
+  "type": "node",
+  "id": 4727380590,
+  "lat": 5.5689484,
+  "lon": -0.2191588,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "VVIP Bus Station",
+    "name:en": "VVIP Bus Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4727389489,
+  "lat": 6.6875038,
+  "lon": -1.6150787,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Long Distance Trotro Station"
+  }
+},
+{
+  "type": "node",
+  "id": 4740602042,
+  "lat": 5.5659266,
+  "lon": -0.2373184,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Tema station",
+    "name:en": "Tema station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4741636453,
+  "lat": 9.3973306,
+  "lon": -0.8456683,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Real VVIP Bus Station",
+    "name:en": "Real VVIP Bus Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4747205323,
+  "lat": 5.5826330,
+  "lon": -0.2087537,
+  "tags": {
+    "addr:postcode": "00233",
+    "addr:street": "Naa Ayele Slater Street",
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4766950844,
+  "lat": 6.4234469,
+  "lon": -2.7067089,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Sefwi Asawinso",
+    "name:en": "Sefwi Asawinso"
+  }
+},
+{
+  "type": "node",
+  "id": 4846044849,
+  "lat": 6.0653558,
+  "lon": 0.8609569,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Abor Bus Station (DC MORTO)",
+    "operator": "G.P.R.T.U. Ghana",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4858419353,
+  "lat": 5.5689489,
+  "lon": -0.2191309,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "GH Express",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4858419354,
+  "lat": 5.5689541,
+  "lon": -0.2191829,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "contact:phone": "+233242372433",
+    "name": "Chisco Transport Ghana Limited",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4881949999,
+  "lat": 6.7014611,
+  "lon": -1.6153966,
+  "tags": {
+    "amenity": "bus_station",
+    "contact:phone": "+233544440550",
+    "contact:website": "https://africa-tours-trans.com/",
+    "name": "Africa Tours Trans"
+  }
+},
+{
+  "type": "node",
+  "id": 4885365523,
+  "lat": 5.2900028,
+  "lon": -2.7776107,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Bus/Coach station Elubo",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4910910948,
+  "lat": 6.6800667,
+  "lon": -1.6155767,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Abinkyi"
+  }
+},
+{
+  "type": "node",
+  "id": 4910910949,
+  "lat": 6.6865067,
+  "lon": -1.6150000,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Kumasi Tarkwa Ford Station"
+  }
+},
+{
+  "type": "node",
+  "id": 4910911732,
+  "lat": 6.6863612,
+  "lon": -1.6147303,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Accra Kumasi"
+  }
+},
+{
+  "type": "node",
+  "id": 4910912717,
+  "lat": 5.3032194,
+  "lon": -1.9960992,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Image Transport"
+  }
+},
+{
+  "type": "node",
+  "id": 4920541823,
+  "lat": 5.7084524,
+  "lon": -0.1703105,
+  "tags": {
+    "addr:street": "Aburi Road",
+    "amenity": "bus_station",
+    "name": "Adenta Taxi Rank",
+    "name:en": "Adenta Taxi Rank",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4920543022,
+  "lat": 5.6867920,
+  "lon": -0.1719169,
+  "tags": {
+    "addr:street": "Haatso Street",
+    "amenity": "bus_station",
+    "name": "Agbogba station",
+    "name:en": "Agbogba station"
+  }
+},
+{
+  "type": "node",
+  "id": 4930508288,
+  "lat": 5.5695509,
+  "lon": -0.2186161,
+  "tags": {
+    "amenity": "bus_station",
+    "baby_feeding": "no",
+    "bus": "yes",
+    "check_date": "2024-02-01",
+    "internet_access": "no",
+    "name": "Neoplan",
+    "public_transport": "station",
+    "source": "local knowledge",
+    "wheelchair": "limited"
+  }
+},
+{
+  "type": "node",
+  "id": 4955246421,
+  "lat": 6.7001565,
+  "lon": -1.5507397,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Nsenie Last Stop"
+  }
+},
+{
+  "type": "node",
+  "id": 4962756376,
+  "lat": 5.2997145,
+  "lon": -1.9895792,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Intercity STC"
+  }
+},
+{
+  "type": "node",
+  "id": 4987994166,
+  "lat": 5.5432439,
+  "lon": -0.2046452,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Accra Bishop",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4987994168,
+  "lat": 5.5581947,
+  "lon": -0.2134308,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Efex Executive",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4990070159,
+  "lat": 5.5706194,
+  "lon": -0.2132778,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "check_date": "2023-04-29",
+    "description": "Bus terminal",
+    "internet_access": "no",
+    "public_transport": "station",
+    "source": "survey summer 2017 - AccraMobile3 project"
+  }
+},
+{
+  "type": "node",
+  "id": 4990251206,
+  "lat": 5.6907137,
+  "lon": -0.2477007,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Kwabenya"
+  }
+},
+{
+  "type": "node",
+  "id": 4995193049,
+  "lat": 5.5658238,
+  "lon": -0.2352465,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Kaneshie Market Station",
+    "public_transport": "platform",
+    "source": "survey summer 2017 - AccraMobile3 project"
+  }
+},
+{
+  "type": "node",
+  "id": 4996742714,
+  "lat": 5.5546286,
+  "lon": -0.2546273,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Russia Station",
+    "public_transport": "platform",
+    "source": "survey summer 2017 - AccraMobile3 project"
+  }
+},
+{
+  "type": "node",
+  "id": 4998502253,
+  "lat": 7.0451291,
+  "lon": 0.1186972,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 4998502254,
+  "lat": 6.9957723,
+  "lon": 0.2567016,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 5013113660,
+  "lat": 5.5358322,
+  "lon": -0.2307739,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Korle Bu"
+  }
+},
+{
+  "type": "node",
+  "id": 5014899345,
+  "lat": 5.6091803,
+  "lon": -0.3294718,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Agape Main Station"
+  }
+},
+{
+  "type": "node",
+  "id": 5060788188,
+  "lat": 6.4543893,
+  "lon": -1.5781398,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Bekwai Lorry Station"
+  }
+},
+{
+  "type": "node",
+  "id": 5078026280,
+  "lat": 5.5498266,
+  "lon": -0.2069525,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Tudu Main Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 5093102559,
+  "lat": 5.7834259,
+  "lon": 0.6397742,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 5124460921,
+  "lat": 5.5890810,
+  "lon": -0.2511531,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Darkuman - Circle Station",
+    "name:en": "Darkuman - Circle Station"
+  }
+},
+{
+  "type": "node",
+  "id": 5126546945,
+  "lat": 6.3038712,
+  "lon": -2.2494270,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Subri Nkwanta taxi rank",
+    "name:en": "Subri Nkwanta taxi rank"
+  }
+},
+{
+  "type": "node",
+  "id": 5126547837,
+  "lat": 6.1956072,
+  "lon": -2.3224328,
+  "tags": {
+    "addr:city": "Sefwi Bekwai",
+    "addr:street": "Bibiani - Sefwi Bekwai",
+    "amenity": "bus_station",
+    "bus": "yes",
+    "internet_access": "yes",
+    "public_transport": "station",
+    "source": "local knowledge",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5139473625,
+  "lat": 5.5649700,
+  "lon": -0.2357567,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "description": "Tarkwa, Takoradi, Bogoso, Prestea",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 5143641889,
+  "lat": 7.4517410,
+  "lon": -2.5824835,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Berekum Trotro Station"
+  }
+},
+{
+  "type": "node",
+  "id": 5209103321,
+  "lat": 5.3216356,
+  "lon": -1.9760197,
+  "tags": {
+    "alt_name": "Tarkwa New Station",
+    "amenity": "bus_station",
+    "name": "New Atuabo Station"
+  }
+},
+{
+  "type": "node",
+  "id": 5209798042,
+  "lat": 5.5501817,
+  "lon": -0.2058450,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "STC Tudu",
+    "operator": "Intercity STC Coaches Limited",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 5221452823,
+  "lat": 6.6247752,
+  "lon": -1.2092927,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Konongo Bus Station"
+  }
+},
+{
+  "type": "node",
+  "id": 5239750219,
+  "lat": 4.9375679,
+  "lon": -2.3487447,
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "node",
+  "id": 5268248086,
+  "lat": 6.1121457,
+  "lon": 1.1970370,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "InterCity STC",
+    "short_name": "STC Aflao"
+  }
+},
+{
+  "type": "node",
+  "id": 5307365542,
+  "lat": 6.0399316,
+  "lon": -0.4488355,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Suhum Main Station"
+  }
+},
+{
+  "type": "node",
+  "id": 5330071075,
+  "lat": 7.3610893,
+  "lon": -2.3472884,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Fiapre Station"
+  }
+},
+{
+  "type": "node",
+  "id": 5335021221,
+  "lat": 5.9515381,
+  "lon": -1.8968085,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Fetish pit Western side"
+  }
+},
+{
+  "type": "node",
+  "id": 5335021222,
+  "lat": 5.9515823,
+  "lon": -1.8944257,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Fetish pit North side",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 5335025721,
+  "lat": 5.9499431,
+  "lon": -1.8932549,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Fetish east side",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 5335025724,
+  "lat": 5.9512558,
+  "lon": -1.8974038,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Join here"
+  }
+},
+{
+  "type": "node",
+  "id": 5335028121,
+  "lat": 5.9484443,
+  "lon": -1.8964162,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Fetish South Side Pit"
+  }
+},
+{
+  "type": "node",
+  "id": 5335055222,
+  "lat": 5.9473251,
+  "lon": -1.9043413,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "North Bokiti Pit"
+  }
+},
+{
+  "type": "node",
+  "id": 5335101521,
+  "lat": 5.9383287,
+  "lon": -1.9000066,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Entrance CHS Pit"
+  }
+},
+{
+  "type": "node",
+  "id": 5349015944,
+  "lat": 10.7851517,
+  "lon": -0.8476223,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Youtong No. 1 Station",
+    "operator": "GPRTU of TUC",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 5352978321,
+  "lat": 6.6580289,
+  "lon": -1.6421468,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Santasi bus station",
+    "public_transport": "station",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 5355078621,
+  "lat": 6.6974500,
+  "lon": -1.6242153,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Pampaso station"
+  }
+},
+{
+  "type": "node",
+  "id": 5492999921,
+  "lat": 6.6990042,
+  "lon": -1.6486529,
+  "tags": {
+    "addr:street": "Pine Avenue",
+    "amenity": "bus_station",
+    "name": "Sofoline Trotro Station"
+  }
+},
+{
+  "type": "node",
+  "id": 5566438231,
+  "lat": 5.5687939,
+  "lon": -2.0146285,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Bogoso station"
+  }
+},
+{
+  "type": "node",
+  "id": 5588701985,
+  "lat": 5.1216185,
+  "lon": -1.2716609,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Intercity STC"
+  }
+},
+{
+  "type": "node",
+  "id": 5588994697,
+  "lat": 4.7966471,
+  "lon": -2.1407743,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 5588995939,
+  "lat": 4.7973577,
+  "lon": -2.1434129,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 5591147793,
+  "lat": 7.2890132,
+  "lon": -2.9714803,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Kofibadukrom/Babianiha Lorry Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 5622580999,
+  "lat": 6.1309701,
+  "lon": 0.7986505,
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "node",
+  "id": 5626517292,
+  "lat": 5.6062824,
+  "lon": -0.2468935,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Kaneshie",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 5626517564,
+  "lat": 5.6068424,
+  "lon": -0.2464772,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Accra",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 5643509522,
+  "lat": 6.6994839,
+  "lon": -1.6183083,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Suame taxi station"
+  }
+},
+{
+  "type": "node",
+  "id": 5658665842,
+  "lat": 4.9707808,
+  "lon": -1.8928390,
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "node",
+  "id": 5679151042,
+  "lat": 5.6471454,
+  "lon": -0.0014329,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "37 Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 5694786309,
+  "lat": 5.6070967,
+  "lon": -0.2463817,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Lapaz - Circle - Accra",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 5695374722,
+  "lat": 5.7302271,
+  "lon": -0.2046504,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Abokobi Station",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5702745782,
+  "lat": 5.0935502,
+  "lon": -1.6442497,
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "node",
+  "id": 5704550756,
+  "lat": 5.1037462,
+  "lon": -1.2499877,
+  "tags": {
+    "alt_name": "Ford station",
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Francol Transport Services",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 5729989919,
+  "lat": 6.7369015,
+  "lon": -1.6122571,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station",
+    "source": "Bing"
+  }
+},
+{
+  "type": "node",
+  "id": 5732353938,
+  "lat": 6.0668215,
+  "lon": 0.4011150,
+  "tags": {
+    "addr:city": "Battor",
+    "addr:street": "Battor Road",
+    "amenity": "bus_station",
+    "bus": "yes",
+    "internet_access": "no",
+    "name": "Battor Station",
+    "network": "Sege-Aveyime-Battor-Mepe",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 5755584465,
+  "lat": 5.6485354,
+  "lon": -0.1499677,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Taxi Station",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 5784297223,
+  "lat": 5.6165057,
+  "lon": -2.5560815,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 5794606453,
+  "lat": 6.7038411,
+  "lon": -1.6251634,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Adishi"
+  }
+},
+{
+  "type": "node",
+  "id": 5815978869,
+  "lat": 6.2715929,
+  "lon": 0.0530324,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Akosombo"
+  }
+},
+{
+  "type": "node",
+  "id": 5825177095,
+  "lat": 5.5380507,
+  "lon": -0.4027699,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Official Town Taxi Rank"
+  }
+},
+{
+  "type": "node",
+  "id": 5831955487,
+  "lat": 4.9112387,
+  "lon": -1.7936255,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "VIP bus terminal"
+  }
+},
+{
+  "type": "node",
+  "id": 5843872190,
+  "lat": 6.6867973,
+  "lon": -1.6203474,
+  "tags": {
+    "alt_name": "Intercity STC Kumasi Station Adum Terminal",
+    "amenity": "bus_station",
+    "name": "Intercity STC Bus Terminal"
+  }
+},
+{
+  "type": "node",
+  "id": 5896215318,
+  "lat": 4.9131010,
+  "lon": -1.7928344,
+  "tags": {
+    "name": "Kumasi Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 5937034958,
+  "lat": 5.1153800,
+  "lon": -1.2818592,
+  "tags": {
+    "amenity": "bus_station",
+    "check_date": "2025-09-07",
+    "name": "Valco Shuttle Station",
+    "source": "yes;local knowledge",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5955565805,
+  "lat": 5.3826666,
+  "lon": -0.6436712,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Winneba Junction Station",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 6004881807,
+  "lat": 6.2055417,
+  "lon": 0.0969173,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6016629529,
+  "lat": 5.8161570,
+  "lon": -0.1219967,
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "node",
+  "id": 6018976889,
+  "lat": 5.5809015,
+  "lon": -0.2207727,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Upper West Cargo Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6019126737,
+  "lat": 6.5987442,
+  "lon": 0.4465667,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "MMT",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6032338549,
+  "lat": 5.5498038,
+  "lon": -0.2072185,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Accra - Battor",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6036942061,
+  "lat": 6.6900167,
+  "lon": -1.5566600,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Kumasi - Accra"
+  }
+},
+{
+  "type": "node",
+  "id": 6060269818,
+  "lat": 10.8268422,
+  "lon": -0.0702855,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Tubong Bus Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6074659602,
+  "lat": 6.9565656,
+  "lon": -2.6178212,
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "node",
+  "id": 6082967243,
+  "lat": 6.6964479,
+  "lon": -1.6077798,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "OA bus WA station"
+  }
+},
+{
+  "type": "node",
+  "id": 6089933814,
+  "lat": 10.0625715,
+  "lon": -2.5008331,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Trotro (Express) to Tamale",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6091147520,
+  "lat": 7.3342500,
+  "lon": -2.3206783,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Jeoun V.I.P Transport"
+  }
+},
+{
+  "type": "node",
+  "id": 6100130114,
+  "lat": 9.4446522,
+  "lon": -0.0062186,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Trotro station Tamale",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6100130546,
+  "lat": 9.4378738,
+  "lon": -0.0074867,
+  "tags": {
+    "amenity": "bus_station",
+    "fixme": "check and move to new location",
+    "name": "Bus to Bimbila"
+  }
+},
+{
+  "type": "node",
+  "id": 6102518710,
+  "lat": 8.8531488,
+  "lon": 0.0571525,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Trotro station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6102719268,
+  "lat": 8.8529554,
+  "lon": 0.0575815,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Accra station",
+    "price": "around 45 ghc to accra",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6117909629,
+  "lat": 5.6077617,
+  "lon": -0.2450400,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Lapaz — Tema Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6155468457,
+  "lat": 5.5685213,
+  "lon": -0.2188285,
+  "tags": {
+    "amenity": "bus_station",
+    "baby_feeding": "no",
+    "bus": "yes",
+    "check_date": "2024-02-01",
+    "internet_access": "no",
+    "name": "STC Circle Railway",
+    "phone": "+233204314603",
+    "public_transport": "station",
+    "source": "local knowledge",
+    "wheelchair": "limited"
+  }
+},
+{
+  "type": "node",
+  "id": 6173298588,
+  "lat": 6.6861005,
+  "lon": -1.6146094,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "STC Asafo Terminal"
+  }
+},
+{
+  "type": "node",
+  "id": 6190007798,
+  "lat": 6.1113919,
+  "lon": 1.1960717,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "VIP"
+  }
+},
+{
+  "type": "node",
+  "id": 6244498213,
+  "lat": 4.9511079,
+  "lon": -1.7288589,
+  "tags": {
+    "name": "Ketan",
+    "public_transport": "station",
+    "railway": "station",
+    "train": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6244517711,
+  "lat": 4.9379279,
+  "lon": -1.7295192,
+  "tags": {
+    "name": "Bakado",
+    "public_transport": "station",
+    "railway": "station",
+    "train": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6244529422,
+  "lat": 4.9236608,
+  "lon": -1.7368634,
+  "tags": {
+    "name": "Essaman",
+    "public_transport": "station",
+    "railway": "station",
+    "train": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6244833585,
+  "lat": 6.6186583,
+  "lon": 0.4697869,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Kpeve Taxi Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6252376583,
+  "lat": 6.0147738,
+  "lon": -0.0777395,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Adukrom Station"
+  }
+},
+{
+  "type": "node",
+  "id": 6256524456,
+  "lat": 6.0942125,
+  "lon": -0.2575976,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Metro Mass Terminal",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6274474903,
+  "lat": 5.6425236,
+  "lon": -0.3081357,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Pito Junction",
+    "public_transport": "station",
+    "trolleybus": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6290813237,
+  "lat": 5.6082787,
+  "lon": -0.2454925,
+  "tags": {
+    "addr:city": "Accra",
+    "addr:community": "Nii Boi Town",
+    "addr:street": "George Walker Bush Highway",
+    "addr:suburb": "Akweteyman",
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Mamobi Station",
+    "operator": "G.P.R.T.U OF T.U.C Mamobi branch",
+    "public_transport": "station",
+    "source": "Open Cities Accra / GARID- Field Survey"
+  }
+},
+{
+  "type": "node",
+  "id": 6299186483,
+  "lat": 5.4280854,
+  "lon": -0.9587046,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Accra Station, Ajumako"
+  }
+},
+{
+  "type": "node",
+  "id": 6329647744,
+  "lat": 5.5736851,
+  "lon": -0.1604552,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Wireless Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6349550685,
+  "lat": 5.6470933,
+  "lon": -0.0017999,
+  "tags": {
+    "addr:street": "John Saba Street",
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "STC Yard Tema",
+    "opening_hours": "24/7",
+    "operator": "Intercity State Transport Company",
+    "phone": "0244824156",
+    "public_transport": "station",
+    "website": "https://stc.gov.gh"
+  }
+},
+{
+  "type": "node",
+  "id": 6357255105,
+  "lat": 5.5265250,
+  "lon": -0.2459517,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Lantemaamli Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6376308391,
+  "lat": 10.8524680,
+  "lon": -2.7599394,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "VIP",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6389496498,
+  "lat": 6.0914702,
+  "lon": -0.2633507,
+  "tags": {
+    "name": "Koforidua",
+    "public_transport": "station",
+    "railway": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6389554923,
+  "lat": 6.0928636,
+  "lon": -0.2595328,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Bus station"
+  }
+},
+{
+  "type": "node",
+  "id": 6390474640,
+  "lat": 8.5496845,
+  "lon": -0.5206178,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "internet_access": "no",
+    "name": "Salaga Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6416853307,
+  "lat": 5.6767304,
+  "lon": -0.0624457,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Kanewu Trotro Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6416959388,
+  "lat": 5.6756354,
+  "lon": -0.0436820,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Under Bridge Trotro Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6433578585,
+  "lat": 5.5676032,
+  "lon": -0.1321684,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Bush Road Taxi Rank"
+  }
+},
+{
+  "type": "node",
+  "id": 6433613585,
+  "lat": 5.6020566,
+  "lon": -0.0799253,
+  "tags": {
+    "addr:street": "Bank Road",
+    "amenity": "bus_station",
+    "check_date": "2024-02-02",
+    "internet_access": "no",
+    "name": "Taxi Rank",
+    "source": "local knowledge"
+  }
+},
+{
+  "type": "node",
+  "id": 6433613586,
+  "lat": 5.6021957,
+  "lon": -0.0792078,
+  "tags": {
+    "addr:street": "Accra-Ashaiman Road",
+    "amenity": "bus_station",
+    "check_date": "2024-02-02",
+    "internet_access": "no",
+    "name": "Nugua Station",
+    "source": "local knowledge"
+  }
+},
+{
+  "type": "node",
+  "id": 6438100586,
+  "lat": 10.7854710,
+  "lon": -0.8444108,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "VVIP bus station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6453192585,
+  "lat": 9.4007510,
+  "lon": -0.8460296,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "A.Y. Station for Damongo",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6467396590,
+  "lat": 9.4073033,
+  "lon": -0.8473542,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "OA Travel",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6503866983,
+  "lat": 7.3323443,
+  "lon": -2.3276424,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "O.A Bus Station"
+  }
+},
+{
+  "type": "node",
+  "id": 6504089477,
+  "lat": 7.3236624,
+  "lon": -2.3175560,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "STC Yard"
+  }
+},
+{
+  "type": "node",
+  "id": 6504341901,
+  "lat": 10.8518544,
+  "lon": -2.7602261,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Nandom Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6504341905,
+  "lat": 8.0730660,
+  "lon": 0.1767126,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Dambai Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6535967724,
+  "lat": 7.8285750,
+  "lon": -1.7968388,
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "node",
+  "id": 6554708898,
+  "lat": 7.1501136,
+  "lon": 0.4699238,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6568885126,
+  "lat": 6.7184794,
+  "lon": -0.5129078,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "cargo": "vehicle",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6605251327,
+  "lat": 7.3319333,
+  "lon": -2.3202667,
+  "tags": {
+    "addr:street": "J.H Owusu Acheampong street",
+    "amenity": "bus_station",
+    "name": "Jeoun V.I.P Transport"
+  }
+},
+{
+  "type": "node",
+  "id": 6616357230,
+  "lat": 5.5684861,
+  "lon": -0.2191119,
+  "tags": {
+    "amenity": "bus_station",
+    "baby_feeding": "no",
+    "bus": "yes",
+    "check_date": "2024-02-01",
+    "name": "2M Express",
+    "public_transport": "station",
+    "source": "local knowledge",
+    "wheelchair": "limited"
+  }
+},
+{
+  "type": "node",
+  "id": 6694646655,
+  "lat": 6.1607169,
+  "lon": -0.8187000,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Akim Abodom Lorry Station"
+  }
+},
+{
+  "type": "node",
+  "id": 6702581985,
+  "lat": 6.4496899,
+  "lon": -2.3160565,
+  "tags": {
+    "addr:city": "BIBIANI",
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "VIP",
+    "operator": "VIP",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6720942975,
+  "lat": 4.9121045,
+  "lon": -1.7929105,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "VVIP Kumasi"
+  }
+},
+{
+  "type": "node",
+  "id": 6775864222,
+  "lat": 6.1002043,
+  "lon": -0.8376002,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Kade Lorry Station"
+  }
+},
+{
+  "type": "node",
+  "id": 6780775732,
+  "lat": 5.7719296,
+  "lon": 0.6618534,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6780775733,
+  "lat": 5.7764411,
+  "lon": 0.6494100,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6810538362,
+  "lat": 6.6975506,
+  "lon": -1.6142150,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Tamale"
+  }
+},
+{
+  "type": "node",
+  "id": 6810777886,
+  "lat": 7.3318734,
+  "lon": -2.3201296,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "VIP"
+  }
+},
+{
+  "type": "node",
+  "id": 6815860668,
+  "lat": 9.4064242,
+  "lon": -0.8610443,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "VVIP Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6825058468,
+  "lat": 5.6601900,
+  "lon": -0.1779885,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "UPSA Taxi Rank",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6848740785,
+  "lat": 6.5427852,
+  "lon": -0.7758173,
+  "tags": {
+    "addr:street": "Nkawkaw High Street",
+    "amenity": "bus_station",
+    "name": "White House, Nkawkaw"
+  }
+},
+{
+  "type": "node",
+  "id": 6848899585,
+  "lat": 6.6994488,
+  "lon": -1.6505460,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Sofoline - Atimatim, Mampong"
+  }
+},
+{
+  "type": "node",
+  "id": 6850923987,
+  "lat": 5.7733213,
+  "lon": -0.1813059,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Taxi Rank"
+  }
+},
+{
+  "type": "node",
+  "id": 6867104497,
+  "lat": 5.5840473,
+  "lon": -0.1052064,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Bus Station"
+  }
+},
+{
+  "type": "node",
+  "id": 6968590872,
+  "lat": 5.5869300,
+  "lon": -0.2075783,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "37 station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 6987543184,
+  "lat": 6.7782524,
+  "lon": -2.4178749,
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "node",
+  "id": 7031172735,
+  "lat": 5.1108815,
+  "lon": -1.2572596,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Siwdu station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 7046135590,
+  "lat": 5.6195292,
+  "lon": -0.0919544,
+  "tags": {
+    "name": "Addogonno",
+    "public_transport": "station",
+    "railway": "station",
+    "train": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 7073797880,
+  "lat": 5.5704572,
+  "lon": -0.2193964,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "STM",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 7104159586,
+  "lat": 5.5516311,
+  "lon": -0.2095026,
+  "tags": {
+    "addr:street": "Tudu Road",
+    "amenity": "bus_station",
+    "bus": "yes",
+    "description": "Ayalolo Bus Station",
+    "name": "Ayalolo Bus Terminal",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 7119404941,
+  "lat": 9.4069530,
+  "lon": -0.8426828,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Bolgatanga",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 7133434569,
+  "lat": 10.3513984,
+  "lon": -0.7976125,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Walewale Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 7133434575,
+  "lat": 10.5276248,
+  "lon": -0.3696934,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Nalerigu Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 7133445772,
+  "lat": 6.1629870,
+  "lon": -0.5566757,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Kibi Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 7133445775,
+  "lat": 6.0541351,
+  "lon": -0.7956957,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Boadua Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 7133445777,
+  "lat": 6.0407604,
+  "lon": -0.8088464,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Akwaria Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 7133550834,
+  "lat": 5.1123294,
+  "lon": -1.2469790,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 7141536216,
+  "lat": 6.7320203,
+  "lon": -2.5699581,
+  "tags": {
+    "addr:street": "Fawohoyeden High Street",
+    "amenity": "bus_station",
+    "name": "Taxi Station"
+  }
+},
+{
+  "type": "node",
+  "id": 7197566585,
+  "lat": 7.6308406,
+  "lon": -2.0719161,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Atrensu Atifi car station"
+  }
+},
+{
+  "type": "node",
+  "id": 7199959085,
+  "lat": 9.4027828,
+  "lon": -0.8411296,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "VVIP Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 7206319285,
+  "lat": 5.6452377,
+  "lon": 0.0012076,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Tro-Tros to Accra",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 7244271756,
+  "lat": 5.5649601,
+  "lon": -0.2350586,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Cape Coast Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 7244414985,
+  "lat": 7.2907650,
+  "lon": -2.4048161,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Nwawasua bus station"
+  }
+},
+{
+  "type": "node",
+  "id": 7252644986,
+  "lat": 7.8155936,
+  "lon": -2.0401377,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Nwoase bus station"
+  }
+},
+{
+  "type": "node",
+  "id": 7257817593,
+  "lat": 5.1054253,
+  "lon": -1.2858249,
+  "tags": {
+    "amenity": "bus_station",
+    "check_date": "2026-05-27",
+    "internet_access": "wlan",
+    "internet_access:fee": "yes",
+    "internet_access:ssid": "Eduroam",
+    "name": "Old Site Shuttle Station",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 7258377607,
+  "lat": 5.7049409,
+  "lon": -0.1665763,
+  "tags": {
+    "addr:city": "Adenta, Accra",
+    "addr:street": "Aburi Street",
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Taxi Rank Station",
+    "note": "Station for Pantang, Oyarifa, Teiman, Burger Town and Abokobi",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 7258424485,
+  "lat": 7.3143347,
+  "lon": -2.1002920,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Subreso taxi station"
+  }
+},
+{
+  "type": "node",
+  "id": 7273461306,
+  "lat": 10.7858513,
+  "lon": -0.8479965,
+  "tags": {
+    "name": "Bolgatanga Lorry Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 7348800682,
+  "lat": 5.6082598,
+  "lon": -0.1311008,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 7394521743,
+  "lat": 6.8030112,
+  "lon": -2.5205318,
+  "tags": {
+    "addr:street": "Council Yard Crescent",
+    "amenity": "bus_station",
+    "bus": "yes",
+    "internet_access": "yes",
+    "name": "VIP Bus Station",
+    "opening_hours": "Mo-Su 09:00-18:00",
+    "phone": "0247203900",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 7500987186,
+  "lat": 5.8350738,
+  "lon": -0.9989067,
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "node",
+  "id": 7660522773,
+  "lat": 9.0851258,
+  "lon": -1.8184143,
+  "tags": {
+    "amenity": "taxi",
+    "name": "TroTro Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 7669779980,
+  "lat": 6.6654422,
+  "lon": -1.5125570,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Apeadu-Kokoben Station"
+  }
+},
+{
+  "type": "node",
+  "id": 7728524902,
+  "lat": 6.2011361,
+  "lon": -1.6646191,
+  "tags": {
+    "name": "Obuasi",
+    "public_transport": "station",
+    "railway": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 7742054485,
+  "lat": 4.9359029,
+  "lon": -2.3429840,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Market & Bus Station"
+  }
+},
+{
+  "type": "node",
+  "id": 7774247307,
+  "lat": 10.9737405,
+  "lon": -1.1032132,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 7797578070,
+  "lat": 10.5187596,
+  "lon": 0.0965535,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Bunkpurugu Metro Mass Station"
+  }
+},
+{
+  "type": "node",
+  "id": 7812128760,
+  "lat": 5.7409341,
+  "lon": -0.0543615,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "New York Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 7812153700,
+  "lat": 5.7402105,
+  "lon": -0.0483870,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Washington Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 8014584886,
+  "lat": 5.8208760,
+  "lon": -2.8243099,
+  "tags": {
+    "addr:street": "E.K Donkor Close",
+    "highway": "bus_stop",
+    "name": "VIP Co-operative Transport Society",
+    "operator": "VIP",
+    "public_transport": "station",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 8015048726,
+  "lat": 5.8220300,
+  "lon": -2.8203350,
+  "tags": {
+    "name": "G.P.R.T.U",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 8015064409,
+  "lat": 5.8232520,
+  "lon": -2.8213039,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Nyankamam Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 8034227604,
+  "lat": 5.8198269,
+  "lon": -2.8255947,
+  "tags": {
+    "addr:street": "Annor Assemah High Street",
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "node",
+  "id": 8043155071,
+  "lat": 6.0778037,
+  "lon": 0.4340450,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "GPRTU Mepe"
+  }
+},
+{
+  "type": "node",
+  "id": 8103254519,
+  "lat": 10.0618654,
+  "lon": -2.5029329,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "O. A. Travel & Tour Terminal",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 8201474318,
+  "lat": 6.4182732,
+  "lon": 0.7426970,
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "node",
+  "id": 8279114616,
+  "lat": 6.7029764,
+  "lon": -1.6238870,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Anomangye-Mpatasie Station"
+  }
+},
+{
+  "type": "node",
+  "id": 8392640411,
+  "lat": 6.6862234,
+  "lon": -1.6147489,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "VIP bus station"
+  }
+},
+{
+  "type": "node",
+  "id": 8428395282,
+  "lat": 4.9831119,
+  "lon": -1.6375888,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Abuesi"
+  }
+},
+{
+  "type": "node",
+  "id": 8681201428,
+  "lat": 10.7894698,
+  "lon": -0.8556068,
+  "tags": {
+    "name": "V3 Transport Services",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 8775261020,
+  "lat": 6.2536704,
+  "lon": -0.4227107,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Osiem Junction"
+  }
+},
+{
+  "type": "node",
+  "id": 8775261717,
+  "lat": 6.2530878,
+  "lon": -0.4199128,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Oseim taxi station"
+  }
+},
+{
+  "type": "node",
+  "id": 8909705414,
+  "lat": 6.3955676,
+  "lon": -0.1428434,
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "node",
+  "id": 9592350634,
+  "lat": 5.7289432,
+  "lon": -0.0624264,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 9595322455,
+  "lat": 5.5925928,
+  "lon": -0.1517305,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "check_date": "2023-05-11",
+    "internet_access": "no",
+    "name": "Burma Camp Last Stop",
+    "public_transport": "station",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9652191537,
+  "lat": 6.5432099,
+  "lon": -0.7603005,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Nkawkaw New Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 9670066285,
+  "lat": 5.7964003,
+  "lon": 0.8977051,
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "node",
+  "id": 9914131200,
+  "lat": 10.0580959,
+  "lon": -2.4973532,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "loc_name": "Hospital Bus Stop",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 9937562411,
+  "lat": 5.8107263,
+  "lon": -0.3533591,
+  "tags": {
+    "name": "Nsawam",
+    "public_transport": "station",
+    "railway": "station",
+    "train": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9937562412,
+  "lat": 5.7398237,
+  "lon": -0.3571104,
+  "tags": {
+    "name": "Adjen Kotoku",
+    "public_transport": "station",
+    "railway": "station",
+    "train": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9937562413,
+  "lat": 5.6482793,
+  "lon": -0.2378126,
+  "tags": {
+    "name": "Dome",
+    "note": "Location Approximate",
+    "public_transport": "station",
+    "railway": "station",
+    "train": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9937596017,
+  "lat": 5.6073991,
+  "lon": -0.2237278,
+  "tags": {
+    "name": "Achimota Junction",
+    "public_transport": "station",
+    "railway": "station",
+    "train": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9937596018,
+  "lat": 5.5654220,
+  "lon": -0.2190119,
+  "tags": {
+    "name": "Odo",
+    "public_transport": "station",
+    "railway": "stop",
+    "train": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9937916699,
+  "lat": 5.6524526,
+  "lon": 0.0035630,
+  "tags": {
+    "name": "Community 1 Train Station",
+    "public_transport": "station",
+    "railway": "station",
+    "wikidata": "Q133492151"
+  }
+},
+{
+  "type": "node",
+  "id": 9937916700,
+  "lat": 5.6446393,
+  "lon": 0.0115442,
+  "tags": {
+    "name": "Tema Fishing Harbour Train Station",
+    "public_transport": "station",
+    "railway": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 9937916704,
+  "lat": 5.6310629,
+  "lon": 0.0018698,
+  "tags": {
+    "name": "Tema Harbour",
+    "public_transport": "station",
+    "railway": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 9937963687,
+  "lat": 5.6198657,
+  "lon": -0.1196171,
+  "tags": {
+    "name": "Baatsona",
+    "public_transport": "station",
+    "railway": "station",
+    "train": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9969753036,
+  "lat": 7.5666203,
+  "lon": -0.6260725,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 9969762521,
+  "lat": 7.5671107,
+  "lon": -0.6260156,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 10242246413,
+  "lat": 5.6089895,
+  "lon": -1.5495175,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Metro Mass Transit"
+  }
+},
+{
+  "type": "node",
+  "id": 10310808682,
+  "lat": 6.2692938,
+  "lon": 0.0752278,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 10310819121,
+  "lat": 6.2741109,
+  "lon": 0.0774459,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 10314660709,
+  "lat": 9.0300829,
+  "lon": -2.4884063,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Tamale"
+  }
+},
+{
+  "type": "node",
+  "id": 10542356921,
+  "lat": 8.0546256,
+  "lon": -1.7306563,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Jeoun VIP Bus Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 10593483125,
+  "lat": 5.3316863,
+  "lon": -1.9793118,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Alaa Car Station"
+  }
+},
+{
+  "type": "node",
+  "id": 10887564705,
+  "lat": 6.7031221,
+  "lon": -1.6244039,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "ESP Transport",
+    "survey:date": "2023-05-11"
+  }
+},
+{
+  "type": "node",
+  "id": 11059415712,
+  "lat": 5.5499868,
+  "lon": -0.2040285,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "check_date": "2023-07-21",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 11063212220,
+  "lat": 5.7667682,
+  "lon": -0.1427177,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Ashaiman,Dodowa, Somanya Station"
+  }
+},
+{
+  "type": "node",
+  "id": 11253135691,
+  "lat": 9.5142136,
+  "lon": -2.7054474,
+  "tags": {
+    "amenity": "ferry_terminal",
+    "ferry": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 11468217156,
+  "lat": 6.3043205,
+  "lon": -0.7245658,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Abomosu Bus Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 11494848567,
+  "lat": 5.6894457,
+  "lon": -0.0296565,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Gbetsile USA Trotro Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 11539646041,
+  "lat": 9.4126392,
+  "lon": -0.8418840,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "VIP Bus Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 11781500948,
+  "lat": 6.6600505,
+  "lon": -1.1762277,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 12097309757,
+  "lat": 6.6999719,
+  "lon": -1.7154177,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Agogo Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 12151200775,
+  "lat": 10.0646131,
+  "lon": -2.5101775,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "VIP Bus Station"
+  }
+},
+{
+  "type": "node",
+  "id": 12189009034,
+  "lat": 6.6870674,
+  "lon": -1.6154195,
+  "tags": {
+    "bus": "yes",
+    "name": "GPRTU TUC - Kumasi to Cape Coast, Fosu, Mankesim Branch",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 12193095546,
+  "lat": 7.1753914,
+  "lon": -2.1002892,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Duayaw Nkwanta Bus Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 12197629600,
+  "lat": 6.1758841,
+  "lon": 0.0590551,
+  "tags": {
+    "name": "Kpong",
+    "public_transport": "station",
+    "railway": "station",
+    "train": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12401164501,
+  "lat": 5.5535522,
+  "lon": -0.2241515,
+  "tags": {
+    "addr:street": "Abossey-Okai Street",
+    "amenity": "bus_station",
+    "name": "SONEF Accra"
+  }
+},
+{
+  "type": "node",
+  "id": 12556609495,
+  "lat": 6.6980693,
+  "lon": -1.6604160,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Siloam Junction",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 12598212520,
+  "lat": 6.6987280,
+  "lon": -1.6234218,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Kejetia",
+    "wheelchair": "limited"
+  }
+},
+{
+  "type": "node",
+  "id": 12623570101,
+  "lat": 6.5039303,
+  "lon": -2.5016591,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Sankore Lorry Station"
+  }
+},
+{
+  "type": "node",
+  "id": 12914198595,
+  "lat": 6.6850298,
+  "lon": -1.6142850,
+  "tags": {
+    "bus": "yes",
+    "name": "2M Express　（To Accra）",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 12950379812,
+  "lat": 5.1112570,
+  "lon": -1.2571916,
+  "tags": {
+    "bus": "yes",
+    "name": "2M Express （For Kumasi）",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 13115638083,
+  "lat": 10.4802416,
+  "lon": -2.4998333,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Bus stop",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 13563148989,
+  "lat": 6.6255618,
+  "lon": -1.2116896,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Patriensah station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 13586634442,
+  "lat": 6.8187327,
+  "lon": -1.4230727,
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Juaben station"
+  }
+},
+{
+  "type": "node",
+  "id": 13591579641,
+  "lat": 10.4804909,
+  "lon": -2.5018597,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Bussie Bus stop",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 13685713846,
+  "lat": 10.1381461,
+  "lon": 0.2911920,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Tamale Station",
+    "operator:type": "private",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 13907297035,
+  "lat": 5.1334418,
+  "lon": -1.2874930,
+  "tags": {
+    "air_conditioning": "no",
+    "amenity": "bus_station",
+    "baby_feeding": "no",
+    "bus": "yes",
+    "changing_table": "no",
+    "check_date": "2026-09-13",
+    "name": "SRC Hall Shuttle Terminal",
+    "operator": "Mondays to Fridays",
+    "public_transport": "station",
+    "toilets": "no",
+    "toilets:menstrual_products": "no",
+    "toilets:wheelchair": "no",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 13977681239,
+  "lat": 6.9087215,
+  "lon": -1.2767737,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "KUMAWU CAR STATION",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 14023426367,
+  "lat": 6.1300384,
+  "lon": -0.8350501,
+  "tags": {
+    "addr:city": "Subi",
+    "amenity": "bus_station",
+    "bus": "yes",
+    "internet_access": "no",
+    "internet_access:fee": "yes",
+    "name": "SUBI BUS STATION",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 17914757,
+  "center": {
+    "lat": 5.5642377,
+    "lon": -0.2250549
+  },
+  "nodes": [
+    185514054,
+    185514055,
+    185514056,
+    185514057,
+    185514054
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "STC Accra Main",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 137805905,
+  "center": {
+    "lat": 4.9904645,
+    "lon": -2.5921618
+  },
+  "nodes": [
+    1511281889,
+    1511281880,
+    1511281864,
+    1511281887,
+    1511281889
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "building": "yes",
+    "name": "Boat to Nzulazo"
+  }
+},
+{
+  "type": "way",
+  "id": 150519810,
+  "center": {
+    "lat": 5.5344274,
+    "lon": -0.7022514
+  },
+  "nodes": [
+    1634222974,
+    1634222975,
+    1634222952,
+    1634222944,
+    1634222974
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Metro Mass Transit Limited, Agona Swedru",
+    "short_name": "MMT, Agona Swedru"
+  }
+},
+{
+  "type": "way",
+  "id": 152678885,
+  "center": {
+    "lat": 5.5365436,
+    "lon": -0.7008815
+  },
+  "nodes": [
+    1654762676,
+    1654762665,
+    1654762661,
+    1654762657,
+    1654762651,
+    1654762643,
+    1654762646,
+    1654762641,
+    1654762648,
+    1735322417,
+    1654762650,
+    1654762653,
+    1654762655,
+    1654762659,
+    1654762662,
+    1654762667,
+    1654762669,
+    1654762682,
+    1654762672,
+    1654762678,
+    1654762674,
+    1654762676
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Main Station"
+  }
+},
+{
+  "type": "way",
+  "id": 156258163,
+  "center": {
+    "lat": 5.5370994,
+    "lon": -0.7021988
+  },
+  "nodes": [
+    1685195480,
+    1685195487,
+    1685195492,
+    1685195490,
+    1685195484,
+    1685195483,
+    1685195482,
+    1685195481,
+    1685195469,
+    1685195449,
+    1685195478,
+    1685195480
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Osama Station"
+  }
+},
+{
+  "type": "way",
+  "id": 213212233,
+  "center": {
+    "lat": 6.9941457,
+    "lon": 0.2930216
+  },
+  "nodes": [
+    2229510486,
+    2229510487,
+    2229510481,
+    2229510550,
+    2229510486
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Kpando Main Station",
+    "public_transport": "station",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 238521540,
+  "center": {
+    "lat": 5.5889728,
+    "lon": -0.1799083
+  },
+  "nodes": [
+    2463467543,
+    2463467544,
+    2463467545,
+    2463467546,
+    2463467547,
+    2463467549,
+    2463467550,
+    2463467543
+  ],
+  "tags": {
+    "addr:street": "Giffard Road",
+    "amenity": "bus_station",
+    "bus": "yes",
+    "landuse": "commercial",
+    "name": "37 Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 290460785,
+  "center": {
+    "lat": 6.8497907,
+    "lon": -1.3959736
+  },
+  "nodes": [
+    2939870454,
+    2939195247,
+    2938844583,
+    14160327686,
+    2939870454
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Effiduasi Lorry Station",
+    "operator": "GPRTU",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 292612659,
+  "center": {
+    "lat": 5.5697512,
+    "lon": -0.2167953
+  },
+  "nodes": [
+    6405110917,
+    2961495033,
+    2961495034,
+    2961495035,
+    2961495036,
+    2961495037,
+    2961495038,
+    5028359228,
+    6405110916,
+    6405110917
+  ],
+  "tags": {
+    "area": "yes",
+    "name": "Circle Trotro Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 298830279,
+  "center": {
+    "lat": 5.5679737,
+    "lon": -0.2197017
+  },
+  "nodes": [
+    3027822003,
+    3027822004,
+    3027822006,
+    3027822007,
+    3021673520,
+    8281071723,
+    3027822003
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "baby_feeding": "no",
+    "bus": "yes",
+    "check_date": "2023-05-09",
+    "name": "VIP Bus Terminal",
+    "public_transport": "station",
+    "source": "local knowledge",
+    "wheelchair": "limited"
+  }
+},
+{
+  "type": "way",
+  "id": 300519834,
+  "center": {
+    "lat": 5.6201308,
+    "lon": -0.1730869
+  },
+  "nodes": [
+    3045917857,
+    3045917856,
+    3045917852,
+    3045917853,
+    3045917858,
+    3045917857
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Accra Mall Bus Terminal",
+    "public_transport": "station",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "way",
+  "id": 304979005,
+  "center": {
+    "lat": 5.5433073,
+    "lon": -0.2075238
+  },
+  "nodes": [
+    3095492421,
+    8196234946,
+    3095492426,
+    3095492424,
+    3095492422,
+    3095492421
+  ],
+  "tags": {
+    "alt_name": "MMT Station",
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Metro Mass Transit Limited Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 307125655,
+  "center": {
+    "lat": 5.5456085,
+    "lon": -0.2082487
+  },
+  "nodes": [
+    3121841327,
+    3121841328,
+    3121843229,
+    3121843230,
+    3121841327
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "landuse": "commercial",
+    "name": "Rawlings Park",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 348766344,
+  "center": {
+    "lat": 4.9022875,
+    "lon": -1.7605440
+  },
+  "nodes": [
+    2024377437,
+    3548293699,
+    3548293698,
+    3548293697,
+    3548293696,
+    2024377437
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "check_date": "2026-05-23",
+    "internet_access": "no",
+    "internet_access:fee": "no"
+  }
+},
+{
+  "type": "way",
+  "id": 352160512,
+  "center": {
+    "lat": 5.5486241,
+    "lon": -0.2018127
+  },
+  "nodes": [
+    3579273180,
+    8218179730,
+    8218179729,
+    4197030675,
+    8202811041,
+    4197030674,
+    3579273186,
+    6226755753,
+    3579273189,
+    3579273187,
+    3579273184,
+    3579273182,
+    3579273181,
+    3579273183,
+    8218176016,
+    8218176015,
+    3579273180
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Tema Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 356777847,
+  "center": {
+    "lat": 5.5672977,
+    "lon": -0.2173035
+  },
+  "nodes": [
+    3621796211,
+    3621796210,
+    3621796213,
+    3621796212,
+    3621796211
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Odornaa Bus station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 356779684,
+  "center": {
+    "lat": 5.5678749,
+    "lon": -0.2156738
+  },
+  "nodes": [
+    3621822034,
+    3621822035,
+    3621822036,
+    4696826276,
+    3621822037,
+    3621822038,
+    3621822039,
+    3621822034
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 356782124,
+  "center": {
+    "lat": 5.6766452,
+    "lon": -0.1716322
+  },
+  "nodes": [
+    5005380827,
+    4197069043,
+    5005380826,
+    5005380825,
+    4197069035,
+    4722201291,
+    5005380824,
+    4197069015,
+    5005380827
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Madina Market Station"
+  }
+},
+{
+  "type": "way",
+  "id": 401925108,
+  "center": {
+    "lat": 7.5303963,
+    "lon": 0.4753769
+  },
+  "nodes": [
+    4043344967,
+    4043344968,
+    4043344969,
+    4043344970,
+    4043344971,
+    4043344972,
+    4043344973,
+    4043344974,
+    4043344975,
+    4043344967
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 404426046,
+  "center": {
+    "lat": 5.5804036,
+    "lon": -0.2202356
+  },
+  "nodes": [
+    4067018126,
+    4067018125,
+    4067018124,
+    4067018122,
+    4067018123,
+    4067018127,
+    4067018126
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "baby_feeding": "no",
+    "bus": "yes",
+    "check_date": "2023-04-28",
+    "public_transport": "station",
+    "source": "local knowledge",
+    "wheelchair": "limited"
+  }
+},
+{
+  "type": "way",
+  "id": 406926375,
+  "center": {
+    "lat": 4.8824482,
+    "lon": -1.7495656
+  },
+  "nodes": [
+    4089643715,
+    4089643716,
+    4089643717,
+    6244608300,
+    4089643718,
+    4089643719,
+    4089643720,
+    4089643715
+  ],
+  "tags": {
+    "building": "yes",
+    "name": "Takoradi Railway Station",
+    "name:ar": "محطة سكة حديد تاكورادي",
+    "public_transport": "station",
+    "railway": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 407925214,
+  "center": {
+    "lat": 5.5338641,
+    "lon": -0.7019804
+  },
+  "nodes": [
+    4099553624,
+    4099553625,
+    4099553626,
+    4099553627,
+    4099553628,
+    4099553629,
+    4099553630,
+    4099553631,
+    4099553632,
+    4099553633,
+    4099553634,
+    4099553635,
+    4099553624
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Main Station, Agona Swedru"
+  }
+},
+{
+  "type": "way",
+  "id": 408320513,
+  "center": {
+    "lat": 5.5325506,
+    "lon": -0.7016004
+  },
+  "nodes": [
+    4102723866,
+    4102723867,
+    4102723868,
+    4102723869,
+    4102723870,
+    4102723871,
+    4102723872,
+    4102723873,
+    4102723866
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Accra Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 419690753,
+  "center": {
+    "lat": 5.6852209,
+    "lon": -0.0132018
+  },
+  "nodes": [
+    4197018201,
+    4197018202,
+    4400503926,
+    7824537033,
+    4400510898,
+    4197018199,
+    4197018203,
+    4197018201
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Aflao Bus Station",
+    "operator": "GPRTU of TUC",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 419698862,
+  "center": {
+    "lat": 5.6768212,
+    "lon": -0.1245240
+  },
+  "nodes": [
+    4696254692,
+    4197077892,
+    4197077893,
+    1276482271,
+    4197077894,
+    12944465491,
+    4197077895,
+    4197077896,
+    4197077897,
+    3219995015,
+    1803767244,
+    1803767245,
+    1803767246,
+    4197077898,
+    4197077899,
+    3219995042,
+    1276482272,
+    4696254692
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "name": "School Junction Trotro Station"
+  }
+},
+{
+  "type": "way",
+  "id": 425780853,
+  "center": {
+    "lat": 7.0632604,
+    "lon": -1.4007785
+  },
+  "nodes": [
+    4250919421,
+    4250919423,
+    4250919416,
+    4250919413,
+    4250919415,
+    4250919412,
+    4250919421
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Mampong Bus Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 441133714,
+  "center": {
+    "lat": 10.7825439,
+    "lon": -0.8520715
+  },
+  "nodes": [
+    4389034151,
+    4389034152,
+    4389034153,
+    4389034154,
+    4389034155,
+    4389034156,
+    4389034151
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "description": "Cars to Pwalugu, Balungu, Winkogo",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 441194443,
+  "center": {
+    "lat": 10.0197885,
+    "lon": -2.5471686
+  },
+  "nodes": [
+    4389621021,
+    4389620255,
+    4389621022,
+    4389620254,
+    4389620256,
+    4389620257,
+    4389621023,
+    4389621024,
+    4389620253,
+    4389621021
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Nakore Tro Station"
+  }
+},
+{
+  "type": "way",
+  "id": 441207713,
+  "center": {
+    "lat": 10.0628610,
+    "lon": -2.5071909
+  },
+  "nodes": [
+    4389743807,
+    4389743804,
+    5286279263,
+    5286279262,
+    2028050795,
+    4389743806,
+    4389743807
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 441984755,
+  "center": {
+    "lat": 5.1148689,
+    "lon": -1.2931942
+  },
+  "nodes": [
+    4396751393,
+    4396751394,
+    4396751402,
+    4397666355,
+    4396751404,
+    4396751397,
+    4396751395,
+    4396751392,
+    4396751393
+  ],
+  "tags": {
+    "name": "Science Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 532459036,
+  "center": {
+    "lat": 5.7046231,
+    "lon": -0.2982457
+  },
+  "nodes": [
+    5166821121,
+    5166821122,
+    5166821123,
+    5166821124,
+    5166821125,
+    5166821121
+  ],
+  "tags": {
+    "addr:city": "Amasaman",
+    "amenity": "bus_station",
+    "name": "Amasaman Aayalolo Bus Terminal"
+  }
+},
+{
+  "type": "way",
+  "id": 549548792,
+  "center": {
+    "lat": 7.3385030,
+    "lon": -2.3258469
+  },
+  "nodes": [
+    5308353649,
+    5308353650,
+    5308353651,
+    5308353652,
+    5308353653,
+    5308353649
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "description": "Buses and Taxis to Chiraa, New Dormaa, Yawhima, Kobedi, Techiman and surrounding areas",
+    "internet_access:fee": "no",
+    "name": "Chiraaa Station",
+    "operator": "GPRTU",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 556523820,
+  "center": {
+    "lat": 5.6665430,
+    "lon": -0.1779128
+  },
+  "nodes": [
+    5368521826,
+    5209798115,
+    5368521828,
+    5368521829,
+    5368521830,
+    5368521831,
+    5368521832,
+    5368521833,
+    5368521834,
+    5368521835,
+    5368521836,
+    5368521837,
+    5368521838,
+    5368521826
+  ],
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "way",
+  "id": 565474632,
+  "center": {
+    "lat": 6.7075157,
+    "lon": -1.6401068
+  },
+  "nodes": [
+    5445877784,
+    6131279417,
+    5445877781,
+    8858864417,
+    5445877776,
+    13404264456,
+    5445877773,
+    5445877770,
+    5445877767,
+    5445877765,
+    5445877764,
+    5445877763,
+    5445877784
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Metro Mass Transit"
+  }
+},
+{
+  "type": "way",
+  "id": 587784224,
+  "center": {
+    "lat": 5.3220863,
+    "lon": -1.9896244
+  },
+  "nodes": [
+    5614407690,
+    5614407689,
+    5614407688,
+    5614407687,
+    5614407686,
+    5614407690
+  ],
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "way",
+  "id": 591841247,
+  "center": {
+    "lat": 5.5255877,
+    "lon": -1.9213446
+  },
+  "nodes": [
+    5649707404,
+    5649707405,
+    5649707406,
+    5649707407,
+    5649707408,
+    5649707404
+  ],
+  "tags": {
+    "building": "yes",
+    "name": "Kuranti",
+    "public_transport": "station",
+    "railway": "station",
+    "train": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 591847154,
+  "center": {
+    "lat": 5.6231980,
+    "lon": -1.9195243
+  },
+  "nodes": [
+    5649764311,
+    5649764312,
+    5649764313,
+    5649764314,
+    5649764311
+  ],
+  "tags": {
+    "building": "yes",
+    "name": "Pemeso Halt",
+    "public_transport": "station",
+    "railway": "station",
+    "train": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 591847158,
+  "center": {
+    "lat": 5.9208685,
+    "lon": -1.7698121
+  },
+  "nodes": [
+    5649767143,
+    5649767144,
+    5649767145,
+    5649767146,
+    5649767143
+  ],
+  "tags": {
+    "building": "yes",
+    "drain": "yes",
+    "name": "Mempeasem",
+    "network": "Takoradi Dunkwa",
+    "public_transport": "station",
+    "railway": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 591847159,
+  "center": {
+    "lat": 5.8758567,
+    "lon": -1.7591829
+  },
+  "nodes": [
+    5649767150,
+    5649767151,
+    5649767152,
+    5649767153,
+    5649767150
+  ],
+  "tags": {
+    "building": "yes",
+    "name": "Buaben",
+    "public_transport": "station",
+    "railway": "station",
+    "train": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 591851119,
+  "center": {
+    "lat": 5.8103004,
+    "lon": -1.7651084
+  },
+  "nodes": [
+    5649814925,
+    5649814926,
+    5649814927,
+    5649814928,
+    5649814925
+  ],
+  "tags": {
+    "building": "yes",
+    "name": "Imbraim",
+    "public_transport": "station",
+    "railway": "station",
+    "train": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 591851121,
+  "center": {
+    "lat": 5.7643120,
+    "lon": -1.7907008
+  },
+  "nodes": [
+    5649814935,
+    5649814936,
+    5649814937,
+    5649814938,
+    5649814935
+  ],
+  "tags": {
+    "building": "yes",
+    "name": "Kyebi",
+    "public_transport": "station",
+    "railway": "station",
+    "train": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 591877830,
+  "center": {
+    "lat": 4.9635998,
+    "lon": -1.7245290
+  },
+  "nodes": [
+    5650097499,
+    5650097500,
+    5650097501,
+    5650097502,
+    5650097499
+  ],
+  "tags": {
+    "building": "yes",
+    "name": "Kojokrom Station",
+    "public_transport": "station",
+    "railway": "station",
+    "train": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 593076328,
+  "center": {
+    "lat": 5.1124274,
+    "lon": -1.8571462
+  },
+  "nodes": [
+    5658778883,
+    5658778884,
+    5658778885,
+    5658778886,
+    5658778883
+  ],
+  "tags": {
+    "building": "yes",
+    "name": "Amantin",
+    "operator": "GRCL",
+    "public_transport": "station",
+    "railway": "halt",
+    "train": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 594091030,
+  "center": {
+    "lat": 6.2174314,
+    "lon": -2.4826283
+  },
+  "nodes": [
+    5665899758,
+    5665899757,
+    5665899756,
+    5665899754,
+    5665899755,
+    5665899753,
+    5665899758
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 601596008,
+  "center": {
+    "lat": 5.6093052,
+    "lon": -0.2474857
+  },
+  "nodes": [
+    5717204731,
+    5705317809,
+    5717204730,
+    5717204729,
+    5717204731
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station",
+    "source": "MapBox Satellite"
+  }
+},
+{
+  "type": "way",
+  "id": 604081119,
+  "center": {
+    "lat": 5.6782657,
+    "lon": -0.1736123
+  },
+  "nodes": [
+    5732865704,
+    5732865703,
+    5732865702,
+    5732865701,
+    5732865700,
+    5732865704
+  ],
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "way",
+  "id": 609574721,
+  "center": {
+    "lat": 5.6391799,
+    "lon": -0.2423939
+  },
+  "nodes": [
+    5987286838,
+    5773732300,
+    5773732301,
+    5987286839,
+    5987286838
+  ],
+  "tags": {
+    "addr:city": "Accra",
+    "addr:community": "St John's",
+    "addr:street": "Accra - Nsawam Highway",
+    "addr:suburb": "Alogboshie",
+    "amenity": "bus_station",
+    "building": "commercial",
+    "building:levels": "1",
+    "building:material": "metal",
+    "bus": "yes",
+    "name": "GPRTU of TUC, St Johns Taxi Drivers Local Union, Equity Assurance Company Agency office",
+    "public_transport": "station",
+    "roof:material": "wood",
+    "source": "Open Cities Accra - Field Survey"
+  }
+},
+{
+  "type": "way",
+  "id": 614027828,
+  "center": {
+    "lat": 5.1981273,
+    "lon": -1.9366278
+  },
+  "nodes": [
+    5808778826,
+    5808778823,
+    5808778824,
+    5808778825,
+    5808778826
+  ],
+  "tags": {
+    "building": "yes",
+    "name": "Esuaso",
+    "network": "Western Line",
+    "operator": "GRCL",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 614830541,
+  "center": {
+    "lat": 6.8066929,
+    "lon": -2.5159995
+  },
+  "nodes": [
+    5815044157,
+    6094040102,
+    6094040101,
+    6094040100,
+    6094040097,
+    6094040099,
+    6084152240,
+    6121819293,
+    6121819292,
+    6127184722,
+    5815044157
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "description": "New Station",
+    "name": "Goaso Bus Station Yard"
+  }
+},
+{
+  "type": "way",
+  "id": 615488592,
+  "center": {
+    "lat": 6.0916893,
+    "lon": -0.2573437
+  },
+  "nodes": [
+    5820105427,
+    5820105426,
+    5820105425,
+    5820105424,
+    5820105427
+  ],
+  "tags": {
+    "name": "Taxi Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 615824876,
+  "center": {
+    "lat": 6.0939249,
+    "lon": -0.2564887
+  },
+  "nodes": [
+    5822931303,
+    5822931302,
+    5822931296,
+    5822931301,
+    5822931300,
+    5822931297,
+    5822931298,
+    5822931299,
+    5822931303
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Koforidua Lorry Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 615838223,
+  "center": {
+    "lat": 6.0931518,
+    "lon": -0.2569413
+  },
+  "nodes": [
+    5823057583,
+    5823057582,
+    5823057581,
+    5823057580,
+    5823057583
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Accra - Tema Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 615905487,
+  "center": {
+    "lat": 5.9995262,
+    "lon": 0.5974207
+  },
+  "nodes": [
+    5823724502,
+    5823724501,
+    11314401631,
+    11314401626,
+    5823724500,
+    5823723922,
+    5823723923,
+    11314401593,
+    5823723924,
+    5823724499,
+    4472238368,
+    11314401592,
+    5823724502
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Sogakope Main Lorry Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 647972214,
+  "center": {
+    "lat": 6.7177954,
+    "lon": -1.6329604
+  },
+  "nodes": [
+    6084201276,
+    6084201275,
+    6084201274,
+    6084201273,
+    6084201272,
+    6084201271,
+    6084201270,
+    6084201269,
+    6084201268,
+    6084201267,
+    6084201276
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Suame Bus Station"
+  }
+},
+{
+  "type": "way",
+  "id": 665263675,
+  "center": {
+    "lat": 5.5498779,
+    "lon": -0.2032193
+  },
+  "nodes": [
+    6226755754,
+    6226755753,
+    3579273186,
+    3777245631,
+    6226755754
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bench": "no",
+    "bus": "yes",
+    "covered": "yes",
+    "name": "MMT Station",
+    "network": "Metro Mass Transport",
+    "public_transport": "station",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 665592938,
+  "center": {
+    "lat": 6.4570384,
+    "lon": -2.3209051
+  },
+  "nodes": [
+    6229766742,
+    6229766743,
+    6229766744,
+    6229766745,
+    6229766742
+  ],
+  "tags": {
+    "addr:city": "Bibiani",
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Bibiani Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 665900517,
+  "center": {
+    "lat": 6.4546516,
+    "lon": -2.3172518
+  },
+  "nodes": [
+    6233670516,
+    6233670517,
+    6233670518,
+    6233670519,
+    6233670516
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Diaso Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 666934500,
+  "center": {
+    "lat": 4.9045664,
+    "lon": -1.7479647
+  },
+  "nodes": [
+    6244606965,
+    6244606966,
+    6244606967,
+    6244606968,
+    6244606969,
+    6244606970,
+    6244606971,
+    6244606972,
+    6244606965
+  ],
+  "tags": {
+    "building": "train_station",
+    "name": "New Takoradi",
+    "public_transport": "station",
+    "railway": "station",
+    "train": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 685904975,
+  "center": {
+    "lat": 5.8095158,
+    "lon": -2.4358518
+  },
+  "nodes": [
+    6428618072,
+    6428618071,
+    6428618070,
+    6428618069,
+    6428618068,
+    6428618067,
+    6428618066,
+    6428618065,
+    6428618064,
+    6428618063,
+    6428618062,
+    6428618061,
+    6428618060,
+    6428618072
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Samreboi- Enchi station"
+  }
+},
+{
+  "type": "way",
+  "id": 692031854,
+  "center": {
+    "lat": 5.1167122,
+    "lon": -1.2922016
+  },
+  "nodes": [
+    6495886705,
+    14039561941,
+    6495886704,
+    6495886703,
+    14039561940,
+    6495886702,
+    6495886705
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "building": "yes",
+    "check_date": "2026-05-15",
+    "internet_access": "wlan",
+    "internet_access:fee": "no",
+    "internet_access:ssid": "Eduroam/UCC Wifi",
+    "name": "Science Shuttle Station",
+    "opening_hours": "Mo-Fr 06:00-22:00",
+    "operator": "University Of Cape Coast",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 692750567,
+  "center": {
+    "lat": 7.3357254,
+    "lon": -2.3258292
+  },
+  "nodes": [
+    6503789828,
+    6503789827,
+    6503789826,
+    6503789825,
+    6503789828
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Sunyani Bus Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 693028115,
+  "center": {
+    "lat": 7.3300012,
+    "lon": -2.3286805
+  },
+  "nodes": [
+    6506393060,
+    6506393059,
+    6506393058,
+    6506393057,
+    6506393060
+  ],
+  "tags": {
+    "name": "Atronie Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 693381557,
+  "center": {
+    "lat": 5.8129210,
+    "lon": -0.3525455
+  },
+  "nodes": [
+    6509531605,
+    5375101387,
+    6509531604,
+    6509531603,
+    6509531602,
+    6509531601,
+    6509531600,
+    6509531605
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Nsawam Main Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 701098199,
+  "center": {
+    "lat": 4.8961400,
+    "lon": -1.7645026
+  },
+  "nodes": [
+    6584270812,
+    6584270811,
+    6584270810,
+    6584270809,
+    6584270808,
+    6584270807,
+    6584270812
+  ],
+  "tags": {
+    "alt_name": "MMT",
+    "amenity": "bus_station",
+    "check_date": "2026-05-24",
+    "name": "Metro Mass Transit Takoradi"
+  }
+},
+{
+  "type": "way",
+  "id": 701098200,
+  "center": {
+    "lat": 4.8966237,
+    "lon": -1.7648591
+  },
+  "nodes": [
+    6584270820,
+    6584270819,
+    6584270818,
+    6584270817,
+    6584270816,
+    6584270815,
+    6584270814,
+    6584270813,
+    6584270820
+  ],
+  "tags": {
+    "alt_name": "Accra Station",
+    "amenity": "bus_station",
+    "check_date": "2026-05-24",
+    "name": "Takoradi-Old Accra Bus Station",
+    "operator": "STMA"
+  }
+},
+{
+  "type": "way",
+  "id": 701109203,
+  "center": {
+    "lat": 4.8945583,
+    "lon": -1.7650330
+  },
+  "nodes": [
+    6584359424,
+    6584359423,
+    6584359422,
+    6584359421,
+    6584359420,
+    6584359424
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "check_date": "2026-05-24",
+    "name": "Intercity STC, Takoradi",
+    "operator": "Intercity STC Coaches Limited"
+  }
+},
+{
+  "type": "way",
+  "id": 703144214,
+  "center": {
+    "lat": 6.1984236,
+    "lon": -1.6448319
+  },
+  "nodes": [
+    6603259260,
+    6603259267,
+    6603259266,
+    6465236914,
+    6603259265,
+    6603259264,
+    6603259263,
+    6603259262,
+    6603259261,
+    6603259260
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "name": "Tutuka Taxi Rank"
+  }
+},
+{
+  "type": "way",
+  "id": 750927044,
+  "center": {
+    "lat": 7.5560258,
+    "lon": -1.7087463
+  },
+  "nodes": [
+    7020599068,
+    7020599069,
+    7020599070,
+    7020599071,
+    7020599072,
+    7020599073,
+    7020599074,
+    7020599075,
+    7020599076,
+    7020599077,
+    7020599078,
+    7020599068
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "landuse": "commercial",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 757931703,
+  "center": {
+    "lat": 5.5740789,
+    "lon": -0.2196487
+  },
+  "nodes": [
+    7047137890,
+    7078322441,
+    7078190961,
+    7078322440,
+    7047137890
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "description": "It is a public transport to all part of the country.",
+    "name": "OA Travel and Tours",
+    "opening_hours": "Mo-Su 06:00-22:00",
+    "phone": "0302236917",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 776430803,
+  "center": {
+    "lat": 5.5454180,
+    "lon": -0.2157530
+  },
+  "nodes": [
+    7244285361,
+    7252268753,
+    7252268754,
+    7244285362,
+    7244285363,
+    7244285364,
+    7244285361
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 777700331,
+  "center": {
+    "lat": 5.1054143,
+    "lon": -1.2859046
+  },
+  "nodes": [
+    7257817613,
+    7257817622,
+    7257817621,
+    14048992019,
+    14048992018,
+    7257817612,
+    7257817613
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "building": "yes",
+    "check_date": "2026-05-27",
+    "internet_access": "wlan",
+    "internet_access:fee": "yes",
+    "name": "Old Site Shuttle Station",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 790943801,
+  "center": {
+    "lat": 5.3463034,
+    "lon": -0.6252045
+  },
+  "nodes": [
+    7394110416,
+    7394110420,
+    7394110414,
+    7394110418,
+    7394110416
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "disabled": "no",
+    "name": "Winneba Trotro Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 807379541,
+  "center": {
+    "lat": 6.6899084,
+    "lon": -1.6123154
+  },
+  "nodes": [
+    7550032118,
+    7550032117,
+    7550032116,
+    7550032115,
+    7550032114,
+    7550032113,
+    7550032112,
+    6082966714,
+    7550032111,
+    7550032118
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "name": "OA Travel and Tours"
+  }
+},
+{
+  "type": "way",
+  "id": 817338241,
+  "center": {
+    "lat": 6.1958174,
+    "lon": -2.3227967
+  },
+  "nodes": [
+    7633377529,
+    7633377530,
+    7633377531,
+    7633377532,
+    7633377533,
+    7633377534,
+    7633377535,
+    7633377536,
+    7633377537,
+    7633377538,
+    7633377539,
+    7633377540,
+    7633377541,
+    7633377543,
+    7633377542,
+    7633377545,
+    7633377544,
+    7633377529
+  ],
+  "tags": {
+    "addr:city": "Sefwi Bekwai",
+    "amenity": "bus_station",
+    "bus": "yes",
+    "layer": "-1",
+    "name": "Sefwi Bekwai Lorry station",
+    "public_transport": "station",
+    "source": "local knowledge"
+  }
+},
+{
+  "type": "way",
+  "id": 838101177,
+  "center": {
+    "lat": 6.1544009,
+    "lon": 0.0624646
+  },
+  "nodes": [
+    7822252662,
+    7822252661,
+    7822252660,
+    2581176264,
+    7822252662
+  ],
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "way",
+  "id": 838101184,
+  "center": {
+    "lat": 6.1555667,
+    "lon": 0.0614722
+  },
+  "nodes": [
+    7822252681,
+    7822252680,
+    7822252679,
+    7822252678,
+    7822252677,
+    7822252676,
+    7822252681
+  ],
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "way",
+  "id": 881747902,
+  "center": {
+    "lat": 5.5500345,
+    "lon": -0.2047602
+  },
+  "nodes": [
+    8200069382,
+    8383206821,
+    7104178464,
+    8383206820,
+    8383206819,
+    8200069380,
+    8200069379,
+    8200069381,
+    8200069382
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "description": "Ayalolo Bus Terminal Kinbu Road. this is the main Bus station for ayalolo",
+    "name": "Ayalolo Bus Terminal",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 888417948,
+  "center": {
+    "lat": 6.2046866,
+    "lon": -1.6698367
+  },
+  "nodes": [
+    5535037473,
+    8259765934,
+    8259765933,
+    8259765932,
+    5535037473
+  ],
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "way",
+  "id": 893103740,
+  "center": {
+    "lat": 5.8620357,
+    "lon": -0.6674946
+  },
+  "nodes": [
+    8300627735,
+    2020457535,
+    8300627734,
+    8300627733,
+    8300627732,
+    8300627735
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Asamankese Bus Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 909176642,
+  "center": {
+    "lat": 6.7112842,
+    "lon": -1.5646034
+  },
+  "nodes": [
+    8441688546,
+    8441688547,
+    8441688568,
+    8441688548,
+    8441688549,
+    8441688550,
+    8441688551,
+    8441688552,
+    8441688553,
+    8441688554,
+    8441688555,
+    8441688556,
+    8441688557,
+    8441688558,
+    8441688546
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "layer": "1",
+    "name": "Asokore Mampong Laststop",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 1022640448,
+  "center": {
+    "lat": 5.1126084,
+    "lon": -1.2415424
+  },
+  "nodes": [
+    9431563683,
+    9431563684,
+    9431563685,
+    9431563686,
+    9431563683
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Swedru Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 1022640689,
+  "center": {
+    "lat": 5.1127686,
+    "lon": -1.2413851
+  },
+  "nodes": [
+    9431562450,
+    9431562451,
+    9431562452,
+    9431562453,
+    9431562450
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Accra Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 1024597602,
+  "center": {
+    "lat": 6.6704163,
+    "lon": -1.5741972
+  },
+  "nodes": [
+    9447871338,
+    9447871339,
+    9447871340,
+    9447871341,
+    9447871342,
+    9447871343,
+    9447871344,
+    9447871345,
+    9447871346,
+    9447871347,
+    9447871348,
+    9447871338
+  ],
+  "tags": {
+    "addr:street": "Brunei Road",
+    "amenity": "bus_station",
+    "building": "shed",
+    "building:levels": "1",
+    "building:material": "metal",
+    "bus": "yes",
+    "check_date": "2026-03-07",
+    "internet_access": "wlan",
+    "name": "Brunei Bus Stop",
+    "network": "KNUST",
+    "public_transport": "station",
+    "roof:levels": "0",
+    "roof:shape": "flat",
+    "source": "local knowledge",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 1119835023,
+  "center": {
+    "lat": 5.6120235,
+    "lon": -1.5495976
+  },
+  "nodes": [
+    10242226288,
+    10242226287,
+    10242226286,
+    10242226285,
+    10242226288
+  ],
+  "tags": {
+    "area": "yes",
+    "name": "Praso Main Lorry Station",
+    "operator": "GPRTU",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 1137613021,
+  "center": {
+    "lat": 6.9957002,
+    "lon": 0.2930304
+  },
+  "nodes": [
+    10604258341,
+    10604258342,
+    10604258343,
+    10604258344,
+    10604258345,
+    10604258346,
+    10604258341
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Kpando Lorry Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 1164702713,
+  "center": {
+    "lat": 6.6189963,
+    "lon": 0.4715826
+  },
+  "nodes": [
+    10832256472,
+    10832256470,
+    10832256469,
+    10832256468,
+    10832256467,
+    10832256466,
+    10832256465,
+    10832256464,
+    10832256463,
+    10832256472
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 1229963547,
+  "center": {
+    "lat": 5.6495321,
+    "lon": -0.1791633
+  },
+  "nodes": [
+    11406019036,
+    11406019052,
+    11406019019,
+    11406019047,
+    11406019035,
+    11406019036
+  ],
+  "tags": {
+    "air_conditioning": "no",
+    "amenity": "bus_station",
+    "bus": "yes",
+    "internet_access": "no",
+    "name": "Legon Hospital Bus Station",
+    "public_transport": "station",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 1268489417,
+  "center": {
+    "lat": 6.6600542,
+    "lon": -1.1762873
+  },
+  "nodes": [
+    11781500944,
+    11781500945,
+    11781500946,
+    11781500947,
+    11781500944
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 1308945934,
+  "center": {
+    "lat": 7.4070356,
+    "lon": 0.4659269
+  },
+  "nodes": [
+    12121531961,
+    12121531962,
+    12121531963,
+    12121531964,
+    12121531965,
+    12121531966,
+    12121531968,
+    12121531969,
+    12121531961
+  ],
+  "tags": {
+    "addr:city": "Jasikan",
+    "amenity": "bus_station",
+    "bus": "yes",
+    "internet_access": "no",
+    "name": "Jasikan Lorry Station & Market",
+    "owner": "Government",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 1309945090,
+  "center": {
+    "lat": 6.7649576,
+    "lon": -3.1912824
+  },
+  "nodes": [
+    12128471275,
+    12128471276,
+    12128471277,
+    12128471278,
+    12128471275
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Lorry station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 1312320729,
+  "center": {
+    "lat": 7.5844503,
+    "lon": -1.9377542
+  },
+  "nodes": [
+    12146821555,
+    13019413967,
+    12146821556,
+    12146821557,
+    12146821558,
+    12146821559,
+    12146821560,
+    12146821561,
+    12146821562,
+    12146821563,
+    12146821564,
+    12146821555
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Techiman Bus Terminal",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 1335747207,
+  "center": {
+    "lat": 7.7545715,
+    "lon": -0.9859708
+  },
+  "nodes": [
+    12356363161,
+    12356363162,
+    12356363163,
+    12356363164,
+    12356363161
+  ],
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "way",
+  "id": 1361391311,
+  "center": {
+    "lat": 6.1511017,
+    "lon": 0.0576357
+  },
+  "nodes": [
+    12603503581,
+    12603503582,
+    12603503583,
+    12603503584,
+    12603503581
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 1453909313,
+  "center": {
+    "lat": 7.1506905,
+    "lon": 0.4693852
+  },
+  "nodes": [
+    13333896114,
+    2319485629,
+    13333896113,
+    13333896112,
+    13333896111,
+    13333896110,
+    13333896114
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Hohoe Lorry Station",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 1520148139,
+  "center": {
+    "lat": 6.7980832,
+    "lon": -1.0819773
+  },
+  "nodes": [
+    13869441522,
+    13869441523,
+    13869441524,
+    13869441525,
+    13869441522
+  ],
+  "tags": {
+    "addr:city": "Agogo Asante Akim",
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Lorry Park",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 1526505212,
+  "center": {
+    "lat": 7.3319393,
+    "lon": -2.3203198
+  },
+  "nodes": [
+    13912888635,
+    13912888636,
+    13912888637,
+    13912888638,
+    13912888635
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "way",
+  "id": 1537804905,
+  "center": {
+    "lat": 6.6633488,
+    "lon": -3.2347709
+  },
+  "nodes": [
+    14007274566,
+    14007274565,
+    14007274564,
+    14007274563,
+    14007274566
+  ],
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "way",
+  "id": 1538449642,
+  "center": {
+    "lat": 6.6620447,
+    "lon": -3.0935426
+  },
+  "nodes": [
+    14011045239,
+    14011045238,
+    14011045237,
+    14011045236,
+    14011045235,
+    14011045234,
+    14011045239
+  ],
+  "tags": {
+    "amenity": "bus_station"
+  }
+},
+{
+  "type": "way",
+  "id": 1543170632,
+  "center": {
+    "lat": 6.7000123,
+    "lon": -1.6226760
+  },
+  "nodes": [
+    14041030577,
+    14041030574,
+    14041030579,
+    14041030576,
+    14041030581,
+    14041030578,
+    14041030577
+  ],
+  "tags": {
+    "amenity": "bus_station",
+    "fixme": "station naming",
+    "name": "Techiman/Sunyani/Kintampo Station",
+    "public_transport": "station"
+  }
+}
+
+  ]
+}

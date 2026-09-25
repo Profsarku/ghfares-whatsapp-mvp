@@ -9,12 +9,14 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/favicon.svg">
 <link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 </head>
 <body>
 <header class="nav">
   <div class="nav-inner">
     <a class="logo" href="/">GH Fares</a>
     <a class="n on" href="#services">Services</a>
+    <a class="n" href="#stations">Stations</a>
     <a class="n" href="/roads">Roads</a>
     <a class="n" href="/support">Support</a>
     <a class="start" href="/go">Start</a>
@@ -88,6 +90,17 @@
   </div>
 </section>
 
+<section class="section" id="stations">
+  <div class="wrap">
+    <h2>Stations</h2>
+    <p class="sub">Accra survey parks, and lorry stations mapped across Ghana. Tap a pin for the name.</p>
+  </div>
+  <div class="home-map" id="station-map" role="application" aria-label="Map of stations in Ghana"></div>
+  <div class="wrap">
+    <p class="home-map-note" id="station-note">Loading stations…</p>
+  </div>
+</section>
+
 <section class="band ink">
   <div class="wrap">
     <p class="kicker">The record</p>
@@ -104,11 +117,14 @@
   <span>GH Fares</span>
   <nav>
     <a href="/#services">Services</a>
+    <a href="/map">Stations</a>
     <a href="/roads">Roads</a>
     <a href="/support">Support</a>
     <a href="/privacy">Privacy</a>
     <a href="/go">Start</a>
   </nav>
 </footer>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="/home-map.js"></script>
 </body>
 </html>

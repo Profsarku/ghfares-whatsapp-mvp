@@ -133,7 +133,7 @@ async function req(server, path, opts = {}) {
   else bad('GET messenger-profile', want.status);
 
   const site = await req(server, '/');
-  if (site.status === 200 && /Never stranded/i.test(site.text) && site.text.includes('id="services"'))
+  if (site.status === 200 && /Never stranded/i.test(site.text) && site.text.includes('id="services"') && site.text.includes('id="station-map"'))
     pass('GET /  services landing');
   else bad('GET / landing', 'missing services page');
 
@@ -456,6 +456,30 @@ async function req(server, path, opts = {}) {
     pass('typed station  after location decline');
   else bad('typed station', JSON.stringify(typed).slice(0, 220));
 
+  caps.forget('unit-nearest');
+  inGhana('unit-nearest');
+  await engine.handle({ from: '233201234567', hash: 'unit-nearest', text: 'where' });
+  await engine.handle({ from: '233201234567', hash: 'unit-nearest', text: 'no' });
+  const unknown = await engine.handle({ from: '233201234567', hash: 'unit-nearest', text: 'Kumbungu Junction XYZ' });
+  if (/Where are you now/i.test(JSON.stringify(unknown)) && /send_location/.test(JSON.stringify(unknown)))
+    pass('unknown place  asks where you are now');
+  else bad('unknown place', JSON.stringify(unknown).slice(0, 240));
+
+  const snapped = await engine.handle({
+    from: '233201234567', hash: 'unit-nearest',
+    location: { latitude: 5.56507, longitude: -0.235921 }
+  });
+  if (/Kaneshie|You're at/i.test(JSON.stringify(snapped)))
+    pass('nearest pin  unknown name then WhatsApp location');
+  else bad('nearest pin', JSON.stringify(snapped).slice(0, 240));
+
+  caps.forget('unit-sunyani');
+  inGhana('unit-sunyani');
+  const sunyani = await engine.handle({ from: '233201234567', hash: 'unit-sunyani', text: 'Sunyani Bus Station' });
+  if (/Sunyani/i.test(JSON.stringify(sunyani)) && /on the map/i.test(JSON.stringify(sunyani)))
+    pass('Ghana station  Sunyani is on the map without a fare table');
+  else bad('sunyani station', JSON.stringify(sunyani).slice(0, 240));
+
   const nluFare = await classify('kaneshie to bubuashie');
   if (nluFare.intent === 'fare' && nluFare.places.length >= 2)
     pass('NLU  fare questions still resolve a from-to pair');
@@ -483,6 +507,17 @@ async function req(server, path, opts = {}) {
   if (roadsPage.status === 200 && /Never stranded|contractor|Help others/i.test(String(roadsPage.body || roadsPage.text || '')))
     pass('GET /roads  public help-others page');
   else bad('GET /roads', roadsPage.status + ' ' + String(roadsPage.body || '').slice(0, 120));
+
+  const mapPage = await req(server, '/map');
+  const mapData = await req(server, '/data/accra-station-stops.review.json');
+  const pins = await req(server, '/v1/map/stations');
+  const pinRows = pins.body && pins.body.data && pins.body.data.stations;
+  const beyondAccra = Array.isArray(pinRows) && pinRows.some(s => s.lat > 7 || s.lat < 5);
+  if (mapPage.status === 200 && /Accra station stops/.test(mapPage.text || '')
+      && mapData.status === 200 && mapData.body && mapData.body.counts && mapData.body.counts.stations === 190
+      && pins.status === 200 && Array.isArray(pinRows) && pinRows.length > 190 && beyondAccra)
+    pass('GET /map  review map and Ghana station pins');
+  else bad('GET /map', mapPage.status + ' pins ' + (pinRows && pinRows.length));
 
   const dbHealth = await req(server, '/v1/health/db');
   if (dbHealth.status === 200 && dbHealth.body && dbHealth.body.data && dbHealth.body.data.configured === false)

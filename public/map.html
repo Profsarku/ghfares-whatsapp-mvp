@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Accra stops — GH Fares</title>
+<meta name="description" content="Check the 2015 Accra trotro survey: each station and the stops recorded on trips that start there.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+</head>
+<body class="map-page">
+<header class="nav">
+  <div class="nav-inner">
+    <a class="logo" href="/">GH Fares</a>
+    <a class="n" href="/#services">Services</a>
+    <a class="n" href="/roads">Roads</a>
+    <a class="n on" href="/map" aria-current="page">Stations</a>
+    <a class="n" href="/support">Support</a>
+    <a class="start" href="/go">Start</a>
+  </div>
+</header>
+<div class="map-app">
+  <aside class="map-side">
+    <p class="kicker">Review only</p>
+    <h1>Accra station stops</h1>
+    <p class="map-note" id="coverage">Loading the 2015 survey…</p>
+    <p class="map-counts" id="counts"></p>
+    <input class="map-search" id="q" type="search" placeholder="Search a station or stop" autocomplete="off">
+    <div class="map-filters" role="group" aria-label="What to list">
+      <button type="button" id="f-stations" class="on">Stations</button>
+      <button type="button" id="f-review">Needs a look</button>
+      <button type="button" id="f-loose">Not on a trip</button>
+    </div>
+    <div class="map-legend" aria-hidden="true">
+      <span><i class="lg-station"></i>Accra survey</span>
+      <span><i class="lg-osm"></i>Ghana station</span>
+      <span><i class="lg-look"></i>Thin or duplicate</span>
+      <span><i class="lg-stop"></i>Stop on a trip</span>
+      <span><i class="lg-far"></i>Over 20 km from its park</span>
+    </div>
+    <div id="detail"></div>
+    <ul class="map-list" id="list"></ul>
+  </aside>
+  <div class="map-canvas" id="map" role="application" aria-label="Map of Accra stations and stops"></div>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="/map.js"></script>
+</body>
+</html>

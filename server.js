@@ -265,6 +265,27 @@ app.post('/v1/logout', (req, res) => {
 });
 app.get('/support', (req, res) => sendPublic(res, 'support.html', 'html'));
 app.get('/roads', (req, res) => sendPublic(res, 'roads.html', 'html'));
+app.get('/map', (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  sendPublic(res, 'map.html', 'html');
+});
+app.get('/map.js', (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  sendPublic(res, 'map.js', 'javascript');
+});
+app.get('/home-map.js', (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  sendPublic(res, 'home-map.js', 'javascript');
+});
+app.get('/data/accra-station-stops.review.json', (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  res.sendFile(path.join(__dirname, 'data', 'accra-station-stops.review.json'));
+});
+app.get('/v1/map/stations', async (req, res) => {
+  const stations = await require('./lib/db/persist').loadMapStations();
+  const survey = stations.filter(s => s.source === 'survey').length;
+  res.json(envelope({ stations, count: stations.length, survey, mapped: stations.length - survey }));
+});
 app.get('/site.css', (req, res) => {
   res.set('Cache-Control', 'no-store');
   sendPublic(res, 'site.css', 'css');
