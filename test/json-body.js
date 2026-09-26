@@ -20,6 +20,7 @@ const fb = require('../lib/messenger');
 const engine = require('../lib/engine');
 const caps = require('../lib/capabilities');
 const { classify, api } = require('../lib/api');
+const memory = require('../lib/memory');
 
 const fail = [];
 const ok = [];
@@ -491,9 +492,45 @@ async function req(server, path, opts = {}) {
     pass('NLU  turn on road updates adds the add-on');
   else bad('NLU addon turn', JSON.stringify(nluTurn).slice(0, 180));
 
+  caps.forget('unit-memory');
+  inGhana('unit-memory');
+  const remembered = caps.subscriber('unit-memory');
+  remembered.route = { from: 'kaneshie', to: 'bubuashie', fromName: 'Kaneshie', toName: 'Bubuashie', chart: 5 };
+  caps.add('unit-memory', 'route');
+  const vagueFare = await engine.handle({
+    from: '233201234567', hash: 'unit-memory',
+    text: 'what is the current fare from barrier to town?'
+  });
+  const vagueBody = JSON.stringify(vagueFare);
+  if (/Which place do you mean by \*barrier\*/.test(vagueBody) && /Which place do you mean by \*town\*/.test(vagueBody)
+      && !/addon:menu/.test(vagueBody) && !/₵/.test(vagueBody) && !/Bubuashie/.test(vagueBody))
+    pass('memory  vague barrier to town asks a follow-up, not the saved route');
+  else bad('memory vague fare', vagueBody.slice(0, 320));
+
+  const filled = await engine.handle({
+    from: '233201234567', hash: 'unit-memory',
+    text: 'kaneshie to bubuashie'
+  });
+  const filledBody = JSON.stringify(filled);
+  if (/₵/.test(filledBody) && /Kaneshie/i.test(filledBody) && /Bubiashie/i.test(filledBody))
+    pass('memory  follow-up Kaneshie to Bubuashie returns the fare');
+  else bad('memory follow-up fare', filledBody.slice(0, 320));
+
+  const log = memory.recent('unit-memory');
+  if (log.filter(m => m.direction === 'in').some(m => /barrier to town/i.test(m.body))
+      && log.filter(m => m.direction === 'in').some(m => /kaneshie to bubuashie/i.test(m.body))
+      && log.some(m => m.direction === 'out' && /barrier/i.test(m.body)))
+    pass('memory  user and reply messages stay on the chat');
+  else bad('memory log', JSON.stringify(log).slice(0, 320));
+
+  caps.forget('unit-memory');
+  if (memory.recent('unit-memory').length === 0 && !memory.thread('unit-memory'))
+    pass('memory  delete my data clears the chat memory');
+  else bad('memory forget', JSON.stringify(memory.recent('unit-memory')).slice(0, 180));
+
   const catalog = require('../lib/db/catalog');
-  if (catalog.NAMES.length === 25 && catalog.NAMES.includes('survey') && catalog.NAMES.includes('ai') && catalog.NAMES.includes('countries') && catalog.NAMES.includes('road_photos') && catalog.NAMES.includes('report_road_condition'))
-    pass('neon catalog  survey + ai + countries + road_photos');
+  if (catalog.NAMES.length === 26 && catalog.NAMES.includes('survey') && catalog.NAMES.includes('ai') && catalog.NAMES.includes('countries') && catalog.NAMES.includes('road_photos') && catalog.NAMES.includes('report_road_condition') && catalog.NAMES.includes('memory'))
+    pass('neon catalog  survey + ai + countries + road_photos + memory');
   else bad('neon catalog', catalog.NAMES.join(','));
 
   const roadsApi = await req(server, '/v1/roads');
