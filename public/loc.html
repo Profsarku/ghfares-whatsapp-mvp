@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Share location — GH Fares</title>
+<style>
+  body { margin: 0; font: 16px/1.45 system-ui, sans-serif; background: #000; color: #fff; }
+  main { max-width: 28rem; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+  h1 { font-size: 1.35rem; font-weight: 650; margin: 0 0 .5rem; }
+  p { color: #d4d4d4; }
+  button { appearance: none; border: 0; background: #fff; color: #000; font: inherit; font-weight: 650; padding: .85rem 1rem; width: 100%; }
+  button:disabled { opacity: .55; }
+  .out { white-space: pre-wrap; background: #171717; padding: 1rem; margin-top: 1rem; }
+  a { color: #fff; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Send your location</h1>
+  <p>This page only sends this phone’s location to your GH Fares chat. It does not open a new conversation.</p>
+  <button id="go" type="button">Use this phone’s location</button>
+  <p id="status"></p>
+  <div class="out" id="out" hidden></div>
+</main>
+<script>
+const token = '__TOKEN__';
+const go = document.getElementById('go');
+const status = document.getElementById('status');
+const out = document.getElementById('out');
+
+go.addEventListener('click', () => {
+  if (!navigator.geolocation) {
+    status.textContent = 'This browser cannot share location. Go back to WhatsApp and type the place.';
+    return;
+  }
+  go.disabled = true;
+  status.textContent = 'Asking the phone for location…';
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+    try {
+      const res = await fetch('/v1/loc/' + token, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ latitude: pos.coords.latitude, longitude: pos.coords.longitude })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Could not send location');
+      status.textContent = 'Sent. The reply is also in your chat.';
+      out.hidden = false;
+      out.textContent = (data.replies || []).join('\n\n') || 'Location received.';
+    } catch (e) {
+      status.textContent = e.message || 'Could not send location. Try again, or type the place in the chat.';
+      go.disabled = false;
+    }
+  }, () => {
+    status.textContent = 'Location was blocked. Allow it and try again, or go back and share it in WhatsApp or type the place.';
+    go.disabled = false;
+  }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
+});
+</script>
+</body>
+</html>

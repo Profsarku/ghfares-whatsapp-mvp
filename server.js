@@ -9,6 +9,7 @@ const broadcast = require('./lib/broadcast');
 const { ask, hashOf } = require('./lib/ask');
 const { downloadWhatsAppMedia, inboundWhatsAppImage } = require('./lib/media');
 const webAuth = require('./lib/web-auth');
+const locationLink = require('./lib/location-link');
 const qr = require('./tools/qr');
 const QRCode = require('qrcode');
 const fsp = require('fs');
@@ -265,6 +266,55 @@ app.post('/v1/logout', (req, res) => {
 });
 app.get('/support', (req, res) => sendPublic(res, 'support.html', 'html'));
 app.get('/roads', (req, res) => sendPublic(res, 'roads.html', 'html'));
+app.get('/history', (req, res) => sendPublic(res, 'history.html', 'html'));
+function payloadText(p) {
+  if (!p) return '';
+  const bits = [];
+  if (p.text && p.text.body) bits.push(p.text.body);
+  if (p.interactive && p.interactive.body && p.interactive.body.text) bits.push(p.interactive.body.text);
+  const sections = p.interactive && p.interactive.action && p.interactive.action.sections;
+  for (const section of sections || []) {
+    for (const row of section.rows || []) {
+      bits.push(row.title + (row.description ? ' — ' + row.description : ''));
+    }
+  }
+  return bits.filter(Boolean).join('\n');
+}
+
+app.get('/loc/:token', (req, res) => {
+  const rec = locationLink.read(req.params.token);
+  if (!rec) {
+    return res.status(404).type('html').send('<!DOCTYPE html><meta name="viewport" content="width=device-width,initial-scale=1"><title>Link expired</title><body style="font:16px system-ui;background:#000;color:#fff;padding:2rem"><h1>This link has expired</h1><p>Go back to WhatsApp or Messenger and ask again. You can still share location there, or type the place.</p></body>');
+  }
+  const html = fsp.readFileSync(path.join(__dirname, 'public', 'loc.html'), 'utf8')
+    .replaceAll('__TOKEN__', String(req.params.token).replace(/[^a-f0-9]/gi, ''));
+  res.set('Cache-Control', 'no-store').type('html').send(html);
+});
+
+app.post('/v1/loc/:token', jsonParser, async (req, res) => {
+  const rec = locationLink.read(req.params.token);
+  if (!rec) return res.status(404).json({ error: 'This location link has expired. Ask again in the chat.' });
+  const latitude = Number(req.body && req.body.latitude);
+  const longitude = Number(req.body && req.body.longitude);
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+    return res.status(400).json({ error: 'Location missing.' });
+  }
+  const payloads = await engine.handle({
+    from: rec.from,
+    hash: rec.hash,
+    location: { latitude, longitude },
+    channel: rec.channel || 'whatsapp'
+  });
+  for (const p of payloads || []) {
+    if (rec.channel === 'messenger') {
+      for (const m of fb.fromWhatsApp(p, rec.from)) await sendFB(m);
+    } else {
+      await send(p);
+    }
+  }
+  res.json({ ok: true, replies: (payloads || []).map(payloadText).filter(Boolean) });
+});
+
 app.get('/map', (req, res) => {
   res.set('Cache-Control', 'no-store');
   sendPublic(res, 'map.html', 'html');
@@ -545,6 +595,12 @@ app.get('/v1/incidents', (req, res) => {
   res.json(envelope(r, { source: r.source, authority: r.authority }));
 });
 
+app.get('/v1/fare-history', async (req, res) => {
+  await apiReady();
+  const data = await api.fareHistory(req.query.from, req.query.to);
+  res.json(envelope(data, { source: 'crowd', authority: 'agreed rider reports' }));
+});
+
 app.get('/v1/roads', async (req, res) => {
   const rows = await api.badRoads();
   const list = Array.isArray(rows) ? rows : [];
@@ -767,6 +823,7 @@ app.get('/v1', (req, res) => res.json({
     fuel_compare: 'GET /v1/fuel/compare?areas=Accra,Tema',
     incidents: 'GET /v1/incidents?road=',
     roads: 'GET /v1/roads',
+    fare_history: 'GET /v1/fare-history?from=&to=',
     report_fare: 'POST /v1/reports/fare',
     report_queue: 'POST /v1/reports/queue',
     report_road: 'POST /v1/reports/road',

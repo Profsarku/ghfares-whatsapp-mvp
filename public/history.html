@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fare history — GH Fares</title>
+<link rel="stylesheet" href="/site.css">
+<style>
+  body { background: #000; color: #fff; font: 16px/1.45 system-ui, sans-serif; margin: 0; }
+  main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
+  a { color: #fff; }
+  label, select, button { font: inherit; }
+  select, button { background: #111; color: #fff; border: 1px solid #333; padding: .4rem .6rem; }
+  svg { width: 100%; height: 220px; background: #111; margin-top: 1rem; }
+  .muted { color: #a3a3a3; }
+</style>
+</head>
+<body>
+<header class="nav"><div class="nav-inner">
+  <a class="logo" href="/">GH Fares</a>
+  <a class="n" href="/">Home</a>
+  <a class="n on" href="/history">Fares</a>
+  <a class="n" href="/roads">Roads</a>
+</div></header>
+<main>
+  <h1>Agreed fares</h1>
+  <p class="muted">Only amounts two other riders at the station agreed. Pending reports are not on this line. The flat line is the chart.</p>
+  <form id="q">
+    <label>From <input id="from" name="from" value="kaneshie-mkt-cmplx"></label>
+    <label>To <input id="to" name="to" value="bubiashie-station"></label>
+    <button type="submit">Show</button>
+  </form>
+  <p id="title"></p>
+  <svg id="chart" viewBox="0 0 640 220"></svg>
+  <p id="empty" class="muted" hidden>No agreed fares for this route yet.</p>
+</main>
+<script>
+const params = new URLSearchParams(location.search);
+const fromEl = document.getElementById('from');
+const toEl = document.getElementById('to');
+if (params.get('from')) fromEl.value = params.get('from');
+if (params.get('to')) toEl.value = params.get('to');
+
+function draw(data) {
+  const svg = document.getElementById('svg') || document.getElementById('chart');
+  const pts = data.points || [];
+  document.getElementById('title').textContent = (data.from && data.to) ? (data.from + ' → ' + data.to) : '';
+  document.getElementById('empty').hidden = pts.length > 0;
+  const amounts = pts.map(p => Number(p.amount)).concat(data.chart != null ? [Number(data.chart)] : []);
+  svg.innerHTML = '';
+  if (!amounts.length) return;
+  const min = Math.min.apply(null, amounts);
+  const max = Math.max.apply(null, amounts);
+  const span = max - min || 1;
+  const x = i => 40 + (pts.length < 2 ? 300 : (560 * i / (pts.length - 1)));
+  const y = n => 20 + (180 * (max - n) / span);
+  const ns = 'http://www.w3.org/2000/svg';
+  const el = (name, attrs) => {
+    const node = document.createElementNS(ns, name);
+    Object.keys(attrs).forEach(k => node.setAttribute(k, attrs[k]));
+    return node;
+  };
+  if (data.chart != null) {
+    svg.appendChild(el('line', { x1: 40, x2: 600, y1: y(data.chart), y2: y(data.chart), stroke: '#737373', 'stroke-dasharray': '4 4' }));
+    svg.appendChild(el('text', { x: 44, y: y(data.chart) - 6, fill: '#a3a3a3', 'font-size': 12 })).textContent = 'Chart ' + data.chart;
+  }
+  if (pts.length) {
+    const d = pts.map((p, i) => (i ? 'L' : 'M') + x(i) + ' ' + y(p.amount)).join(' ');
+    svg.appendChild(el('path', { d, fill: 'none', stroke: '#fff', 'stroke-width': 2 }));
+    pts.forEach((p, i) => svg.appendChild(el('circle', { cx: x(i), cy: y(p.amount), r: 3, fill: '#fff' })));
+  }
+}
+
+async function load(ev) {
+  if (ev) ev.preventDefault();
+  const res = await fetch('/v1/fare-history?from=' + encodeURIComponent(fromEl.value) + '&to=' + encodeURIComponent(toEl.value));
+  const body = await res.json();
+  draw((body && body.data) || {});
+}
+document.getElementById('q').addEventListener('submit', load);
+load();
+</script>
+</body>
+</html>

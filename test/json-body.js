@@ -21,6 +21,7 @@ const engine = require('../lib/engine');
 const caps = require('../lib/capabilities');
 const { classify, api } = require('../lib/api');
 const memory = require('../lib/memory');
+const crowd = require('../lib/crowd');
 
 const fail = [];
 const ok = [];
@@ -503,8 +504,10 @@ async function req(server, path, opts = {}) {
   });
   const vagueBody = JSON.stringify(vagueFare);
   if (/Which place do you mean by \*barrier\*/.test(vagueBody) && /Which place do you mean by \*town\*/.test(vagueBody)
+      && /send_location/.test(vagueBody) && /Share your location/.test(vagueBody)
+      && /\/loc\/[a-f0-9]{32}/.test(vagueBody) && /Type it/.test(vagueBody)
       && !/addon:menu/.test(vagueBody) && !/₵/.test(vagueBody) && !/Bubuashie/.test(vagueBody))
-    pass('memory  vague barrier to town asks a follow-up, not the saved route');
+    pass('memory  vague barrier to town offers share, browser link, and typing');
   else bad('memory vague fare', vagueBody.slice(0, 320));
 
   const filled = await engine.handle({
@@ -528,9 +531,192 @@ async function req(server, path, opts = {}) {
     pass('memory  delete my data clears the chat memory');
   else bad('memory forget', JSON.stringify(memory.recent('unit-memory')).slice(0, 180));
 
+  caps.forget('unit-barrier');
+  inGhana('unit-barrier');
+  const fate = await engine.handle({
+    from: '233201234567', hash: 'unit-barrier',
+    text: 'What is the current fate from barrier to town'
+  });
+  if (/Which place do you mean by \*barrier\*/.test(JSON.stringify(fate)) && /town/.test(JSON.stringify(fate)))
+    pass('memory  fate typo still asks which barrier and which town');
+  else bad('memory fate', JSON.stringify(fate).slice(0, 240));
+
+  const barrierStation = await engine.handle({
+    from: '233201234567', hash: 'unit-barrier',
+    text: 'Barrier station'
+  });
+  const barrierBody = JSON.stringify(barrierStation);
+  if (/Barrier Station\* is a stop/.test(barrierBody) && /Which place do you mean by \*town\*/.test(barrierBody)
+      && !/Which place do you mean by \*barrier\*/.test(barrierBody))
+    pass('memory  Barrier station answers the first question and asks only for town');
+  else bad('memory barrier station', barrierBody.slice(0, 400));
+
+  caps.forget('unit-barrier-stop');
+  inGhana('unit-barrier-stop');
+  await engine.handle({
+    from: '233201234567', hash: 'unit-barrier-stop',
+    text: 'what is the current fare from barrier to town?'
+  });
+  const barrierStop = await engine.handle({
+    from: '233201234567', hash: 'unit-barrier-stop',
+    text: 'Barrier stop'
+  });
+  const stopBody = JSON.stringify(barrierStop);
+  if (/matches more than one place/.test(stopBody) && /Ofankor Barrier/.test(stopBody) && /Choose place/.test(stopBody)
+      && !/Which place do you mean by \*barrier\*/.test(stopBody))
+    pass('memory  Barrier stop lists the barrier places instead of repeating the question');
+  else bad('memory barrier stop', stopBody.slice(0, 400));
+
+  caps.forget('unit-barrier-pin');
+  inGhana('unit-barrier-pin');
+  await engine.handle({
+    from: '233201234567', hash: 'unit-barrier-pin',
+    text: 'what is the current fare from barrier to town?'
+  });
+  const barrierPin = await engine.handle({
+    from: '233201234567', hash: 'unit-barrier-pin',
+    location: { latitude: 5.65783, longitude: -0.267935 }
+  });
+  const pinBody = JSON.stringify(barrierPin);
+  if (/Barrier Station/.test(pinBody) && /0 m from you/.test(pinBody) && /still need \*town\*/.test(pinBody)
+      && !/Which place do you mean by \*barrier\*/.test(pinBody))
+    pass('memory  shared location picks the nearest barrier and asks for the town');
+  else bad('memory barrier pin', pinBody.slice(0, 400));
+
+  caps.forget('unit-browser');
+  inGhana('unit-browser');
+  const browserAsk = await engine.handle({
+    from: '233201234567', hash: 'unit-browser',
+    text: 'what is the current fare from barrier to town?'
+  });
+  const locToken = (JSON.stringify(browserAsk).match(/\/loc\/([a-f0-9]{32})/) || [])[1];
+  const locPage = locToken && await req(server, '/loc/' + locToken);
+  const locPost = locToken && await req(server, '/v1/loc/' + locToken, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ latitude: 5.65783, longitude: -0.267935 })
+  });
+  const locReply = JSON.stringify(locPost && locPost.body);
+  if (locPage && locPage.status === 200 && /Use this phone/.test(locPage.text)
+      && locPost && locPost.status === 200 && /Barrier Station/.test(locReply) && /town/.test(locReply))
+    pass('location link  browser GPS answers the open fare question');
+  else bad('location link', (locPage && locPage.status) + ' ' + locReply.slice(0, 280));
+
+  const locAdd = await engine.handle({
+    from: '233201234567', hash: 'unit-browser',
+    text: 'ADD MY LOCATION'
+  });
+  const locAddBody = JSON.stringify(locAdd);
+  if (/My location/.test(locAddBody) && /send_location/.test(locAddBody) && /\/loc\//.test(locAddBody) && /Type it/.test(locAddBody))
+    pass('add-on  MY LOCATION offers share, browser, and typing');
+  else bad('my location add-on', locAddBody.slice(0, 320));
+
+  caps.forget('unit-circle');
+  inGhana('unit-circle');
+  await engine.handle({
+    from: '233201234567', hash: 'unit-circle',
+    text: 'what is the current fare from barrier to town?'
+  });
+  await engine.handle({ from: '233201234567', hash: 'unit-circle', text: 'Barrier stop' });
+  const circleTown = await engine.handle({ from: '233201234567', hash: 'unit-circle', text: 'Circle' });
+  const circleBody = JSON.stringify(circleTown);
+  if (/Circle\* is the town/.test(circleBody) && /Ofankor Barrier/.test(circleBody) && /Choose place/.test(circleBody)
+      && !/From \*Circle\*/.test(circleBody))
+    pass('memory  Circle during a barrier list is the town');
+  else bad('circle during barrier list', circleBody.slice(0, 400));
+
+  caps.forget('unit-namer');
+  inGhana('unit-namer');
+  await engine.handle({
+    from: '233200000021', hash: 'unit-namer',
+    text: 'what is the fare from barrier to town?'
+  });
+  const unknownName = await engine.handle({ from: '233200000021', hash: 'unit-namer', text: 'kpakpo' });
+  const namedPin = await engine.handle({
+    from: '233200000021', hash: 'unit-namer',
+    location: { latitude: 5.56507, longitude: -0.235921 }
+  });
+  const namedBody = JSON.stringify(unknownName) + JSON.stringify(namedPin);
+  const namedStation = caps.subscriber('unit-namer').station;
+  inGhana('unit-namer-2');
+  caps.subscriber('unit-namer-2').station = namedStation;
+  await engine.handle({
+    from: '233200000022', hash: 'unit-namer-2',
+    text: 'what is the fare from barrier to town?'
+  });
+  await engine.handle({ from: '233200000022', hash: 'unit-namer-2', text: 'kpakpo' });
+  if (/do not have \*kpakpo\*/.test(namedBody) && /send_location/.test(namedBody) && /pending/.test(namedBody)
+      && crowd.resolveName('kpakpo') === namedStation && crowd.score('unit-namer').points === 2
+      && !require('../lib/api').PLACES.kpakpo)
+    pass('names  a local name stays pending until a second rider at that station agrees');
+  else bad('community name', namedBody.slice(0, 280) + ' ' + crowd.resolveName('kpakpo') + ' ' + crowd.score('unit-namer').points);
+
+  caps.forget('unit-place');
+  const seedKasoa = JSON.stringify(api.core.gouging['circle:kasoa']);
+  const seedMadina = JSON.stringify(api.core.gouging['circle:madina']);
+  caps.forget('unit-lone');
+  const lone = inGhana('unit-lone');
+  lone.pending = { from: 'circle', to: 'osu-blow-up' };
+  const loneReply = await engine.handle({ from: '233200000031', hash: 'unit-lone', text: '12' });
+  const loneBody = JSON.stringify(loneReply);
+  if (/only rider at this station/.test(loneBody) && /unverified/.test(loneBody) && !/\+/.test(loneBody)
+      && seedKasoa === JSON.stringify(api.core.gouging['circle:kasoa'])
+      && seedMadina === JSON.stringify(api.core.gouging['circle:madina']))
+    pass('verify  a lone fare report stays unverified and does not replace the chart');
+  else bad('lone fare', loneBody.slice(0, 320));
+
+  const station = 'circle';
+  const peerA = inGhana('unit-peer-a');
+  peerA.station = station; peerA.reach = '233200000041'; peerA.seen = Date.now();
+  const peerB = inGhana('unit-peer-b');
+  peerB.station = station; peerB.reach = '233200000042'; peerB.seen = Date.now();
+  const author = inGhana('unit-peer-author');
+  author.pending = { from: 'circle', to: 'dansoman-laststop' };
+  author.station = station;
+  const filed = await engine.handle({ from: '233200000040', hash: 'unit-peer-author', text: '11' });
+  const filedBody = JSON.stringify(filed);
+  const reportId = (filedBody.match(/verify:yes:([a-z0-9]+)/) || [])[1];
+  const one = reportId && await engine.handle({
+    from: '233200000041', hash: 'unit-peer-a', interactiveId: 'verify:yes:' + reportId
+  });
+  const two = reportId && await engine.handle({
+    from: '233200000042', hash: 'unit-peer-b', interactiveId: 'verify:yes:' + reportId
+  });
+  const agreedKey = api.core.gouging['circle:dansoman-laststop'];
+  const fareLine = await engine.handle({
+    from: '233200000040', hash: 'unit-peer-author', text: 'fare from circle to dansoman laststop'
+  });
+  if (/asked \*2\*/i.test(filedBody) && /unverified/.test(filedBody) && !/\+/.test(filedBody)
+      && /waiting for two/.test(JSON.stringify(one))
+      && /Agreed/.test(JSON.stringify(two))
+      && agreedKey && agreedKey.agreed && agreedKey.reports === 1
+      && crowd.score('unit-peer-author').points === 4
+      && crowd.score('unit-peer-a').points === 2
+      && /over chart/.test(JSON.stringify(fareLine)))
+    pass('verify  two other riders agree before a percentage is shown');
+  else bad('peer verify', filedBody.slice(0, 240));
+
+  const liked = await engine.handle({
+    from: '233200000040', hash: 'unit-peer-author', interactiveId: 'sig:down'
+  });
+  const chartAfter = api.fare('circle', 'dansoman-laststop');
+  if (/does not change the fare/.test(JSON.stringify(liked))
+      && /Was this reply useful/.test(JSON.stringify(fareLine))
+      && chartAfter && chartAfter.to && chartAfter.to.chart === 9)
+    pass('signals  a dislike is stored and the fare stays the chart amount');
+  else bad('signal', JSON.stringify(liked).slice(0, 180));
+
+  const historyApi = await req(server, '/v1/fare-history?from=circle&to=dansoman-laststop');
+  const historyPage = await req(server, '/history');
+  const historyPoints = historyApi.body && historyApi.body.data && historyApi.body.data.points;
+  if (historyApi.status === 200 && historyPoints && historyPoints.length === 1 && historyPoints[0].amount === 11
+      && historyPage.status === 200 && /Agreed fares/.test(historyPage.text || ''))
+    pass('fare history  agreed amounts are on the public graph');
+  else bad('fare history', historyApi.status + ' ' + JSON.stringify(historyPoints) + ' ' + historyPage.status);
+
   const catalog = require('../lib/db/catalog');
-  if (catalog.NAMES.length === 26 && catalog.NAMES.includes('survey') && catalog.NAMES.includes('ai') && catalog.NAMES.includes('countries') && catalog.NAMES.includes('road_photos') && catalog.NAMES.includes('report_road_condition') && catalog.NAMES.includes('memory'))
-    pass('neon catalog  survey + ai + countries + road_photos + memory');
+  if (catalog.NAMES.length === 31 && ['survey', 'ai', 'countries', 'road_photos', 'memory', 'names', 'verify', 'xp', 'fare_history', 'signals'].every(n => catalog.NAMES.includes(n)))
+    pass('neon catalog  one database per concern, including peer data');
   else bad('neon catalog', catalog.NAMES.join(','));
 
   const roadsApi = await req(server, '/v1/roads');
