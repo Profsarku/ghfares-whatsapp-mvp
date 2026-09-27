@@ -611,6 +611,32 @@ async function req(server, path, opts = {}) {
     pass('add-on  MY LOCATION offers share, browser, and typing');
   else bad('my location add-on', locAddBody.slice(0, 320));
 
+  caps.forget('unit-fuel-address');
+  inGhana('unit-fuel-address');
+  const pump = await engine.handle({
+    from: '233200000051', hash: 'unit-fuel-address', interactiveId: 'fuelstation:goil-tema1'
+  });
+  const address = await engine.handle({
+    from: '233200000051', hash: 'unit-fuel-address', text: 'Address'
+  });
+  const addressBody = JSON.stringify(address);
+  const pinClass = await classify('share my location');
+  const nickClass = await classify('nkrumah to kasoa');
+  const twiClass = await classify('military hospital station');
+  if (pinClass.intent === 'where'
+      && nickClass.intent === 'fare' && (nickClass.places || []).includes('circle') && (nickClass.places || []).some(p => String(p).includes('kasoa'))
+      && twiClass.intent === 'station' && (twiClass.places || []).includes('37'))
+    pass('skills  a pin is location, and Circle, 37, and Nkrumah are the informal names');
+  else bad('location and names', JSON.stringify({ pin: pinClass.intent, nick: nickClass, hospital: twiClass }));
+
+  const addressClass = await classify('Address');
+  if (/GOIL Tema Community 1/.test(JSON.stringify(pump))
+      && /GOIL Tema Community 1/.test(addressBody) && /Tema/.test(addressBody)
+      && /maps\/search/.test(addressBody) && !/add-on called/.test(addressBody)
+      && addressClass.intent !== 'addon_add')
+    pass('context  Address after a fuel card is that pump, not an add-on');
+  else bad('fuel address', addressBody.slice(0, 280) + ' ' + addressClass.intent);
+
   caps.forget('unit-circle');
   inGhana('unit-circle');
   await engine.handle({
