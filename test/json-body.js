@@ -285,8 +285,8 @@ async function req(server, path, opts = {}) {
 
   inGhana('unit-roadq');
   const roadAsk = await engine.handle({ from: '233201234567', hash: 'unit-roadq', text: 'what is the road condition right now' });
-  if (/motorway|blocked|incident|Nothing reported/i.test(JSON.stringify(roadAsk)))
-    pass('what is the road condition right now');
+  if (/Which road/i.test(JSON.stringify(roadAsk)) && !/₵/.test(JSON.stringify(roadAsk)))
+    pass('what is the road condition right now asks which road');
   else bad('road question', JSON.stringify(roadAsk).slice(0, 180));
 
   caps.forget('unit-slash');
@@ -636,6 +636,104 @@ async function req(server, path, opts = {}) {
       && addressClass.intent !== 'addon_add')
     pass('context  Address after a fuel card is that pump, not an add-on');
   else bad('fuel address', addressBody.slice(0, 280) + ' ' + addressClass.intent);
+
+  const priceFollow = await engine.handle({
+    from: '233200000051', hash: 'unit-fuel-address', text: 'how much is the petrol'
+  });
+  if (/15\.25/.test(JSON.stringify(priceFollow)) && /GOIL Tema Community 1/.test(JSON.stringify(priceFollow)))
+    pass('context  how much is the petrol stays on the open pump');
+  else bad('petrol follow-up', JSON.stringify(priceFollow).slice(0, 280));
+
+  caps.forget('unit-gas-thread');
+  inGhana('unit-gas-thread');
+  await engine.handle({
+    from: '233200000061', hash: 'unit-gas-thread',
+    text: 'what is the current fare from barrier to town?'
+  });
+  const gasLines = [
+    'Gas prices at tema foil station community 1',
+    'Tema Goil community 1',
+    'Goil tema community 1',
+    'What gas prices do you have'
+  ];
+  const gasBodies = [];
+  for (const text of gasLines) {
+    gasBodies.push(JSON.stringify(await engine.handle({
+      from: '233200000061', hash: 'unit-gas-thread', text
+    })));
+  }
+  const gasClass = await classify('Gas prices at tema foil station community 1');
+  if (gasClass.intent === 'fuel' && gasClass.fuelId === 'goil-tema1'
+      && gasBodies.every(body => /Fuel watch/.test(body) && /ADD FUEL/.test(body) && !/on the map/.test(body) && !/\/loc\//.test(body))
+      && gasBodies.slice(0, 3).every(body => /15\.25/.test(body) && /GOIL Tema Community 1/.test(body))
+      && !/15\.25/.test(gasBodies[3]))
+    pass('conversation  gas prices beat an open fare and point at Fuel watch');
+  else bad('gas during fare', gasClass.intent + ' ' + gasClass.fuelId + ' ' + gasBodies.map(b => b.slice(0, 180)).join(' | '));
+
+  const temaFuel = JSON.stringify(await engine.handle({
+    from: '233200000061', hash: 'unit-gas-thread', text: 'Tema'
+  }));
+  if (/Fuel — Tema/.test(temaFuel) && /GOIL Tema Community 1/.test(temaFuel) && !/on the map/.test(temaFuel))
+    pass('conversation  Tema after the fuel prompt lists Tema pumps');
+  else bad('tema after fuel', temaFuel.slice(0, 280));
+
+  const noContext = [
+    ['How much?', /Where are you now/, /Fuel watch|ADD FUEL|You're at/],
+    ['how much is the fare', /Where are you now/, /Fuel watch|ADD FUEL|You're at/],
+    ['Charley how much be the trotro', /Where are you now/, /Fuel watch|ADD FUEL/],
+    ['wo bay jay sen', /Where are you now/, /Kasoa|Fuel watch/],
+    ['I dont know how much I will pay', /Where are you now/, /Fuel watch|ADD FUEL/],
+    ['What is the price of fuel in Accra today', /Fuel — Accra/, /You're at/],
+    ['how much is petrol', /Fuel watch/, /You're at/],
+    ['how much is diesel', /Fuel watch/, /You're at/],
+    ['how much is dropping', /Where are you now/, /Fuel watch|ADD FUEL/],
+    ['mate how much', /Where are you now/, /You're at Circle|Fuel watch/]
+  ];
+  let noContextOk = true;
+  const noContextFail = [];
+  for (let i = 0; i < noContext.length; i++) {
+    const [text, want, forbid] = noContext[i];
+    const hash = 'unit-nocontext-' + i;
+    caps.forget(hash);
+    inGhana(hash);
+    const body = JSON.stringify(await engine.handle({ from: '233200009900', hash, text }));
+    if (!want.test(body) || forbid.test(body)) {
+      noContextOk = false;
+      noContextFail.push(text + ' ' + body.slice(0, 160));
+    }
+  }
+  const pig = await classify('how much to pig farm');
+  const temaStation = await classify('from tema station to madina');
+  if (noContextOk
+      && (pig.places || []).includes('pig-farm-station')
+      && (temaStation.places || []).includes('accra')
+      && (temaStation.places || []).some(p => String(p).includes('madina')))
+    pass('conversation  a fare with no place asks for the route and does not borrow a town');
+  else bad('no context', noContextFail.join(' | ') + ' pig=' + JSON.stringify(pig.places) + ' tema=' + JSON.stringify(temaStation.places));
+
+  const curveballs = [
+    ['how much be am o', /Where are you now/, /Fuel watch|You're at/],
+    ['how much be the petrol now', /Fuel watch/, /You're at|Where are you now/],
+    ['any wahala at all', /Which road/, /Fuel watch|You're at/],
+    ['mate dey overcharge me', /Where are you now/, /Fuel watch|You're at/],
+    ['the cars no dey move', /Where are you now/, /Fuel watch|You're at Circle/]
+  ];
+  let curveOk = true;
+  const curveFail = [];
+  for (let i = 0; i < curveballs.length; i++) {
+    const [text, want, forbid] = curveballs[i];
+    const hash = 'unit-curve-' + i;
+    caps.forget(hash);
+    inGhana(hash);
+    const body = JSON.stringify(await engine.handle({ from: '233200008800', hash, text }));
+    if (!want.test(body) || forbid.test(body)) {
+      curveOk = false;
+      curveFail.push(text + ' ' + body.slice(0, 180));
+    }
+  }
+  if (curveOk)
+    pass('conversation  unfinished Ghanaian lines keep the subject and ask for the missing place');
+  else bad('curveball', curveFail.join(' | '));
 
   caps.forget('unit-circle');
   inGhana('unit-circle');

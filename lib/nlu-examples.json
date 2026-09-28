@@ -66,5 +66,22 @@
   { "text": "37 station", "intent": "station", "places": ["37"] },
   { "text": "military hospital station", "intent": "station", "places": ["37"] },
   { "text": "circle station", "intent": "station", "places": ["circle"] },
-  { "text": "kwame nkrumah", "intent": "station", "places": ["circle"] }
+  { "text": "kwame nkrumah", "intent": "station", "places": ["circle"] },
+  { "text": "gas prices at tema goil community 1", "intent": "fuel", "places": ["goil-tema1"], "ask": "price" },
+  { "text": "tema goil community 1", "intent": "fuel", "places": ["goil-tema1"], "ask": "price" },
+  { "text": "what gas prices do you have", "intent": "fuel" },
+  { "text": "foil station community 1", "intent": "fuel", "places": ["goil-tema1"], "ask": "price" },
+  { "text": "how much", "intent": "fare" },
+  { "text": "how much is the fare", "intent": "fare" },
+  { "text": "wo bay jay sen", "intent": "fare" },
+  { "text": "mate how much", "intent": "fare" },
+  { "text": "how much is dropping", "intent": "fare" },
+  { "text": "charley how much be the trotro", "intent": "fare" },
+  { "text": "how much be am", "intent": "fare" },
+  { "text": "how much be petrol", "intent": "fuel" },
+  { "text": "any wahala", "intent": "road" },
+  { "text": "the mate dey charge", "intent": "fare" },
+  { "text": "the cars dey move", "intent": "queue" },
+  { "text": "I no know the fare", "intent": "fare" },
+  { "text": "diesel price", "intent": "fuel" }
 ]
