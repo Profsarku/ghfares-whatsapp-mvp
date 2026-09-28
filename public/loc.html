@@ -44,7 +44,9 @@ go.addEventListener('click', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ latitude: pos.coords.latitude, longitude: pos.coords.longitude })
       });
-      const data = await res.json();
+      const raw = await res.text();
+      let data = {};
+      try { data = JSON.parse(raw); } catch { data = {}; }
       if (!res.ok) throw new Error(data.error || 'Could not send location');
       status.textContent = 'Sent. The reply is also in your chat.';
       out.hidden = false;

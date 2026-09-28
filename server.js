@@ -281,8 +281,8 @@ function payloadText(p) {
   return bits.filter(Boolean).join('\n');
 }
 
-app.get('/loc/:token', (req, res) => {
-  const rec = locationLink.read(req.params.token);
+app.get('/loc/:token', async (req, res) => {
+  const rec = await locationLink.read(req.params.token);
   if (!rec) {
     return res.status(404).type('html').send('<!DOCTYPE html><meta name="viewport" content="width=device-width,initial-scale=1"><title>Link expired</title><body style="font:16px system-ui;background:#000;color:#fff;padding:2rem"><h1>This link has expired</h1><p>Go back to WhatsApp or Messenger and ask again. You can still share location there, or type the place.</p></body>');
   }
@@ -292,7 +292,7 @@ app.get('/loc/:token', (req, res) => {
 });
 
 app.post('/v1/loc/:token', jsonParser, async (req, res) => {
-  const rec = locationLink.read(req.params.token);
+  const rec = await locationLink.read(req.params.token);
   if (!rec) return res.status(404).json({ error: 'This location link has expired. Ask again in the chat.' });
   const latitude = Number(req.body && req.body.latitude);
   const longitude = Number(req.body && req.body.longitude);
