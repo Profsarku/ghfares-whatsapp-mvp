@@ -131,6 +131,14 @@ app.post('/v1/webhook', async (req, res) => {
         image.mime = dl.mime || image.mime;
       }
     }
+    if (msg.type === 'reaction') {
+      const vote = engine.reactionId(msg.reaction && msg.reaction.emoji);
+      if (!vote) {
+        res.sendStatus(200);
+        return;
+      }
+      interactiveId = vote;
+    }
     if (msg.type === 'interactive') {
       const i = msg.interactive;
       if (i.type === 'button_reply') interactiveId = i.button_reply.id;

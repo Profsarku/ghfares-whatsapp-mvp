@@ -515,9 +515,89 @@ async function req(server, path, opts = {}) {
     text: 'kaneshie to bubuashie'
   });
   const filledBody = JSON.stringify(filled);
-  if (/₵/.test(filledBody) && /Kaneshie/i.test(filledBody) && /Bubiashie/i.test(filledBody))
+  if (/₵/.test(filledBody) && /Kaneshie/i.test(filledBody) && /Bubiashie/i.test(filledBody)
+      && /REPORTED|ESTIMATED/.test(filledBody))
     pass('memory  follow-up Kaneshie to Bubuashie returns the fare');
   else bad('memory follow-up fare', filledBody.slice(0, 320));
+
+  caps.forget('unit-graph');
+  inGhana('unit-graph');
+  const composed = await engine.handle({
+    from: '233201234567', hash: 'unit-graph',
+    text: 'what is the fare from madina to kaneshie'
+  });
+  const composedBody = JSON.stringify(composed);
+  if (/COMPOSED/.test(composedBody) && /Madina Station/.test(composedBody) && /Abeka lapaz/.test(composedBody)
+      && /Kaneshie Mkt Cmplx/.test(composedBody) && /₵19/.test(composedBody)
+      && !/I do not have a fare/.test(composedBody))
+    pass('graph  a missing direct fare is the cheapest sum of table legs');
+  else bad('composed fare', composedBody.slice(0, 400));
+
+  caps.forget('unit-talk');
+  inGhana('unit-talk');
+  await engine.handle({ from: '233201234567', hash: 'unit-talk', text: 'how much' });
+  const mainMenu = await engine.handle({ from: '233201234567', hash: 'unit-talk', text: 'Main menu' });
+  const homeCmd = await engine.handle({ from: '233201234567', hash: 'unit-talk', text: 'Home' });
+  if (/Where am I|Add-on|Choose/i.test(JSON.stringify(mainMenu))
+      && /Where am I|Add-on|Choose/i.test(JSON.stringify(homeCmd))
+      && !/I do not have \*Main menu\*/.test(JSON.stringify(mainMenu))
+      && !/I do not have \*Home\*/.test(JSON.stringify(homeCmd)))
+    pass('talk  Main menu and Home are commands, not place names');
+  else bad('menu command', JSON.stringify(mainMenu).slice(0, 240));
+
+  await engine.handle({ from: '233201234567', hash: 'unit-talk', text: 'how much' });
+  const petrol = await engine.handle({ from: '233201234567', hash: 'unit-talk', text: 'how much is petrol' });
+  if (/Fuel watch|Fuel —|petrol/i.test(JSON.stringify(petrol)) && !/I do not have \*how much is petrol\*/i.test(JSON.stringify(petrol)))
+    pass('talk  a petrol question leaves the location prompt');
+  else bad('petrol during place wait', JSON.stringify(petrol).slice(0, 300));
+
+  const pidgin = await engine.handle({
+    from: '233201234567', hash: 'unit-talk', text: 'madina go kaneshie'
+  });
+  if (/COMPOSED/.test(JSON.stringify(pidgin)) && /₵19/.test(JSON.stringify(pidgin)))
+    pass('talk  Pidgin X go Y uses the fare graph');
+  else bad('pidgin route', JSON.stringify(pidgin).slice(0, 300));
+
+  const obra = await engine.handle({
+    from: '233201234567', hash: 'unit-talk', text: 'fare from obra spot to kaneshie'
+  });
+  if (/Circle/.test(JSON.stringify(obra)) && !/I do not have \*obra/i.test(JSON.stringify(obra)))
+    pass('talk  Obra Spot is Circle');
+  else bad('obra spot', JSON.stringify(obra).slice(0, 300));
+
+  const town = await engine.handle({
+    from: '233201234567', hash: 'unit-talk', text: 'what is the fare from madina to town?'
+  });
+  if (!/which place do you mean by \*town\*/i.test(JSON.stringify(town))
+      && /Accra|REPORTED|COMPOSED|ESTIMATED/.test(JSON.stringify(town)))
+    pass('talk  town follows the other place and means Accra Central');
+  else bad('town context', JSON.stringify(town).slice(0, 300));
+
+  const quoted = await engine.handle({
+    from: '233201234567', hash: 'unit-talk', text: 'fare from "Barrier" to town?'
+  });
+  if (/barrier/i.test(JSON.stringify(quoted)) && /send_location|Share your location|Which place/i.test(JSON.stringify(quoted)))
+    pass('talk  quotes are stripped and an unknown barrier still asks once');
+  else bad('quoted barrier', JSON.stringify(quoted).slice(0, 300));
+
+  const typo = await engine.handle({ from: '233201234567', hash: 'unit-talk', text: 'circe' });
+  if (/Did you mean/i.test(JSON.stringify(typo)) && /Circle/.test(JSON.stringify(typo)) && /did:/.test(JSON.stringify(typo)))
+    pass('talk  a close typo offers Did you mean');
+  else bad('did you mean', JSON.stringify(typo).slice(0, 300));
+
+  const unknownFare = await engine.handle({
+    from: '233201234567', hash: 'unit-talk', text: 'fare from xyzqplace to circle'
+  });
+  const looked = crowd.review();
+  if (/xyzqplace/i.test(JSON.stringify(unknownFare))
+      && looked.unknown.some(row => row.name === 'xyzqplace')
+      && looked.misses.some(row => /madina go kaneshie/i.test(row.name)))
+    pass('talk  unknown names and a quick rephrase are logged for review');
+  else bad('review log', JSON.stringify({ unknown: looked.unknown, misses: looked.misses }).slice(0, 300));
+
+  if (engine.reactionId('👍🏾') === 'sig:up' && engine.reactionId('👎') === 'sig:down' && engine.reactionId('') === null)
+    pass('talk  a thumbs reaction is the same signal as Like or Dislike');
+  else bad('reaction', 'emoji did not map');
 
   const log = memory.recent('unit-memory');
   if (log.filter(m => m.direction === 'in').some(m => /barrier to town/i.test(m.body))
@@ -665,7 +745,7 @@ async function req(server, path, opts = {}) {
   const gasClass = await classify('Gas prices at tema foil station community 1');
   if (gasClass.intent === 'fuel' && gasClass.fuelId === 'goil-tema1'
       && gasBodies.every(body => /Fuel watch/.test(body) && /ADD FUEL/.test(body) && !/on the map/.test(body) && !/\/loc\//.test(body))
-      && gasBodies.slice(0, 3).every(body => /15\.25/.test(body) && /GOIL Tema Community 1/.test(body))
+      && gasBodies.slice(0, 3).every(body => /15\.25/.test(body) && /GOIL Tema Community 1/.test(body) && /Unverified/.test(body) && !/11 riders/.test(body) && !/Confirm\s+11/.test(body))
       && !/15\.25/.test(gasBodies[3]))
     pass('conversation  gas prices beat an open fare and point at Fuel watch');
   else bad('gas during fare', gasClass.intent + ' ' + gasClass.fuelId + ' ' + gasBodies.map(b => b.slice(0, 180)).join(' | '));
@@ -673,9 +753,43 @@ async function req(server, path, opts = {}) {
   const temaFuel = JSON.stringify(await engine.handle({
     from: '233200000061', hash: 'unit-gas-thread', text: 'Tema'
   }));
-  if (/Fuel — Tema/.test(temaFuel) && /GOIL Tema Community 1/.test(temaFuel) && !/on the map/.test(temaFuel))
+  if (/Fuel — Tema/.test(temaFuel) && /GOIL Tema Community 1/.test(temaFuel) && !/on the map/.test(temaFuel) && !/11 riders/.test(temaFuel))
     pass('conversation  Tema after the fuel prompt lists Tema pumps');
   else bad('tema after fuel', temaFuel.slice(0, 280));
+
+  caps.forget('unit-fuel-ask');
+  caps.forget('unit-fuel-peer-a');
+  caps.forget('unit-fuel-peer-b');
+  inGhana('unit-fuel-ask');
+  inGhana('unit-fuel-peer-a');
+  inGhana('unit-fuel-peer-b');
+  caps.subscriber('unit-fuel-ask').station = 'kaneshie';
+  caps.subscriber('unit-fuel-ask').reach = '233200001001';
+  caps.subscriber('unit-fuel-peer-a').station = 'kaneshie';
+  caps.subscriber('unit-fuel-peer-a').reach = '233200001002';
+  caps.subscriber('unit-fuel-peer-b').station = 'kaneshie';
+  caps.subscriber('unit-fuel-peer-b').reach = '233200001003';
+  const fuelAsk = await engine.handle({
+    from: '233200001001', hash: 'unit-fuel-ask', text: 'GOIL Tema Community 1'
+  });
+  const fuelAskBody = JSON.stringify(fuelAsk);
+  const fuelCheckId = (fuelAskBody.match(/fuelcheck:yes:([a-z0-9]+)/) || [])[1];
+  const ownVote = fuelCheckId && await engine.handle({
+    from: '233200001001', hash: 'unit-fuel-ask', interactiveId: 'fuelcheck:yes:' + fuelCheckId
+  });
+  const peerVote = fuelCheckId && await engine.handle({
+    from: '233200001002', hash: 'unit-fuel-peer-a', interactiveId: 'fuelcheck:yes:' + fuelCheckId
+  });
+  const peerVote2 = fuelCheckId && await engine.handle({
+    from: '233200001003', hash: 'unit-fuel-peer-b', interactiveId: 'fuelcheck:yes:' + fuelCheckId
+  });
+  if (/Unverified/.test(fuelAskBody) && /I asked \*2\* riders/.test(fuelAskBody) && /Kaneshie/.test(fuelAskBody)
+      && !/11 riders/.test(fuelAskBody) && fuelCheckId
+      && /cannot confirm your own/.test(JSON.stringify(ownVote))
+      && /waiting for two other riders/.test(JSON.stringify(peerVote))
+      && /shows \*2\* rider confirmations/.test(JSON.stringify(peerVote2)))
+    pass('fuel  a price check is sent to other riders at the station and the seed count is not shown');
+  else bad('fuel confirmations', fuelAskBody.slice(0, 240) + ' own=' + JSON.stringify(ownVote).slice(0, 120) + ' peer=' + JSON.stringify(peerVote2).slice(0, 160));
 
   const noContext = [
     ['How much?', /Where are you now/, /Fuel watch|ADD FUEL|You're at/],
@@ -872,6 +986,225 @@ async function req(server, path, opts = {}) {
   else bad('GET /v1/health/db', dbHealth.status + ' ' + JSON.stringify(dbHealth.body));
 
   server.close();
+  const tools = require('../lib/tools');
+  const nlu = require('../lib/nlu');
+  const toolNames = tools.schemas.map(s => s.function.name);
+  if (['conversation', 'resolve_place', 'plan_fare', 'fuel_prices', 'road_status', 'queue_status', 'charts', 'addons', 'needs', 'route_stops', 'at_place'].every(n => toolNames.includes(n)))
+    pass('tools  fare, fuel, roads, queue, chart, add-ons, and unfinished questions each have a tool');
+  else bad('tool schemas', toolNames.join(','));
+
+  const platform = require('../lib/platform-graph');
+  const graphCounts = platform.counts();
+  if (graphCounts.place >= 527 && graphCounts.fare >= 340 && graphCounts.stop > 1000
+      && graphCounts.pump >= 1 && graphCounts.road >= 1 && graphCounts.chart >= 1
+      && graphCounts.addon === 7 && graphCounts.reads > 0)
+    pass('graph  places, stops, fares, fuel, roads, charts, and add-ons are one graph');
+  else bad('platform graph', JSON.stringify(graphCounts));
+
+  const sunyaniNode = platform.around('sunyani-bus-station');
+  const abelemkpeNode = platform.around('abelemkpe-station');
+  const fuelWalk = tools.execute('fuel_prices', { area: 'Tema' });
+  const roadWalk = tools.execute('road_status', { road: 'Tema Motorway' });
+  const chartWalk = tools.execute('charts', {});
+  const addonWalk = tools.execute('addons', { text: 'road alerts', action: 'add' });
+  if (sunyaniNode && sunyaniNode.departures.length === 0 && sunyaniNode.arrivals.length === 0
+      && abelemkpeNode && abelemkpeNode.arrivals.some(e => e.fare === 9)
+      && fuelWalk.graph === 'fuel' && fuelWalk.rows.length && fuelWalk.rows.every(r => !('confirmations' in r))
+      && roadWalk.graph === 'road' && roadWalk.incidents.length === 0
+      && chartWalk.graph === 'chart' && chartWalk.charts.length >= 1
+      && addonWalk.graph === 'addon' && addonWalk.id === 'roads' && addonWalk.reads > 0)
+    pass('graph  each tool walks its own edges and does not invent a fare');
+  else bad('graph walk', JSON.stringify({ sunyaniNode, fuel: fuelWalk.graph, road: roadWalk.incidents.length, addon: addonWalk }).slice(0, 400));
+
+  const composedPlan = tools.plan('madina go kaneshie');
+  const fareCall = composedPlan.calls.find(c => c.name === 'plan_fare');
+  if (composedPlan.calls.some(c => c.name === 'resolve_place') && fareCall && fareCall.result.kind === 'composed' && fareCall.result.total === 19)
+    pass('tools  a route question calls plan_fare and the graph returns ₵19');
+  else bad('tool fare', JSON.stringify(composedPlan).slice(0, 300));
+
+  const informal = tools.plan('how much');
+  if (informal.calls.length === 1 && informal.calls[0].name === 'needs' && informal.calls[0].result.missing === 'place'
+      && !informal.calls.some(c => c.name === 'plan_fare') && !/total/.test(JSON.stringify(informal.calls[0].result)))
+    pass('tools  an unfinished fare question asks for the place and does not price it');
+  else bad('tool informal', JSON.stringify(informal));
+
+  const petrolPlan = tools.plan('how much is petrol');
+  const fuelCall = petrolPlan.calls.find(c => c.name === 'fuel_prices');
+  const fuelRows = fuelCall && fuelCall.result.rows || [];
+  if (petrolPlan.intent === 'fuel' && fuelRows.length && fuelRows.every(r => r.petrol != null && !('confirmations' in r))
+      && !petrolPlan.calls.some(c => c.name === 'resolve_place'))
+    pass('tools  a petrol question calls fuel_prices and does not look up a place');
+  else bad('tool fuel', JSON.stringify(petrolPlan).slice(0, 300));
+
+  const roadAddon = tools.plan('turn on road alerts');
+  if (roadAddon.calls[0] && roadAddon.calls[0].name === 'addons' && roadAddon.calls[0].result.id === 'roads')
+    pass('tools  turning on road alerts calls the add-on tool');
+  else bad('tool addon', JSON.stringify(roadAddon));
+
+  const wahala = tools.plan('any wahala');
+  if (wahala.calls[0] && wahala.calls[0].name === 'needs' && wahala.calls[0].result.subject === 'road')
+    pass('tools  an unfinished road question asks which road');
+  else bad('tool road', JSON.stringify(wahala));
+
+  const bay = tools.plan('the cars dey move');
+  if (bay.calls[0] && bay.calls[0].name === 'needs' && bay.calls[0].result.subject === 'queue')
+    pass('tools  an unfinished queue question asks for the station');
+  else bad('tool queue', JSON.stringify(bay));
+
+  const chartPlan = tools.plan('what chart');
+  if (chartPlan.calls[0] && chartPlan.calls[0].name === 'charts' && Array.isArray(chartPlan.calls[0].result.charts))
+    pass('tools  a chart question reads the loaded charts');
+  else bad('tool chart', JSON.stringify(chartPlan).slice(0, 200));
+
+  const menuPlan = tools.plan('Main menu');
+  if (menuPlan.calls.length === 1 && menuPlan.calls[0].name === 'conversation' && !menuPlan.calls.some(c => c.name === 'resolve_place'))
+    pass('tools  Main menu is a conversation tool, not a place lookup');
+  else bad('tool menu', JSON.stringify(menuPlan));
+
+  const injected = tools.executeCall({ name: 'plan_fare', arguments: '{"from":"madina","to":"kaneshie","total":1}' });
+  if (injected.total === 19 && injected.kind === 'composed')
+    pass('tools  a fare the model tries to pass in is ignored');
+  else bad('tool inject', JSON.stringify(injected).slice(0, 200));
+
+  const payload = nlu.toolRequest('how much is petrol');
+  const payloadText = JSON.stringify(payload);
+  if (payload.reasoning_effort === 'low' && payload.tools.length === 11
+      && !/answer only from the provided context/i.test(payloadText))
+    pass('tools  the model request offers the tools and does not forbid thinking');
+  else bad('tool request', payloadText.slice(0, 240));
+
+  caps.forget('unit-tools');
+  inGhana('unit-tools');
+  await engine.handle({ from: '233201234567', hash: 'unit-tools', text: 'how much is diesel' });
+  if (engine.lastParse.toolCalls && engine.lastParse.toolCalls.includes('fuel_prices'))
+    pass('tools  the chat runs the fuel tool before it replies');
+  else bad('engine tools', JSON.stringify(engine.lastParse && engine.lastParse.toolCalls));
+
+  const motorway = tools.plan('what is the road condition on the tema motorway');
+  const roadCall = motorway.calls.find(c => c.name === 'road_status');
+  if (roadCall && Array.isArray(roadCall.result.incidents) && !motorway.calls.some(c => c.name === 'plan_fare'))
+    pass('tools  a road question calls road_status and does not price a fare');
+  else bad('tool motorway', JSON.stringify(motorway).slice(0, 300));
+
+  const potholePlan = tools.plan('pothole on kaneshie to kasoa');
+  if (potholePlan.calls.some(c => c.name === 'road_status') && !potholePlan.calls.some(c => c.name === 'plan_fare'))
+    pass('tools  a pothole on a route is a road, not a fare');
+  else bad('tool pothole', JSON.stringify(potholePlan.calls.map(c => c.name)));
+
+  const bareRoad = await engine.handle({
+    from: '233201234567', hash: 'unit-tools', text: 'what is the road condition right now'
+  });
+  if (/Which road/.test(JSON.stringify(bareRoad))
+      && engine.lastParse.toolCalls.includes('needs')
+      && !engine.lastParse.toolCalls.includes('plan_fare'))
+    pass('tools  an unfinished road question asks which road');
+  else bad('engine road needs', JSON.stringify(engine.lastParse.toolCalls));
+
+  const namedRoad = await engine.handle({
+    from: '233201234567', hash: 'unit-tools', text: 'what is the road condition on the tema motorway'
+  });
+  if (/Nothing reported|Tema Motorway/i.test(JSON.stringify(namedRoad))
+      && engine.lastParse.toolCalls.includes('road_status')
+      && !engine.lastParse.toolCalls.includes('plan_fare')
+      && !/COMPOSED/.test(JSON.stringify(namedRoad)))
+    pass('tools  a named road is answered from road_status');
+  else bad('engine road', JSON.stringify(namedRoad).slice(0, 240) + ' ' + JSON.stringify(engine.lastParse.toolCalls));
+
+  const queueAsk = await engine.handle({
+    from: '233201234567', hash: 'unit-tools', text: 'how is the queue at circle'
+  });
+  if (engine.lastParse.toolCalls.includes('queue_status')
+      && !engine.lastParse.toolCalls.includes('plan_fare')
+      && /Circle|loading|bay|No data/i.test(JSON.stringify(queueAsk)))
+    pass('tools  a queue question is answered from queue_status');
+  else bad('engine queue', JSON.stringify(engine.lastParse.toolCalls) + ' ' + JSON.stringify(queueAsk).slice(0, 180));
+
+  const chartAsk = await engine.handle({
+    from: '233201234567', hash: 'unit-tools', text: 'what chart'
+  });
+  if (engine.lastParse.toolCalls.includes('charts')
+      && /Fare charts|GPRTU|survey/i.test(JSON.stringify(chartAsk))
+      && !engine.lastParse.toolCalls.includes('plan_fare'))
+    pass('tools  a chart question is answered from the charts tool');
+  else bad('engine chart', JSON.stringify(engine.lastParse.toolCalls) + ' ' + JSON.stringify(chartAsk).slice(0, 180));
+
+  caps.forget('unit-stops');
+  inGhana('unit-stops');
+  const stopList = await engine.handle({
+    from: '233201234567', hash: 'unit-stops',
+    text: 'what stops are on kasoa to abossey okai'
+  });
+  const legStopsBody = JSON.stringify(stopList);
+  const sccAt = legStopsBody.indexOf('SCC');
+  const sakamanAt = legStopsBody.indexOf('Sakaman Junction');
+  if (/Stops on Kasoa Station/.test(legStopsBody) && /Terminal Kasoa Station/.test(legStopsBody)
+      && sccAt > 0 && sakamanAt > sccAt && /no fare for each stop/i.test(legStopsBody)
+      && !/₵/.test(legStopsBody) && engine.lastParse.toolCalls.includes('route_stops'))
+    pass('stops  a route lists stop names in stored order with no fare');
+  else bad('stop list', legStopsBody.slice(0, 400));
+
+  const atKasoa = await engine.handle({
+    from: '233201234567', hash: 'unit-stops', text: 'am at kasoa'
+  });
+  const kasoaBody = JSON.stringify(atKasoa);
+  if (/You're at Kasoa Station/.test(kasoaBody) && !/Where are you now/.test(kasoaBody)
+      && engine.lastParse.toolCalls.includes('at_place'))
+    pass('stops  am at Kasoa opens Kasoa Station');
+  else bad('at kasoa', kasoaBody.slice(0, 300));
+
+  const atStop = await engine.handle({
+    from: '233201234567', hash: 'unit-stops', text: 'am at sakaman junction'
+  });
+  const atStopBody = JSON.stringify(atStop);
+  if (/Sakaman Junction/.test(atStopBody) && /Kasoa Station/.test(atStopBody)
+      && /Abossey Okai Camara Station/.test(atStopBody) && /ESTIMATED/.test(atStopBody)
+      && /₵11/.test(atStopBody) && /whole leg/i.test(atStopBody))
+    pass('stops  a stop on one leg shows that station-to-station fare');
+  else bad('at stop', atStopBody.slice(0, 400));
+
+  const atMany = await engine.handle({
+    from: '233201234567', hash: 'unit-stops', text: 'am at flat top'
+  });
+  const manyBody = JSON.stringify(atMany);
+  if (/more than one route/.test(manyBody) && /stopleg:/.test(manyBody)
+      && /Achimota Station/.test(manyBody) && !/₵/.test(manyBody))
+    pass('stops  a stop on several legs offers those routes');
+  else bad('at many', manyBody.slice(0, 400));
+
+  const picked = await engine.handle({
+    from: '233201234567', hash: 'unit-stops',
+    interactiveId: 'stopleg:kasoa-station:abossey-okai-camara-station:S109'
+  });
+  if (/ESTIMATED/.test(JSON.stringify(picked)) && /₵11/.test(JSON.stringify(picked)) && /whole leg/i.test(JSON.stringify(picked)))
+    pass('stops  picking a leg shows the whole-leg fare');
+  else bad('pick leg', JSON.stringify(picked).slice(0, 300));
+
+  const atPin = await engine.handle({
+    from: '233201234567', hash: 'unit-sunyani', text: 'am at Sunyani Bus Station'
+  });
+  const mapPinBody = JSON.stringify(atPin);
+  if (/Sunyani Bus Station/.test(mapPinBody) && /on the map/.test(mapPinBody)
+      && !/Where are you now/.test(mapPinBody) && !/₵/.test(mapPinBody))
+    pass('map pins  a pin with no fare table is on the map');
+  else bad('map pin', mapPinBody.slice(0, 400));
+
+  const atDest = await engine.handle({
+    from: '233201234567', hash: 'unit-stops', text: 'am at Abelemkpe Station'
+  });
+  const mapDestBody = JSON.stringify(atDest);
+  if (/Abelemkpe Station/.test(mapDestBody) && /ESTIMATED/.test(mapDestBody) && /₵9/.test(mapDestBody)
+      && /station-to-station fare/.test(mapDestBody) && !/Where are you now/.test(mapDestBody))
+    pass('map pins  a destination pin shows the recorded whole-leg fare');
+  else bad('map dest', mapDestBody.slice(0, 400));
+
+  const atHome = await engine.handle({
+    from: '233201234567', hash: 'unit-stops', text: 'am at home'
+  });
+  if (/home/i.test(JSON.stringify(atHome)) && /Where are you now/.test(JSON.stringify(atHome))
+      && !/Welcome to GH Fares/.test(JSON.stringify(atHome)))
+    pass('stops  am at home asks where that is and does not open the menu');
+  else bad('at home', JSON.stringify(atHome).slice(0, 300));
+
   console.log('\n' + ok.length + ' passed, ' + fail.length + ' failed');
   if (fail.length) process.exit(1);
 })().catch(e => { console.error(e); process.exit(1); });
