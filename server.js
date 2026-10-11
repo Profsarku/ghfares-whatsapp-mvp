@@ -914,6 +914,9 @@ if (require.main === module) {
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`GH Fares  landing http://localhost:${PORT}` + (ip ? `  phone http://${ip}:${PORT}` : '') + `  (DRY_RUN=${DRY_RUN})`);
       console.log(neon.configured ? `         neon ${neon.host}  ${neon.databases.length} databases` : '         neon off  (in-memory)');
+      require('./lib/opensearch').syncIndex()
+        .then(s => console.log(s.mode === 'opensearch' ? `         opensearch indexed ${s.indexed}` : '         opensearch off  (hash table)'))
+        .catch(e => console.warn('opensearch index skipped', e.message || e));
     });
   }).catch(e => {
     console.error('startup failed', e);

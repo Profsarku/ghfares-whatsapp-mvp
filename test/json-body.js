@@ -1068,7 +1068,7 @@ async function req(server, path, opts = {}) {
 
   const payload = nlu.toolRequest('how much is petrol');
   const payloadText = JSON.stringify(payload);
-  if (payload.reasoning_effort === 'low' && payload.tools.length === 11
+  if (payload.reasoning_effort === 'low' && payload.tools.length === 12
       && !/answer only from the provided context/i.test(payloadText))
     pass('tools  the model request offers the tools and does not forbid thinking');
   else bad('tool request', payloadText.slice(0, 240));
@@ -1204,6 +1204,24 @@ async function req(server, path, opts = {}) {
       && !/Welcome to GH Fares/.test(JSON.stringify(atHome)))
     pass('stops  am at home asks where that is and does not open the menu');
   else bad('at home', JSON.stringify(atHome).slice(0, 300));
+
+  const dataTable = require('../lib/data-table');
+  const searched = tools.plan('how much be petrol for tema');
+  const searchCall = searched.calls.find(call => call.name === 'opensearch');
+  const pumpHit = searchCall && searchCall.result.hits.find(hit => hit.kind === 'pump');
+  const storedPump = pumpHit && dataTable.get(pumpHit.id);
+  if (searched.calls[0].name === 'fuel_prices' && storedPump && storedPump.petrol === pumpHit.petrol && pumpHit.source === 'hash')
+    pass('opensearch  a fuel question is answered from the hash table');
+  else bad('opensearch fuel', JSON.stringify(searchCall && searchCall.result).slice(0, 240));
+
+  inGhana('unit-chat');
+  const chat = await engine.handle({
+    from: '233201234567', hash: 'unit-chat', text: 'how are you'
+  });
+  const chatBody = JSON.stringify(chat);
+  if (/I'm here|I'm with you|just talk/i.test(chatBody) && !/₵/.test(chatBody) && !/Welcome to GH Fares/.test(chatBody) && !/didn't catch/.test(chatBody))
+    pass('chat  a greeting is a conversation, not a lookup');
+  else bad('chat', chatBody.slice(0, 300));
 
   console.log('\n' + ok.length + ' passed, ' + fail.length + ' failed');
   if (fail.length) process.exit(1);
