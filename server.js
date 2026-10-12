@@ -839,9 +839,16 @@ app.get('/v1', (req, res) => res.json({
     nlu_status: 'GET /v1/nlu/status',
     capabilities: 'GET /v1/capabilities',
     freshness: 'GET /v1/health/freshness',
-    db: 'GET /v1/health/db'
+    db: 'GET /v1/health/db',
+    graph: 'GET /v1/graph  (?format=mermaid)'
   }
 }));
+
+/* The conversation graph — nodes, edges, and their routing conditions. */
+app.get('/v1/graph', (req, res) => {
+  if (req.query.format === 'mermaid') return res.type('text/plain').send(engine.graph.toMermaid());
+  res.json(engine.graph.describe());
+});
 
 /* Everyone — riders included — talks to the engine here. */
 app.post('/v1/ask', async (req, res) => {
@@ -852,6 +859,7 @@ app.post('/v1/ask', async (req, res) => {
     intent: out.intent,
     places: out.places,
     replies: out.replies,
+    path: out.path,
     subscriber: out.subscriber
   }, { via: out.via, nlu: out.nlu }));
 });

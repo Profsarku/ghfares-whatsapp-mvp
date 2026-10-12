@@ -102,7 +102,12 @@ public/demo.js            Preview client; talks to POST /v1/ask via /v1/demo/tur
 lib/wa.js                 Cloud API message builders (text, buttons, list,
                           location request, Flow, template) with limits enforced
 lib/api.js                Classifier + the data API every reply reads from
-lib/engine.js             Conversation router; applies add-on capabilities
+lib/engine.js             Runs each message through the conversation graph
+lib/graph/                State graph runtime: StateGraph, Node, edges, trace
+lib/conversation/graph.js The conversation graph — every routing decision
+lib/conversation/nodes/   Node classes: entry, taps, resume, understand, fares, intents
+lib/conversation/state.js ConversationState — the one object a run reads and writes
+lib/conversation/handlers.js  Reply builders (fare, fuel, road, menus) the nodes call
 lib/capabilities.js       The add-on registry and subscriber store
 lib/db/                   Neon: one Postgres database per concern
 scripts/neon-setup.js     CREATE DATABASE + apply schemas
@@ -110,6 +115,25 @@ flows/addons-flow.json    WhatsApp Flow JSON — the add-on manager as a mini-ap
 data/core.json            Stations with fares, fuel, incidents, queues, charts
 test/demo.js              CLI walkthrough of the same engine
 ```
+
+### The conversation graph
+
+Every message — API, WhatsApp, or Messenger — becomes a `ConversationState`
+and runs once through `lib/conversation/graph.js`:
+
+- **State** — input, the subscriber record, chat history, the classification,
+  the replies, and a trace of the nodes visited. One per message.
+- **Nodes** — classes in `lib/conversation/nodes/`. Each reads the state, does
+  one piece of work, and either replies or declines.
+- **Edges** — all routing lives in `graph.js`. Conditional edges read the state
+  and name the next node: country first, then photo, pin, or tap, then an open
+  question, then chat or a lookup by intent. Every reply leaves through
+  `guard → decorate → remember`.
+
+The subscriber record is loaded before a run and saved after it, even on an
+error, so an open step (a pending fare amount, a road report waiting for a
+place) resumes on the next message on any instance. `POST /v1/ask` returns the
+`path` a message took; `GET /v1/graph?format=mermaid` draws the whole graph.
 
 ---
 
