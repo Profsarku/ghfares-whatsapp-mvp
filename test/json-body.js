@@ -1267,6 +1267,51 @@ async function req(server, path, opts = {}) {
     pass('chat  small talk is answered inside an open fare question and the question stays open');
   else bad('chat thread', JSON.stringify({ openBefore: !!openBefore, thanks }).slice(0, 300));
 
+  const { StateGraph, GraphError, START, END } = require('../lib/graph');
+  const shape = engine.graph.describe();
+  const names = new Set(shape.nodes.map(n => n.name));
+  if (['load', 'triage', 'understand', 'chat', 'intent', 'fare', 'guard', 'remember'].every(n => names.has(n))
+      && /^flowchart TD/.test(engine.graph.toMermaid()))
+    pass('graph  the conversation graph compiles and prints as Mermaid', `${shape.nodes.length} nodes, ${shape.edges.length} edges`);
+  else bad('graph shape', JSON.stringify([...names]).slice(0, 200));
+
+  const broken = [];
+  try { new StateGraph().addNode('a', () => {}).addEdge(START, 'a').addEdge('a', 'nowhere').compile(); broken.push('unknown target'); } catch (e) { if (!(e instanceof GraphError)) broken.push(e.message); }
+  try { new StateGraph().addNode('a', () => {}).addNode('b', () => {}).addEdge(START, 'a').addEdge('a', END).addEdge('b', END).compile(); broken.push('orphan'); } catch (e) { if (!(e instanceof GraphError)) broken.push(e.message); }
+  try {
+    const loop = new StateGraph().addNode('a', () => {}).addEdge(START, 'a').addEdge('a', 'a').compile({ recursionLimit: 5 });
+    await loop.invoke({});
+    broken.push('loop');
+  } catch (e) { if (!(e instanceof GraphError)) broken.push(e.message); }
+  if (!broken.length) pass('graph  bad edges, orphans, and endless loops are refused');
+  else bad('graph checks', broken.join('; '));
+
+  inGhana('unit-graph-path');
+  const fareRun = await engine.run({ from: '233201234567', hash: 'unit-graph-path', text: 'how much from kaneshie to circle' });
+  const path = fareRun.trace.map(step => step.node);
+  if (path[0] === 'load' && path.includes('understand') && path.includes('fare_mention')
+      && path.slice(-3).join() === 'guard,decorate,remember' && /₵/.test(JSON.stringify(fareRun.replies)))
+    pass('graph  a fare question walks load → understand → fare → guard → remember', path.join(' → '));
+  else bad('graph path', path.join(' → '));
+
+  const { ask } = require('../lib/ask');
+  const askChat = ask({ session: 'unit-race-chat', text: 'Ghana' }).then(() => ask({ session: 'unit-race-chat', text: 'how are you doing' }));
+  const askFare = ask({ session: 'unit-race-fare', text: 'Ghana' }).then(() => ask({ session: 'unit-race-fare', text: 'how much from kaneshie to circle' }));
+  const [raceChat, raceFare] = await Promise.all([askChat, askFare]);
+  if (raceChat.intent === 'chat' && raceFare.intent === 'fare' && raceFare.path.includes('fare_mention') && raceChat.path.includes('chat'))
+    pass('graph  two conversations at once each keep their own parse and path');
+  else bad('graph race', JSON.stringify({ chat: raceChat.intent, fare: raceFare.intent }));
+
+  const nluMod = require('../lib/nlu');
+  const realChat = nluMod.chatReply;
+  nluMod.chatReply = async () => 'Sure, the fare is ₵12 today.';
+  inGhana('unit-graph-guard');
+  const guarded = await engine.handle({ from: '233201234567', hash: 'unit-graph-guard', text: 'how are you doing' });
+  nluMod.chatReply = realChat;
+  if (!/₵/.test(JSON.stringify(guarded)) && /how is your day/i.test(JSON.stringify(guarded)))
+    pass('graph  the guard node replaces a chat reply that carries a figure');
+  else bad('graph guard', JSON.stringify(guarded).slice(0, 300));
+
   console.log('\n' + ok.length + ' passed, ' + fail.length + ' failed');
   if (fail.length) process.exit(1);
 })().catch(e => { console.error(e); process.exit(1); });
