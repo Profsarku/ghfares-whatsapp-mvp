@@ -264,8 +264,8 @@ async function req(server, path, opts = {}) {
   else bad('Ghana menu', JSON.stringify(ghanaIn).slice(0, 180));
 
   const afterHi = await engine.handle({ from: '233201234567', hash, text: 'Hi' });
-  if (afterHi[0] && afterHi[0].type === 'text' && /Choose|road condition/i.test(afterHi[0].text && afterHi[0].text.body))
-    pass('hi after Ghana  does not repeat the menu');
+  if (afterHi[0] && afterHi[0].type === 'text' && !/addon:fuel/.test(JSON.stringify(afterHi)))
+    pass('hi after Ghana  is a greeting, not the menu again');
   else bad('hi after Ghana', JSON.stringify(afterHi).slice(0, 180));
 
   caps.forget('unit-usa');
@@ -1219,9 +1219,53 @@ async function req(server, path, opts = {}) {
     from: '233201234567', hash: 'unit-chat', text: 'how are you'
   });
   const chatBody = JSON.stringify(chat);
-  if (/I'm here|I'm with you|just talk/i.test(chatBody) && !/₵/.test(chatBody) && !/Welcome to GH Fares/.test(chatBody) && !/didn't catch/.test(chatBody))
+  if (/how is your day/i.test(chatBody) && !/₵/.test(chatBody) && !/Welcome to GH Fares/.test(chatBody) && !/didn't catch/.test(chatBody))
     pass('chat  a greeting is a conversation, not a lookup');
   else bad('chat', chatBody.slice(0, 300));
+
+  const chatLines = [
+    'how are you doing', 'hey chale', 'where are you from', 'are you a bot',
+    'the traffic today is killing me', 'that mate was really rude', 'I had a long day at work',
+    'I had an issue with my landlord', 'what is the price of happiness', 'my wife is sick'
+  ];
+  const notChat = [];
+  for (const line of chatLines) {
+    const c = await classify(line);
+    if (c.intent !== 'chat') notChat.push(`${line} → ${c.intent}`);
+  }
+  if (!notChat.length) pass('chat  small talk, feelings, and stories classify as chat');
+  else bad('chat lines', notChat.join('; '));
+
+  const dataLines = {
+    'how much from kaneshie to circle': 'fare', 'how is the traffic on tema motorway': 'road',
+    'petrol price': 'fuel', 'any wahala on the road': 'road', 'queue at kaneshie': 'queue',
+    'kaneshie': 'station', 'I want to report a pothole': 'road', 'fare chart': 'chart',
+    'i need fuel': 'fuel', 'is the motorway blocked': 'road'
+  };
+  const wrongData = [];
+  for (const [line, want] of Object.entries(dataLines)) {
+    const c = await classify(line);
+    if (c.intent !== want) wrongData.push(`${line} → ${c.intent}`);
+  }
+  if (!wrongData.length) pass('chat  data questions still route to their lookup');
+  else bad('data lines', wrongData.join('; '));
+
+  inGhana('unit-chat-vent');
+  const vent = await engine.handle({ from: '233201234567', hash: 'unit-chat-vent', text: 'the traffic today is killing me' });
+  const ventBody = JSON.stringify(vent);
+  if (!/Which road/.test(ventBody) && !/₵/.test(ventBody) && /ask:road/.test(ventBody))
+    pass('chat  venting about traffic is answered, with Road status offered');
+  else bad('chat vent', ventBody.slice(0, 300));
+
+  caps.forget('unit-chat-thread');
+  inGhana('unit-chat-thread');
+  await engine.handle({ from: '233201234567', hash: 'unit-chat-thread', text: 'fare from xyzqplace to circle' });
+  const openBefore = memory.thread('unit-chat-thread');
+  const thanks = await engine.handle({ from: '233201234567', hash: 'unit-chat-thread', text: 'thank you' });
+  if (openBefore && memory.thread('unit-chat-thread') && !/₵/.test(JSON.stringify(thanks))
+      && /welcome|anytime/i.test(JSON.stringify(thanks)))
+    pass('chat  small talk is answered inside an open fare question and the question stays open');
+  else bad('chat thread', JSON.stringify({ openBefore: !!openBefore, thanks }).slice(0, 300));
 
   console.log('\n' + ok.length + ' passed, ' + fail.length + ' failed');
   if (fail.length) process.exit(1);

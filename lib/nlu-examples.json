@@ -83,5 +83,20 @@
   { "text": "the mate dey charge", "intent": "fare" },
   { "text": "the cars dey move", "intent": "queue" },
   { "text": "I no know the fare", "intent": "fare" },
-  { "text": "diesel price", "intent": "fuel" }
+  { "text": "diesel price", "intent": "fuel" },
+  { "text": "how are you", "intent": "chat" },
+  { "text": "how far", "intent": "chat" },
+  { "text": "thank you, that helped", "intent": "chat" },
+  { "text": "can we just talk", "intent": "chat" },
+  { "text": "who made you", "intent": "chat" },
+  { "text": "I am tired today", "intent": "chat" },
+  { "text": "the traffic is killing me today", "intent": "chat", "arg": "road" },
+  { "text": "my trotro mate was so rude to me", "intent": "chat", "arg": "fare" },
+  { "text": "I had an issue with my boss", "intent": "chat" },
+  { "text": "I live in Kaneshie", "intent": "chat", "arg": "station" },
+  { "text": "where are you from", "intent": "chat" },
+  { "text": "do you know a good place to eat at circle", "intent": "chat" },
+  { "text": "fuel is too expensive these days", "intent": "chat", "arg": "fuel" },
+  { "text": "lol you are funny", "intent": "chat" },
+  { "text": "what is the price of life", "intent": "chat" }
 ]
