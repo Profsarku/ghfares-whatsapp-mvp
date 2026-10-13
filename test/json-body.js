@@ -1223,18 +1223,35 @@ async function req(server, path, opts = {}) {
     pass('chat  a greeting is a conversation, not a lookup');
   else bad('chat', chatBody.slice(0, 300));
 
+  const router = require('../lib/agents/router');
   const chatLines = [
-    'how are you doing', 'hey chale', 'where are you from', 'are you a bot',
-    'the traffic today is killing me', 'that mate was really rude', 'I had a long day at work',
-    'I had an issue with my landlord', 'what is the price of happiness', 'my wife is sick'
+    'how are you doing', 'hey chale', 'where are you from', 'are you a bot', 'sup', 'ete sen',
+    'the traffic today is killing me', 'the traffic dey kill me', 'that mate was really rude',
+    'I had a long day at work', 'I had an issue with my landlord', 'my wife is sick'
   ];
   const notChat = [];
   for (const line of chatLines) {
-    const c = await classify(line);
-    if (c.intent !== 'chat') notChat.push(`${line} → ${c.intent}`);
+    const d = router.decide(line);
+    if (d.agent !== 'chat') notChat.push(`${line} → ${d.agent} (${d.why})`);
   }
-  if (!notChat.length) pass('chat  small talk, feelings, and stories classify as chat');
+  if (!notChat.length) pass('router  small talk, feelings, and stories go to the chat agent');
   else bad('chat lines', notChat.join('; '));
+
+  const dataFirst = ['I need help', 'abeg help', 'what stops are along that route', 'kaneshie to circle',
+    'am interested in Kaneshie route', 'the stops', 'how much', 'i need fuel', 'am at kasoa'];
+  const notData = dataFirst.filter(line => router.decide(line).agent !== 'data');
+  if (!notData.length) pass('router  requests, places, and stops go to the data agent');
+  else bad('router data', notData.join('; '));
+
+  const chatAgent = require('../lib/agents/chat');
+  const seen = chatAgent.view([
+    { direction: 'in', body: 'kaneshie to circle' },
+    { direction: 'out', body: '*COMPOSED*\n\nTotal: *₵12*', intent: 'fare' },
+    { direction: 'out', body: 'Glad to help', intent: 'chat' }
+  ]);
+  if (!/₵|12/.test(JSON.stringify(seen)) && /fare card/.test(seen[1].content) && seen[2].content === 'Glad to help')
+    pass('chat agent  sees data cards as a note with no figures');
+  else bad('chat view', JSON.stringify(seen));
 
   const dataLines = {
     'how much from kaneshie to circle': 'fare', 'how is the traffic on tema motorway': 'road',
@@ -1303,14 +1320,76 @@ async function req(server, path, opts = {}) {
   else bad('graph race', JSON.stringify({ chat: raceChat.intent, fare: raceFare.intent }));
 
   const nluMod = require('../lib/nlu');
-  const realChat = nluMod.chatReply;
-  nluMod.chatReply = async () => 'Sure, the fare is ₵12 today.';
+  const realChat = nluMod.complete;
+  nluMod.complete = async () => 'Sure, the fare is ₵12 today.';
   inGhana('unit-graph-guard');
   const guarded = await engine.handle({ from: '233201234567', hash: 'unit-graph-guard', text: 'how are you doing' });
-  nluMod.chatReply = realChat;
+  nluMod.complete = realChat;
   if (!/₵/.test(JSON.stringify(guarded)) && /how is your day/i.test(JSON.stringify(guarded)))
     pass('graph  the guard node replaces a chat reply that carries a figure');
   else bad('graph guard', JSON.stringify(guarded).slice(0, 300));
+
+  /* The conversation riders complained about: a station named in passing,
+     then "that route", then "I need help". */
+  caps.forget('unit-kaneshie');
+  inGhana('unit-kaneshie');
+  const talkTo = text => engine.run({ from: '233201234567', hash: 'unit-kaneshie', text });
+  const board = await talkTo('am interested in Kaneshie route');
+  const boardBody = JSON.stringify(board.replies);
+  if (/Kaneshie/.test(boardBody) && !/You're at/.test(boardBody))
+    pass('kaneshie  naming a station does not say the rider is there');
+  else bad('kaneshie board', boardBody.slice(0, 300));
+  const along = await talkTo('what stops are along that route');
+  const alongBody = JSON.stringify(along.replies);
+  if (along.trace.some(step => step.node === 'stops') && /stops:kaneshie-mkt-cmplx:/.test(alongBody) && !/I hear you/.test(alongBody))
+    pass('kaneshie  "that route" after a board offers its routes for the stops');
+  else bad('kaneshie stops', alongBody.slice(0, 300));
+  const pickedId = (alongBody.match(/stops:kaneshie-mkt-cmplx:[\w-]+/) || [])[0];
+  const pickedLeg = await engine.handle({ from: '233201234567', hash: 'unit-kaneshie', interactiveId: pickedId });
+  if (/Stops on Kaneshie/.test(JSON.stringify(pickedLeg)) && !/₵/.test(JSON.stringify(pickedLeg)))
+    pass('kaneshie  tapping a route lists its stops');
+  else bad('kaneshie picked', JSON.stringify(pickedLeg).slice(0, 300));
+  const helped = await talkTo('I need help');
+  if (/How to talk to me/.test(JSON.stringify(helped.replies)) && helped.trace.some(step => step.node === 'help'))
+    pass('kaneshie  "I need help" opens the guide, warmly');
+  else bad('kaneshie help', JSON.stringify(helped.replies).slice(0, 300));
+
+  /* Fragments with no context of their own lean on what was just shown. */
+  caps.forget('unit-frag');
+  inGhana('unit-frag');
+  const frag = text => engine.run({ from: '233201234567', hash: 'unit-frag', text });
+  await frag('kaneshie');
+  const toMakola = await frag('makola tudu?');
+  const howMuch = await frag('e be how much');
+  const andCircle = await frag('and circle');
+  const line = await frag('line dey?');
+  const stopsAgain = await frag('where e dey stop');
+  const nodes = run => run.trace.map(step => step.node);
+  if (nodes(toMakola).includes('in_context') && /Kaneshie Mkt Cmplx → Makola Tudu/.test(JSON.stringify(toMakola.replies))
+      && /Kaneshie Mkt Cmplx → Makola Tudu/.test(JSON.stringify(howMuch.replies))
+      && /COMPOSED|ESTIMATED|REPORTED/.test(JSON.stringify(andCircle.replies)) && andCircle.parse.places.join() === 'kaneshie-mkt-cmplx,circle'
+      && line.parse.intent === 'queue' && line.parse.places.join() === 'kaneshie-mkt-cmplx,circle'
+      && nodes(stopsAgain).includes('stops'))
+    pass('context  "makola tudu?", "e be how much", "and circle", "line dey?" follow the last board or route');
+  else bad('context fragments', JSON.stringify([toMakola, howMuch, andCircle, line, stopsAgain].map(r => [r.parse.intent, r.parse.places, nodes(r).slice(4, -3)])));
+
+  caps.forget('unit-clarify');
+  inGhana('unit-clarify');
+  await engine.handle({ from: '233201234567', hash: 'unit-clarify', text: 'kaneshie' });
+  const unclear = await engine.run({ from: '233201234567', hash: 'unit-clarify', text: 'which one?' });
+  const unclearBody = JSON.stringify(unclear.replies);
+  if (unclear.trace.some(step => step.node === 'clarify') && /ctx:stops:kaneshie-mkt-cmplx/.test(unclearBody) && !/not something I look up/.test(unclearBody))
+    pass('clarify  an unclear question asks back about what was just shown');
+  else bad('clarify', unclearBody.slice(0, 300));
+  const typoed = await engine.handle({ from: '233201234567', hash: 'unit-clarify', text: 'kasoaa' });
+  if (/Did you mean \*Kasoa Station\*/.test(JSON.stringify(typoed)))
+    pass('clarify  a one-word typo offers Did you mean');
+  else bad('clarify typo', JSON.stringify(typoed).slice(0, 300));
+
+  const directChat = await engine.run({ from: '233201234567', hash: 'unit-clarify', text: 'sup' });
+  if (!directChat.trace.some(step => step.node === 'understand') && directChat.trace.some(step => step.node === 'chat'))
+    pass('router  small talk reaches the chat agent without the data classifier');
+  else bad('router direct', directChat.trace.map(step => step.node).join(' → '));
 
   console.log('\n' + ok.length + ' passed, ' + fail.length + ' failed');
   if (fail.length) process.exit(1);
