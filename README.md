@@ -186,7 +186,10 @@ figures. A quiet gap of `CONVERSATION_IDLE_MIN` (default 30) starts a new one.
 - *same route as last time* reopens the route the last conversation ended on.
 - *DELETE MY DATA* removes every conversation and turn for that user.
 
-`npm run db:setup` creates the database. The open follow-up question stays in
+The app sets this up itself: the first time it reads or writes a conversation
+it creates the `conversations` tables (and the database, if it is missing) over
+the Vercel Storage connection (`lib/db/provision.js`). `npm run db:setup` still
+works for setting up every database at once. The open follow-up question stays in
 the `memory` database; its old `messages` table is no longer written.
 
 The subscriber record is loaded before a run and saved after it, even on an

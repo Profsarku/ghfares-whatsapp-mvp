@@ -1605,6 +1605,46 @@ async function req(server, path, opts = {}) {
     pass('informal  a destination then "am at circle", an amount then the route, and a saved route then "10" all follow on');
   else bad('informal steps', JSON.stringify({ fromHere, logged, saved, bare }).slice(0, 400));
 
+  /* The app creates the conversations tables (and the database, if missing) on first use. */
+  const provision = require('../lib/db/provision');
+  const neonMod = require('../lib/db/neon');
+  const realEnabled = neonMod.enabled;
+  const realConnect = { ...provision.connect };
+  const ran = [];
+  let dbExists = true;
+  let created = 0;
+  neonMod.enabled = () => true;
+  provision.connect.database = () => ({
+    query: async text => {
+      if (!dbExists) { const e = new Error('database "conversations" does not exist'); e.code = '3D000'; throw e; }
+      ran.push(text);
+      return [];
+    }
+  });
+  provision.connect.admin = () => ({ query: async text => { if (/CREATE DATABASE "conversations"/.test(text)) { created++; dbExists = true; } return []; } });
+  try {
+    provision.reset();
+    const tablesOnly = await provision.ensure('conversations');
+    const tablesRan = ran.length;
+    const again = await provision.ensure('conversations');
+    provision.reset();
+    ran.length = 0;
+    dbExists = false;
+    const fromNothing = await provision.ensure('conversations');
+    provision.reset();
+    provision.connect.database = () => ({ query: async () => { throw new Error('permission denied'); } });
+    const denied = await provision.ensure('conversations');
+    const deniedAgain = await provision.ensure('conversations');
+    if (tablesOnly && again && tablesRan === 5 && ran.length === 5 && /CREATE TABLE IF NOT EXISTS conversations/.test(ran[0])
+        && fromNothing && created === 1 && denied === false && deniedAgain === false)
+      pass('neon  the conversations tables, and the database if missing, are created on first use');
+    else bad('provision', JSON.stringify({ tablesOnly, again, tablesRan, ran: ran.length, fromNothing, created, denied, deniedAgain }));
+  } finally {
+    neonMod.enabled = realEnabled;
+    Object.assign(provision.connect, realConnect);
+    provision.reset();
+  }
+
   console.log('\n' + ok.length + ' passed, ' + fail.length + ' failed');
   if (fail.length) process.exit(1);
 })().catch(e => { console.error(e); process.exit(1); });
