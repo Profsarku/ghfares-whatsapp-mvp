@@ -135,7 +135,7 @@ async function req(server, path, opts = {}) {
   else bad('GET messenger-profile', want.status);
 
   const site = await req(server, '/');
-  if (site.status === 200 && /Never stranded/i.test(site.text) && site.text.includes('id="services"') && site.text.includes('id="station-map"'))
+  if (site.status === 200 && /Trotro fares on WhatsApp/i.test(site.text) && /no need to share your location/i.test(site.text) && site.text.includes('id="services"') && site.text.includes('id="station-map"'))
     pass('GET /  services landing');
   else bad('GET / landing', 'missing services page');
 
@@ -247,8 +247,8 @@ async function req(server, path, opts = {}) {
   const opened = await engine.handle({ from: '233201234567', hash, type: 'request_welcome' });
   const openedType = opened[0] && opened[0].type;
   const openedAsk = JSON.stringify(opened);
-  if (openedType === 'interactive' && /location_request/i.test(openedAsk) && /country/i.test(openedAsk) && /WhatsApp location|Share your location/i.test(openedAsk))
-    pass('welcome  asks country via WhatsApp location');
+  if (openedType === 'interactive' && !/location_request/i.test(openedAsk) && /country/i.test(openedAsk) && /country:gh/.test(openedAsk) && /"pin"/.test(openedAsk))
+    pass('welcome  asks the country with a Ghana button — location is optional');
   else bad('welcome country ask', openedType + ' ' + openedAsk.slice(0, 180));
 
   const typedHi = await engine.handle({ from: '233201234567', hash, text: 'Hi' });
@@ -315,7 +315,7 @@ async function req(server, path, opts = {}) {
     image: { mime: 'image/jpeg', bytes: Buffer.from('fakejpg'), caption: 'tema motorway blocked' }
   });
   const picTxt = JSON.stringify(pic);
-  if (/location_request/i.test(picTxt) && /Where are you/i.test(picTxt) && /no GPS|no location/i.test(picTxt) && /motorway|blocked|Photo saved/i.test(picTxt))
+  if (!/location_request/i.test(picTxt) && /"pin"/.test(picTxt) && /Where is it/i.test(picTxt) && /no GPS|no location/i.test(picTxt) && /motorway|blocked|Photo saved/i.test(picTxt))
     pass('WhatsApp road photo  asks where (no GPS)');
   else bad('WhatsApp road photo', picTxt.slice(0, 220));
 
@@ -348,7 +348,7 @@ async function req(server, path, opts = {}) {
   const carPick = await engine.handle({
     from: '233201234567', hash: 'unit-car', interactiveId: 'photo:kind:road_condition'
   });
-  if (/location_request/i.test(JSON.stringify(carPick)) && /Where are you/i.test(JSON.stringify(carPick)))
+  if (/"pin"/.test(JSON.stringify(carPick)) && /Where is it|Where are you/i.test(JSON.stringify(carPick)))
     pass('picked road condition  asks where');
   else bad('picked road condition', JSON.stringify(carPick).slice(0, 220));
 
@@ -444,8 +444,8 @@ async function req(server, path, opts = {}) {
   caps.forget('unit-place');
   inGhana('unit-place');
   const locAsk = await engine.handle({ from: '233201234567', hash: 'unit-place', text: 'where' });
-  if (/Share your location|say \*no\*|type any station/i.test(JSON.stringify(locAsk)))
-    pass('where  asks for location or typed station');
+  if (/Type the station/i.test(JSON.stringify(locAsk)) && /"pin"/.test(JSON.stringify(locAsk)) && !/location_request/.test(JSON.stringify(locAsk)))
+    pass('where  asks the rider to type the station, with Share location as a button');
   else bad('where location ask', JSON.stringify(locAsk).slice(0, 220));
 
   const saidNo = await engine.handle({ from: '233201234567', hash: 'unit-place', text: 'no' });
@@ -463,7 +463,7 @@ async function req(server, path, opts = {}) {
   await engine.handle({ from: '233201234567', hash: 'unit-nearest', text: 'where' });
   await engine.handle({ from: '233201234567', hash: 'unit-nearest', text: 'no' });
   const unknown = await engine.handle({ from: '233201234567', hash: 'unit-nearest', text: 'Kumbungu Junction XYZ' });
-  if (/Where are you now/i.test(JSON.stringify(unknown)) && /send_location/.test(JSON.stringify(unknown)))
+  if (/Where are you now/i.test(JSON.stringify(unknown)) && /"pin"/.test(JSON.stringify(unknown)))
     pass('unknown place  asks where you are now');
   else bad('unknown place', JSON.stringify(unknown).slice(0, 240));
 
@@ -504,10 +504,10 @@ async function req(server, path, opts = {}) {
   });
   const vagueBody = JSON.stringify(vagueFare);
   if (/Which place do you mean by \*barrier\*/.test(vagueBody) && /Which place do you mean by \*town\*/.test(vagueBody)
-      && /send_location/.test(vagueBody) && /Share your location/.test(vagueBody)
-      && /\/loc\/[a-f0-9]{32}/.test(vagueBody) && /Type it/.test(vagueBody)
+      && /"pin"/.test(vagueBody) && /Share location/.test(vagueBody)
+      && !/\/loc\//.test(vagueBody) && /Type it/.test(vagueBody)
       && !/addon:menu/.test(vagueBody) && !/₵/.test(vagueBody) && !/Bubuashie/.test(vagueBody))
-    pass('memory  vague barrier to town offers share, browser link, and typing');
+    pass('memory  vague barrier to town asks to type, with Share location as a choice');
   else bad('memory vague fare', vagueBody.slice(0, 320));
 
   const filled = await engine.handle({
@@ -669,7 +669,9 @@ async function req(server, path, opts = {}) {
     from: '233201234567', hash: 'unit-browser',
     text: 'what is the current fare from barrier to town?'
   });
-  const locToken = (JSON.stringify(browserAsk).match(/\/loc\/([a-f0-9]{32})/) || [])[1];
+  /* The browser link comes with WhatsApp's prompt, after the rider taps Share location. */
+  const shareTap = await engine.handle({ from: '233201234567', hash: 'unit-browser', interactiveId: 'pin' });
+  const locToken = !/\/loc\//.test(JSON.stringify(browserAsk)) && (JSON.stringify(shareTap).match(/\/loc\/([a-f0-9]{32})/) || [])[1];
   const locPage = locToken && await req(server, '/loc/' + locToken);
   const locPost = locToken && await req(server, '/v1/loc/' + locToken, {
     method: 'POST',
@@ -687,8 +689,10 @@ async function req(server, path, opts = {}) {
     text: 'ADD MY LOCATION'
   });
   const locAddBody = JSON.stringify(locAdd);
-  if (/My location/.test(locAddBody) && /send_location/.test(locAddBody) && /\/loc\//.test(locAddBody) && /Type it/.test(locAddBody))
-    pass('add-on  MY LOCATION offers share, browser, and typing');
+  const pinned = JSON.stringify(await engine.handle({ from: '233201234567', hash: 'unit-browser', interactiveId: 'pin' }));
+  if (/My location/.test(locAddBody) && /"pin"/.test(locAddBody) && /Type it/.test(locAddBody) && !/send_location/.test(locAddBody)
+      && /send_location/.test(pinned) && /\/loc\//.test(pinned))
+    pass('add-on  MY LOCATION asks to type; Share location then opens WhatsApp\'s prompt and the browser link');
   else bad('my location add-on', locAddBody.slice(0, 320));
 
   caps.forget('unit-fuel-address');
@@ -883,7 +887,7 @@ async function req(server, path, opts = {}) {
     text: 'what is the fare from barrier to town?'
   });
   await engine.handle({ from: '233200000022', hash: 'unit-namer-2', text: 'kpakpo' });
-  if (/do not have \*kpakpo\*/.test(namedBody) && /send_location/.test(namedBody) && /pending/.test(namedBody)
+  if (/do not have \*kpakpo\*/.test(namedBody) && /"pin"/.test(namedBody) && /pending/.test(namedBody)
       && crowd.resolveName('kpakpo') === namedStation && crowd.score('unit-namer').points === 2
       && !require('../lib/api').PLACES.kpakpo)
     pass('names  a local name stays pending until a second rider at that station agrees');
