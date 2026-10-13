@@ -135,7 +135,24 @@ and runs once through `lib/conversation/graph.js`:
   question, then chat or a lookup by intent. Every reply leaves through
   `guard → decorate → remember`.
 
-### Two agents: chat and data
+### The conversation comes first
+
+Every typed message passes the **conversation stage** (`lib/agents/conversation.js`)
+before any lookup. It peels off openers (*Great,* *ok so*, *abeg*), and decides
+whether the line is small talk, the answer to the question the bot just asked,
+or a new request. A new request closes the old question, so a sentence is never
+read as the name of a place; open questions also end with their conversation.
+
+Then, when a model is reachable, the **conversation agent** (`lib/agents/assistant.js`)
+answers, the way a chat assistant does: the model holds the conversation and
+calls the data tools (fares, stops, fuel, roads, queues, charts, add-ons). A
+tool's answer reaches the rider as the usual card built from the tables; the
+model only writes the sentence on top and may not write a figure. Taps, pins,
+photos, and answers to open questions stay on their deterministic steps.
+`ASSISTANT=off` switches the agent off; without a model the rule-based agents
+below answer.
+
+### Rule-based agents: chat and data
 
 Chatting and looking things up are separate agents.
 
