@@ -705,7 +705,7 @@ async function req(server, path, opts = {}) {
   const twiClass = await classify('military hospital station');
   if (pinClass.intent === 'where'
       && nickClass.intent === 'fare' && (nickClass.places || []).includes('circle') && (nickClass.places || []).some(p => String(p).includes('kasoa'))
-      && twiClass.intent === 'station' && (twiClass.places || []).includes('37'))
+      && twiClass.intent === 'station' && (twiClass.places || []).includes('37-station'))
     pass('skills  a pin is location, and Circle, 37, and Nkrumah are the informal names');
   else bad('location and names', JSON.stringify({ pin: pinClass.intent, nick: nickClass, hospital: twiClass }));
 
@@ -894,6 +894,8 @@ async function req(server, path, opts = {}) {
   const seedMadina = JSON.stringify(api.core.gouging['circle:madina']);
   caps.forget('unit-lone');
   const lone = inGhana('unit-lone');
+  /* The report question is asked inside a conversation — the tap opens it. */
+  await memory.remember('unit-lone', 'in', 'tapped report:circle:osu-blow-up', 'tap');
   lone.pending = { from: 'circle', to: 'osu-blow-up' };
   const loneReply = await engine.handle({ from: '233200000031', hash: 'unit-lone', text: '12' });
   const loneBody = JSON.stringify(loneReply);
@@ -909,6 +911,7 @@ async function req(server, path, opts = {}) {
   const peerB = inGhana('unit-peer-b');
   peerB.station = station; peerB.reach = '233200000042'; peerB.seen = Date.now();
   const author = inGhana('unit-peer-author');
+  await memory.remember('unit-peer-author', 'in', 'tapped report:circle:dansoman-laststop', 'tap');
   author.pending = { from: 'circle', to: 'dansoman-laststop' };
   author.station = station;
   const filed = await engine.handle({ from: '233200000040', hash: 'unit-peer-author', text: '11' });
@@ -1432,6 +1435,175 @@ async function req(server, path, opts = {}) {
   if (!memory.current('unit-convo') && !memory.past('unit-convo').length)
     pass('conversations  delete my data removes every conversation');
   else bad('conversations forget', JSON.stringify(memory.past('unit-convo')).slice(0, 200));
+
+  /* The conversation from production: hi, then a request wrapped in an opener. */
+  caps.forget('unit-greatfares');
+  inGhana('unit-greatfares');
+  const gf = text => engine.run({ from: '233201234567', hash: 'unit-greatfares', text });
+  await gf('hi');
+  const wrapped = await gf('Great, I need help with getting fares');
+  const wrappedBody = JSON.stringify(wrapped.replies);
+  if (wrapped.parse.intent === 'fare' && /help with fares|find your fare/.test(wrappedBody) && /Where are you now/.test(wrappedBody)
+      && !/on the map/.test(wrappedBody) && !/I hear you/.test(wrappedBody))
+    pass('conversation  "Great, I need help with getting fares" is a fare request, not a place or small talk');
+  else bad('great fares', wrappedBody.slice(0, 300));
+
+  /* An open question from an earlier conversation does not swallow a new one. */
+  caps.forget('unit-stale');
+  inGhana('unit-stale');
+  await engine.handle({ from: '233201234567', hash: 'unit-stale', text: 'fare from xyzqplace to circle' });
+  const staleOpen = !!memory.thread('unit-stale');
+  memory.current('unit-stale').lastAt = Date.now() - 3 * 60 * 60 * 1000;
+  const fresh = await engine.handle({ from: '233201234567', hash: 'unit-stale', text: 'Great, I need help with getting fares' });
+  if (staleOpen && !/on the map/.test(JSON.stringify(fresh)) && /Where are you now/.test(JSON.stringify(fresh)))
+    pass('conversation  a question left open in an earlier conversation is dropped');
+  else bad('stale question', JSON.stringify({ staleOpen, fresh }).slice(0, 300));
+
+  /* Inside one conversation: a new sentence closes the open question; a short answer still answers it. */
+  caps.forget('unit-open');
+  inGhana('unit-open');
+  await engine.handle({ from: '233201234567', hash: 'unit-open', text: 'fare from xyzqplace to circle' });
+  const replaced = await engine.handle({ from: '233201234567', hash: 'unit-open', text: 'actually I need the fuel price at Tema please' });
+  if (!memory.thread('unit-open') && !/on the map/.test(JSON.stringify(replaced)))
+    pass('conversation  a new request closes the open question instead of being read as a place');
+  else bad('open replaced', JSON.stringify(replaced).slice(0, 300));
+  await engine.handle({ from: '233201234567', hash: 'unit-open', text: 'fare from xyzqplace to circle' });
+  const answered = await engine.run({ from: '233201234567', hash: 'unit-open', text: 'kaneshie' });
+  if (answered.trace.some(step => step.node === 'resume') && answered.parse.places.includes('kaneshie-mkt-cmplx'))
+    pass('conversation  a short answer still answers the open question');
+  else bad('open answered', JSON.stringify(answered.parse) + ' ' + answered.trace.map(step => step.node).join(' → '));
+
+  /* The conversation agent: the model talks and calls tools; numbers come from the cards. */
+  const nluTools = require('../lib/nlu');
+  const realTools = nluTools.completeWithTools;
+  const realComplete = nluTools.complete;
+  const savedProvider = process.env.NLU_PROVIDER;
+  process.env.NLU_PROVIDER = 'codex';
+  nluTools.complete = async () => null;
+  let script = [];
+  const seenPrompts = [];
+  nluTools.completeWithTools = async (messages, offered) => {
+    seenPrompts.push({ system: messages[0].content, tools: offered.map(t => t.function.name), last: messages[messages.length - 1] });
+    return script.length ? script.shift() : null;
+  };
+  try {
+    caps.forget('unit-agent');
+    inGhana('unit-agent');
+    const agent = text => engine.run({ from: '233201234567', hash: 'unit-agent', text });
+
+    script = [{ content: 'Ei, I dey oo. How your day dey go?', calls: [] }];
+    const small = await agent('how far');
+    if (small.trace.some(step => step.node === 'assistant') && !small.trace.some(step => step.node === 'understand')
+        && /How your day dey go/.test(JSON.stringify(small.replies)) && seenPrompts[0].tools.includes('plan_fare'))
+      pass('assistant  the model holds small talk with the data tools on offer');
+    else bad('assistant small talk', JSON.stringify(small.replies).slice(0, 200) + ' ' + small.trace.map(step => step.node).join(' → '));
+
+    script = [
+      { content: '', calls: [{ id: 'c1', name: 'plan_fare', arguments: { from: 'kaneshie', to: 'makola tudu' } }] },
+      { content: 'Here you go 👇 Kaneshie to Makola Tudu.', calls: [] }
+    ];
+    const fareTurn = await agent('Great, I need the fare from kaneshie to makola tudu');
+    const fareBody = JSON.stringify(fareTurn.replies);
+    if (/Here you go/.test(fareBody) && /Kaneshie Mkt Cmplx → Makola Tudu/.test(fareBody) && /₵5/.test(fareBody)
+        && fareTurn.parse.intent === 'fare' && fareTurn.parse.toolCalls.includes('plan_fare'))
+      pass('assistant  a tool call becomes the fare card from the table, with the model\'s sentence on top');
+    else bad('assistant fare', fareBody.slice(0, 300));
+
+    script = [
+      { content: '', calls: [{ id: 'c2', name: 'plan_fare', arguments: { from: 'kaneshie', to: 'makola tudu' } }] },
+      { content: 'That one is ₵99, chale.', calls: [] }
+    ];
+    const lying = await agent('how much again');
+    const lyingBody = JSON.stringify(lying.replies);
+    if (!/₵99/.test(lyingBody) && /₵5/.test(lyingBody))
+      pass('assistant  a figure the model writes is dropped; the card\'s figure stays');
+    else bad('assistant figure', lyingBody.slice(0, 300));
+
+    const sawHistory = seenPrompts.some(p => /Kaneshie Mkt Cmplx to Makola Tudu/.test(p.system));
+    if (sawHistory) pass('assistant  the model sees what is on the rider\'s screen');
+    else bad('assistant topic', seenPrompts.map(p => p.system.slice(-120)).join(' | '));
+
+    script = [];
+    const down = await agent('Great, I need help with getting fares');
+    if (down.trace.some(step => step.node === 'assistant') && down.trace.some(step => step.node === 'understand')
+        && /Where are you now/.test(JSON.stringify(down.replies)))
+      pass('assistant  when the model is down, the rule-based path answers');
+    else bad('assistant down', down.trace.map(step => step.node).join(' → '));
+
+    script = [{ content: 'should not be used', calls: [] }];
+    await engine.handle({ from: '233201234567', hash: 'unit-agent', text: 'fare from xyzqplace to circle' });
+    script = [{ content: 'should not be used', calls: [] }];
+    const answer = await agent('kaneshie');
+    if (!answer.trace.some(step => step.node === 'assistant') && !/should not be used/.test(JSON.stringify(answer.replies)))
+      pass('assistant  the answer to an open question stays on its step');
+    else bad('assistant answer', answer.trace.map(step => step.node).join(' → '));
+  } finally {
+    nluTools.completeWithTools = realTools;
+    nluTools.complete = realComplete;
+    process.env.NLU_PROVIDER = savedProvider;
+  }
+
+  /* How Ghanaians actually ask — each line in a fresh chat, with what the reply must and must not say. */
+  const { replyText } = require('../lib/conversation/handlers');
+  const INFORMAL = [
+    ['kaneshie to circle how much', /Kaneshie Mkt Cmplx → Opetekwei/, /circle how much/],
+    ['circle go kaneshie sen', /COMPOSED|ESTIMATED|REPORTED/, /kaneshie sen/],
+    ['trotro from madina to accra how much', /Madina Station → Accra/, /accra how much/],
+    ['wetin be the fare from lapaz to circle', /Abeka lapaz → Circle/, /on the map/],
+    ['i dey go circle from kaneshie', /Kaneshie Mkt Cmplx → Opetekwei/, /i dey/],
+    ["i'm going to circle", /Going to \*Circle\* — where are you starting from/, /trotros from \*Circle\* go/],
+    ['how much will it cost me to go to osu', /Going to \*Osu Blow Up\*/, /will it cost/],
+    ['me pɛ kɔ circle', /Going to \*Circle\*/, /I hear you/],
+    ['cheapest way to madina', /Going to \*Madina Station\*/, /Lowest fares from Madina/],
+    ['did the fares go up', /Fare charts/, /Which place do you mean/],
+    ['i paid 8 from circle to kaneshie', /₵8/, /COMPOSED/],
+    ['they charged me 15', /Which route was that ₵15 for/, /I hear you/],
+    ['stops from kasoa to abossey okai', /Stops on Kasoa Station → Abossey Okai/, /Which destination/],
+    ['does the kasoa car pass through sakaman', /passes Sakaman Junction/, /fare for/],
+    ['where do i get car to kasoa', /Cars to \*Kasoa Station\* load at/, /Where are you now/],
+    ['where is the kasoa station', /maps\.google\.com/, /Where are you now/],
+    ['i dey circle', /You're at Circle/, /here is where/],
+    ["i'm at kaneshie now", /You're at Kaneshie/, /kaneshie now/],
+    ['petrol price', /which area\?/, /Gas prices are on/],
+    ['shell price', /which area\?/, /didn't get you/],
+    ['fuel price accra vs tema', /Accra vs Tema/, /only have Accra and Tema/],
+    ['the line is long at circle', /loading right now/, /here is where/],
+    ['turn off alerts', /alerts (are )?o(ff|n)|no alerts on/, /didn't get you/],
+    ['i want road alerts', /Road alerts added/, /Which road/],
+    ['options', /Welcome to GH Fares/, /didn't get you/],
+    ['who created you', /I'm GH Fares/, /didn't get you/],
+    ["you're useless", /Sorry about that/, /didn't get you/],
+    ['😂', /😄/, /didn't get you/],
+    ['ok', /Anything else/, /You're welcome/]
+  ];
+  const wrongInformal = [];
+  let k = 0;
+  for (const [line, must, mustNot] of INFORMAL) {
+    const hash = 'unit-informal-' + (k++);
+    caps.forget(hash);
+    inGhana(hash);
+    const said = (await engine.handle({ from: '233201234567', hash, text: line })).map(replyText).join(' | ');
+    if (!must.test(said) || mustNot.test(said)) wrongInformal.push(`${line} → ${said.slice(0, 120)}`);
+  }
+  if (!wrongInformal.length) pass('informal  ' + INFORMAL.length + ' informal, Pidgin, and Twi phrasings get the right answer');
+  else bad('informal', wrongInformal.join('\n        '));
+
+  /* Two-step: a destination, then where they are; an amount, then the route; a saved route, then an amount. */
+  caps.forget('unit-steps');
+  inGhana('unit-steps');
+  const step = text => engine.handle({ from: '233201234567', hash: 'unit-steps', text }).then(r => r.map(replyText).join(' | '));
+  await step('how much to osu');
+  const fromHere = await step('am at circle');
+  const confirmOnScreen = await step('they charged me 15');
+  const other = await engine.handle({ from: '233201234567', hash: 'unit-steps', interactiveId: 'reportroute:15' });
+  const logged = await step('kaneshie to makola tudu');
+  await step('add route');
+  const saved = await step('kaneshie to makola tudu');
+  const bare = await step('10');
+  if (/Circle → Osu Blow Up/.test(fromHere) && /Was that \*₵15\* for \*Circle → Osu Blow Up/.test(confirmOnScreen)
+      && /which route was that ₵15/.test(JSON.stringify(other)) && /Logged \*₵15\*/.test(logged) && /Route saved/.test(saved) && /Did you pay \*₵10\*/.test(bare))
+    pass('informal  a destination then "am at circle", an amount then the route, and a saved route then "10" all follow on');
+  else bad('informal steps', JSON.stringify({ fromHere, logged, saved, bare }).slice(0, 400));
 
   console.log('\n' + ok.length + ' passed, ' + fail.length + ' failed');
   if (fail.length) process.exit(1);
