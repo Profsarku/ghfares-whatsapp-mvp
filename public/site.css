@@ -31,6 +31,28 @@ a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 :focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 
+/* ── what you can ask ── */
+.ask h2, .ask .sub { text-align: left; margin-left: 0; }
+.ask { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: start; }
+.examples { list-style: none; border-top: 1px solid var(--line); }
+.examples li { padding: 14px 0; border-bottom: 1px solid var(--line); color: var(--mute); font-size: 16px; }
+.examples li b { color: var(--ink); font-weight: 600; }
+.chat {
+  background: var(--fog); border-radius: 22px; padding: 22px 18px;
+  display: flex; flex-direction: column; gap: 10px; font-size: 15px;
+}
+.chat p { max-width: 85%; padding: 10px 14px; border-radius: 16px; line-height: 1.4; }
+.chat .me { align-self: flex-end; background: var(--ink); color: #fff; border-bottom-right-radius: 4px; }
+.chat .bot { align-self: flex-start; background: var(--paper); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+.chat .bot span { display: block; margin-top: 4px; font-size: 12px; color: var(--faint); }
+.chat .bot span.tap {
+  display: inline-block; margin: 8px 6px 0 0; padding: 4px 10px;
+  border: 1px solid var(--line); border-radius: 999px; color: var(--ink); font-size: 13px;
+}
+.hero em, .rows em, .steps em, .lede em { font-style: normal; color: #fff; font-weight: 600; }
+.rows em, .steps em { color: var(--ink); }
+.steps a { text-decoration: underline; text-underline-offset: 3px; }
+
 /* ── nav ── */
 .nav {
   position: fixed; inset: 0 0 auto 0; z-index: 40;
@@ -52,7 +74,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
   margin-right: auto;
 }
-.nav a.n { font-size: 12px; color: rgba(255,255,255,.82); }
+.nav a.n { font-size: 12px; color: rgba(255,255,255,.82); white-space: nowrap; }
 .nav a.n.on, .nav a.n[aria-current="page"] { color: #fff; }
 .nav a.n:hover { color: #fff; }
 .nav .start {
@@ -369,6 +391,9 @@ body.map-page { overflow: hidden; height: 100svh; }
   .map-side { border-right: 0; border-bottom: 1px solid var(--line); }
 }
 @media (max-width: 734px) {
+  .nav a.n.wide { display: none; }
+  .nav-inner { gap: 18px; }
+  .ask { grid-template-columns: 1fr; gap: 32px; }
   .rows > .row, .steps, .split { grid-template-columns: 1fr; gap: 10px; }
   .section { padding: 64px 0; }
   .nav-inner { gap: 14px; }
