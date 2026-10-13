@@ -155,6 +155,23 @@ Chatting and looking things up are separate agents.
   the likely meanings (or *Did you mean …?* for a typo), not small talk. Only a
   line it declines as not a lookup goes back to chat.
 
+### Conversation memory
+
+Every message belongs to a **conversation**, and every conversation belongs to
+one user through their hash. The `conversations` Neon database keeps each
+conversation as its own row (`conversations`) with its messages (`turns`),
+the topics it covered, the topic it ended on, and a short summary with no
+figures. A quiet gap of `CONVERSATION_IDLE_MIN` (default 30) starts a new one.
+
+- A reply reads the **current** conversation as its history.
+- Earlier conversations reach the chat agent as dated summaries, so it can
+  answer *what did we talk about last time*.
+- *same route as last time* reopens the route the last conversation ended on.
+- *DELETE MY DATA* removes every conversation and turn for that user.
+
+`npm run db:setup` creates the database. The open follow-up question stays in
+the `memory` database; its old `messages` table is no longer written.
+
 The subscriber record is loaded before a run and saved after it, even on an
 error, so an open step (a pending fare amount, a road report waiting for a
 place) resumes on the next message on any instance. `POST /v1/ask` returns the

@@ -953,7 +953,7 @@ async function req(server, path, opts = {}) {
   else bad('fare history', historyApi.status + ' ' + JSON.stringify(historyPoints) + ' ' + historyPage.status);
 
   const catalog = require('../lib/db/catalog');
-  if (catalog.NAMES.length === 31 && ['survey', 'ai', 'countries', 'road_photos', 'memory', 'names', 'verify', 'xp', 'fare_history', 'signals'].every(n => catalog.NAMES.includes(n)))
+  if (catalog.NAMES.length === 32 && ['survey', 'ai', 'countries', 'road_photos', 'memory', 'conversations', 'names', 'verify', 'xp', 'fare_history', 'signals'].every(n => catalog.NAMES.includes(n)))
     pass('neon catalog  one database per concern, including peer data');
   else bad('neon catalog', catalog.NAMES.join(','));
 
@@ -1390,6 +1390,48 @@ async function req(server, path, opts = {}) {
   if (!directChat.trace.some(step => step.node === 'understand') && directChat.trace.some(step => step.node === 'chat'))
     pass('router  small talk reaches the chat agent without the data classifier');
   else bad('router direct', directChat.trace.map(step => step.node).join(' → '));
+
+  /* Each conversation is its own record on the user; a quiet gap starts a new one. */
+  caps.forget('unit-convo');
+  inGhana('unit-convo');
+  const say = text => engine.run({ from: '233201234567', hash: 'unit-convo', text });
+  await say('kaneshie');
+  await say('makola tudu?');
+  const first = memory.current('unit-convo');
+  const firstId = first && first.id;
+  const turnsInFirst = first ? first.turns.length : 0;
+  first.lastAt = Date.now() - 2 * 60 * 60 * 1000;
+  caps.subscriber('unit-convo').context = {};
+  const later = await say('hi');
+  const second = memory.current('unit-convo');
+  const earlier = memory.past('unit-convo');
+  if (firstId && second && second.id !== firstId && turnsInFirst >= 4 && second.turns.length === 2
+      && earlier[0] && earlier[0].id === firstId && /Kaneshie Mkt Cmplx to Makola Tudu/.test(earlier[0].summary)
+      && !/₵|\d+\.\d/.test(earlier[0].summary) && later.trace.some(step => step.node === 'chat'))
+    pass('conversations  a quiet gap starts a new conversation; the old one keeps a summary with no figures');
+  else bad('conversations split', JSON.stringify({ firstId, secondId: second && second.id, turnsInFirst, earlier }).slice(0, 400));
+
+  const sameAgain = await say('same route as last time');
+  if (/Kaneshie Mkt Cmplx → Makola Tudu/.test(JSON.stringify(sameAgain.replies)) && sameAgain.trace.some(step => step.node === 'in_context'))
+    pass('conversations  "same route as last time" reopens the route the last conversation ended on');
+  else bad('conversations recall', JSON.stringify(sameAgain.replies).slice(0, 300) + ' ' + sameAgain.trace.map(step => step.node).join(' → '));
+
+  const lookBack = await say('what did we talk about last time');
+  const lookBackBody = JSON.stringify(lookBack.replies);
+  if (lookBack.trace.some(step => step.node === 'chat') && /Makola Tudu/.test(lookBackBody) && !/₵/.test(lookBackBody))
+    pass('conversations  the chat agent can refer back to an earlier conversation');
+  else bad('conversations look back', lookBackBody.slice(0, 300));
+
+  const chatAgentMod = require('../lib/agents/chat');
+  const withPast = chatAgentMod.prompt(null, memory.past('unit-convo'));
+  if (/earlier conversations/i.test(withPast) && /Makola Tudu/.test(withPast) && !/₵/.test(withPast))
+    pass('conversations  earlier conversations reach the chat model as summaries');
+  else bad('conversations prompt', withPast.slice(-300));
+
+  await engine.handle({ from: '233201234567', hash: 'unit-convo', text: 'delete my data' });
+  if (!memory.current('unit-convo') && !memory.past('unit-convo').length)
+    pass('conversations  delete my data removes every conversation');
+  else bad('conversations forget', JSON.stringify(memory.past('unit-convo')).slice(0, 200));
 
   console.log('\n' + ok.length + ' passed, ' + fail.length + ' failed');
   if (fail.length) process.exit(1);
