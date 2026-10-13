@@ -104,6 +104,11 @@ lib/wa.js                 Cloud API message builders (text, buttons, list,
 lib/api.js                Classifier + the data API every reply reads from
 lib/engine.js             Runs each message through the conversation graph
 lib/graph/                State graph runtime: StateGraph, Node, edges, trace
+lib/agents/router.js      Chat agent or data agent? Picked on the words, before any lookup
+lib/agents/chat.js        The chat agent — its own prompt and memory view, no tables, no figures
+lib/agents/topic.js       What was just shown (a board, a route) so "that route" resolves
+lib/agents/context.js     Fragments — "circle?", "e be how much", "line dey?" — read against the topic
+lib/agents/voice.js       A human first line on the data cards (names only, never a figure)
 lib/conversation/graph.js The conversation graph — every routing decision
 lib/conversation/nodes/   Node classes: entry, taps, resume, understand, fares, intents
 lib/conversation/state.js ConversationState — the one object a run reads and writes
@@ -129,6 +134,43 @@ and runs once through `lib/conversation/graph.js`:
   and name the next node: country first, then photo, pin, or tap, then an open
   question, then chat or a lookup by intent. Every reply leaves through
   `guard → decorate → remember`.
+
+### Two agents: chat and data
+
+Chatting and looking things up are separate agents.
+
+- **Router** (`lib/agents/router.js`) runs first, on the words alone. Small talk, a
+  question about the bot, or a feeling ("the traffic dey kill me") goes to chat
+  without touching the fare tables or the classifier model. A place, a fare, the
+  stops, fuel, a road, a queue, an open question, or a line pointing back at what
+  was just shown ("that route") goes to data.
+- **Chat agent** (`lib/agents/chat.js`) talks. It never sees a table or a figure:
+  data cards reach its history as a note of what was shown, with amounts removed.
+  It is told what the rider was just looking at, so it can point the way.
+- **Data agent** (`understand` onward) answers from the tables. Ghanaians text in
+  fragments with no context, so it reads them against the **topic** — the board
+  or route it last showed: after the Kaneshie board, *makola tudu?* is the fare,
+  *the stops* lists them, *line dey?* is the queue, *and circle* is Kaneshie →
+  Circle. A question it still cannot place gets a short **clarify** card with
+  the likely meanings (or *Did you mean …?* for a typo), not small talk. Only a
+  line it declines as not a lookup goes back to chat.
+
+### Conversation memory
+
+Every message belongs to a **conversation**, and every conversation belongs to
+one user through their hash. The `conversations` Neon database keeps each
+conversation as its own row (`conversations`) with its messages (`turns`),
+the topics it covered, the topic it ended on, and a short summary with no
+figures. A quiet gap of `CONVERSATION_IDLE_MIN` (default 30) starts a new one.
+
+- A reply reads the **current** conversation as its history.
+- Earlier conversations reach the chat agent as dated summaries, so it can
+  answer *what did we talk about last time*.
+- *same route as last time* reopens the route the last conversation ended on.
+- *DELETE MY DATA* removes every conversation and turn for that user.
+
+`npm run db:setup` creates the database. The open follow-up question stays in
+the `memory` database; its old `messages` table is no longer written.
 
 The subscriber record is loaded before a run and saved after it, even on an
 error, so an open step (a pending fare amount, a road report waiting for a
